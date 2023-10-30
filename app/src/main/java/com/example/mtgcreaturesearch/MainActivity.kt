@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,16 +31,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mtgcreaturesearch.ui.theme.MTGCreatureSearchTheme
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MTGCreatureSearchTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    FavoritesColumn()
-                }
+            val navController = rememberNavController()
+            NavHost(navController, startDestination = "favoritesScreen") {
+                composable("favoritesScreen") { FavoritesColumn(navController) }
+                composable("browseScreen") { BrowseScreen() }
             }
         }
     }
@@ -73,7 +77,7 @@ fun SearchBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun FavoritesColumn() {
+fun FavoritesColumn(navController: NavController) { // Fix the parameter type
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -124,12 +128,14 @@ fun FavoritesColumn() {
             )
         }
 
-        // Add the "Browse" bar
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
-                .background(Color.Gray),
+                .background(Color.Gray)
+                .clickable {
+                    navController.navigate("browseScreen")
+                },
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -154,10 +160,13 @@ fun FavoritesColumn() {
     }
 }
 
+
+
 @Preview(showBackground = true)
 @Composable
 fun FavoritesColumnPreview() {
+    val navController = rememberNavController() // Create a mock NavController
     MTGCreatureSearchTheme {
-        FavoritesColumn()
+        FavoritesColumn(navController = navController) // Pass the NavController
     }
 }
