@@ -138,14 +138,6 @@ fun FavoritesColumn() {
             )
         }
 
-        // Add a second divider bar
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray)
-        )
-
         // Add the "View favorites" bar
         Box(
             modifier = Modifier
