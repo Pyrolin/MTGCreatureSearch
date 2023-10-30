@@ -8,14 +8,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +53,25 @@ fun Title(name: String, modifier: Modifier = Modifier) {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBar(modifier: Modifier = Modifier) {
+    var searchQuery by remember { mutableStateOf("") }
+
+    TextField(
+        value = searchQuery,
+        onValueChange = { newValue ->
+            searchQuery = newValue
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.White),
+        placeholder = {
+            Text(text = "Search...")
+        }
+    )
+}
+
 @Composable
 fun FavoritesColumn() {
     Column(
@@ -60,6 +87,17 @@ fun FavoritesColumn() {
                 text = "MTG Card Organizer",
             )
         }
+
+        // Add a divider bar under the title
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(Color.Gray)
+        )
+
+        // Add the search bar
+        SearchBar(modifier = Modifier.fillMaxWidth().padding(16.dp))
 
         Row(
             modifier = Modifier
@@ -83,6 +121,42 @@ fun FavoritesColumn() {
                 modifier = Modifier
                     .size(100.dp)
                     .background(Color.Blue)
+            )
+        }
+
+        // Add the "Browse" bar
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .background(Color.Gray),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Browse",
+                color = Color.White
+            )
+        }
+
+        // Add a second divider bar
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(Color.Gray)
+        )
+
+        // Add the "View favorites" bar
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .background(Color.Gray),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "View favorites",
+                color = Color.White
             )
         }
     }
