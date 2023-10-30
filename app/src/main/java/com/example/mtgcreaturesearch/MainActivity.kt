@@ -83,9 +83,7 @@ fun FavoritesColumn() {
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = "MTG Card Organizer",
-            )
+            Title(name = "MTG Card Organizer")
         }
 
         // Add a divider bar under the title
@@ -97,7 +95,9 @@ fun FavoritesColumn() {
         )
 
         // Add the search bar
-        SearchBar(modifier = Modifier.fillMaxWidth().padding(16.dp))
+        SearchBar(modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp))
 
         Row(
             modifier = Modifier
