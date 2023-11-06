@@ -41,8 +41,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            NavHost(navController, startDestination = "favoritesScreen") {
-                composable("favoritesScreen") { FavoritesColumn(navController) }
+            NavHost(navController, startDestination = "homeScreen") {
+                composable("homeScreen") { HomeScreen(navController) }
                 composable("browseScreen") { BrowseScreen() }
             }
         }
@@ -77,7 +77,7 @@ fun SearchBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun FavoritesColumn(navController: NavController) { // Fix the parameter type
+fun HomeScreen(navController: NavController) { // Fix the parameter type
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -164,9 +164,9 @@ fun FavoritesColumn(navController: NavController) { // Fix the parameter type
 
 @Preview(showBackground = true)
 @Composable
-fun FavoritesColumnPreview() {
+fun HomeScreenPreview() {
     val navController = rememberNavController() // Create a mock NavController
     MTGCreatureSearchTheme {
-        FavoritesColumn(navController = navController) // Pass the NavController
+        HomeScreen(navController = navController) // Pass the NavController
     }
 }
