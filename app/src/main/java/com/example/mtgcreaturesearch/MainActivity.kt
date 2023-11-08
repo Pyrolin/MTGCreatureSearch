@@ -3,6 +3,7 @@ package com.example.mtgcreaturesearch
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mtgcreaturesearch.ui.theme.MTGCreatureSearchTheme
@@ -35,6 +38,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +61,8 @@ fun Title(name: String, modifier: Modifier = Modifier) {
         modifier = modifier
     )
 }
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -97,6 +104,16 @@ fun HomeScreen(navController: NavController) { // Fix the parameter type
                 .height(1.dp)
                 .background(Color.Gray)
         )
+
+        Image(
+            painter = painterResource(id = R.drawable.logo), // Replace with your image resource ID
+            contentDescription = null, // Provide a meaningful description if needed
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp), // Adjust the height as needed
+            contentScale = ContentScale.Crop
+        )
+
 
         // Add the search bar
         SearchBar(modifier = Modifier
