@@ -32,9 +32,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
 import com.example.mtgcreaturesearch.ui.theme.MTGCreatureSearchTheme
 
-val cardsExample = listOf("Card1", "Card2", "Card3")
+val cardsExample = listOf("Card1", "Card2", "Card3", "Card4")
 
 @Composable
 fun Card(title: String) {
@@ -102,8 +103,7 @@ fun BrowseScreen() {
 @Preview(showBackground = true)
 @Composable
 fun BrowseScreenPreview() {
-    val navController = rememberNavController() // Create a mock NavController
     MTGCreatureSearchTheme {
-        BrowseScreen(navController = navController) // Pass the NavController
+        BrowseScreen()
     }
 }
