@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,7 +45,7 @@ fun Card(title: String) {
             defaultElevation = 6.dp
         ),
         modifier = Modifier
-            .size(width = 240.dp, height = 100.dp)
+            .size(width = 110.dp, height = 153.dp)
     ) {
         Text(
             text = title,
@@ -59,7 +60,8 @@ fun Card(title: String) {
 fun CardGrid(cards: List<String>) {
     // [START android_compose_layouts_lazy_grid_adaptive]
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 128.dp)
+        columns = GridCells.Adaptive(110.dp),
+        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp)
     ) {
         items(cards) { card ->
             Card(card)
@@ -95,8 +97,12 @@ fun BrowseScreen() {
             .fillMaxWidth()
             .padding(16.dp))
 
-        CardGrid(cards = cardsExample)
-
+        Box(
+            modifier = Modifier
+            .padding(5.dp)
+        ) {
+            CardGrid(cards = cardsExample)
+        }
     }
 }
 
