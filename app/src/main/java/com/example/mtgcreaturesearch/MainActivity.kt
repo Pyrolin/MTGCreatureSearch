@@ -49,6 +49,7 @@ class MainActivity : ComponentActivity() {
             NavHost(navController, startDestination = "homeScreen") {
                 composable("homeScreen") { HomeScreen(navController) }
                 composable("browseScreen") { BrowseScreen() }
+                composable("favoritesScreen") { FavoritesScreen() }
             }
         }
     }
@@ -166,7 +167,10 @@ fun HomeScreen(navController: NavController) { // Fix the parameter type
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
-                .background(Color.Gray),
+                .background(Color.Gray)
+                .clickable {
+                    navController.navigate("favoritesScreen")
+                },
             contentAlignment = Alignment.Center
         ) {
             Text(
