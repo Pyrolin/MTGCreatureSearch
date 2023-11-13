@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import com.example.mtgcreaturesearch.ui.theme.MTGCreatureSearchTheme
 
-val cardsExample = listOf("Card1", "Card2", "Card3", "Card4")
+val cardsExample = listOf("Card1", "Card2", "Card3", "Card4", "Card5")
 
 @Composable
 fun Card(title: String) {
