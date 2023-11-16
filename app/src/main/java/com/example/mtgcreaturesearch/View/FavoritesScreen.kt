@@ -48,10 +48,10 @@ fun FavoritesScreen() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun FavoriteScreenPreview() {
-    MTGCreatureSearchTheme {
-        BrowseScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun FavoriteScreenPreview() {
+//    MTGCreatureSearchTheme {
+//        BrowseScreen()
+//    }
+//}
