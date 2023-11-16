@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -82,10 +83,11 @@ fun SearchBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun HomeScreen(navController: NavController) { // Fix the parameter type
+fun HomeScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
+        // Title and Divider
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -95,7 +97,6 @@ fun HomeScreen(navController: NavController) { // Fix the parameter type
             Title(name = "MTG Card Organizer")
         }
 
-        // Add a divider bar under the title
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
@@ -103,21 +104,22 @@ fun HomeScreen(navController: NavController) { // Fix the parameter type
                 .background(Color.Gray)
         )
 
+        // Image
         Image(
             painter = painterResource(id = R.drawable.logo), // Replace with your image resource ID
-            contentDescription = null, // Provide a meaningful description if needed
+            contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp), // Adjust the height as needed
+                .height(200.dp),
             contentScale = ContentScale.Crop
         )
 
-
-        // Add the search bar
+        // Search Bar
         SearchBar(modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp))
 
+        // Main Content
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -143,6 +145,7 @@ fun HomeScreen(navController: NavController) { // Fix the parameter type
             )
         }
 
+        // Browse Bar
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -159,7 +162,7 @@ fun HomeScreen(navController: NavController) { // Fix the parameter type
             )
         }
 
-        // Add the "View favorites" bar
+        // View Favorites Bar
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -173,6 +176,35 @@ fun HomeScreen(navController: NavController) { // Fix the parameter type
             Text(
                 text = "View favorites",
                 color = Color.White
+            )
+        }
+
+        // Spacer to push the Row to the bottom
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Bottom Tab Bar in a Row
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(70.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(25.dp)
+                    .background(Color.Red)
+            )
+
+            Box(
+                modifier = Modifier
+                    .size(25.dp)
+                    .background(Color.Green)
+            )
+
+            Box(
+                modifier = Modifier
+                    .size(25.dp)
+                    .background(Color.Blue)
             )
         }
     }
