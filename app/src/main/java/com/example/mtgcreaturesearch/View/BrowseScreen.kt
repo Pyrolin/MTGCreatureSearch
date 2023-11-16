@@ -16,29 +16,51 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.mtgcreaturesearch.Model.Creature
 import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
 
-val cardsExample = listOf("Card1", "Card2", "Card3", "Card4", "Card5")
+val cardsExample = Creature("Creature1", true);
+val cardsExample2 = Creature("Creature2", false);
+val cardsExample3 = Creature("Creature3", false);
+val cardsExample4 = Creature("Creature4", true);
+val cardsExample5 = Creature("Creature5", false);
 
+val cardsExamples = mutableStateListOf<Creature>(cardsExample, cardsExample2, cardsExample3, cardsExample4, cardsExample5);
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Card(title: String) {
+fun Card(card: Creature) {
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
         ),
         modifier = Modifier
-            .size(width = 110.dp, height = 153.dp)
+            .size(width = 110.dp, height = 153.dp),
+        onClick = {
+            card.favorited = !card.favorited;
+        }
     ) {
         Text(
-            text = title,
+            text = card.name,
+            modifier = Modifier
+                .padding(16.dp),
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            text = if (card.favorited) "<3" else "",
             modifier = Modifier
                 .padding(16.dp),
             textAlign = TextAlign.Center,
@@ -46,14 +68,28 @@ fun Card(title: String) {
     }
 }
 
+val CreatureSaver = listSaver<Creature, Any>(
+    save = { listOf(it.name, it.favorited) },
+    restore = { Creature(it[0] as String, it[1] as Boolean) }
+)
+
 @Composable
-fun CardGrid(cards: List<String>) {
-    // [START android_compose_layouts_lazy_grid_adaptive]
+fun CardGrid(cards: List<Creature>, favorite: Boolean) {
+    //This doesn't work yet
+    var creatures = rememberSaveable(stateSaver = CreatureSaver) {
+        mutableStateOf(Creature("Creature1", true))
+    }
+
+
+    var favorites = cards;
+    if (favorite) {
+        favorites = cards.filter { it.favorited }
+    }
     LazyVerticalGrid(
         columns = GridCells.Adaptive(110.dp),
-        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp)
+        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
     ) {
-        items(cards) { card ->
+        items(favorites) { card ->
             Card(card)
         }
     }
@@ -89,9 +125,9 @@ fun BrowseScreen() {
 
         Box(
             modifier = Modifier
-            .padding(5.dp)
+            .padding(5.dp),
         ) {
-            CardGrid(cards = cardsExample)
+            CardGrid(cards = cardsExamples, favorite = false)
         }
     }
 }

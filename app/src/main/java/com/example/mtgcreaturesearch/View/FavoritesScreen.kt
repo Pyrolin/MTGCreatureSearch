@@ -16,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
 
-val FavoriteExample = listOf("Card1", "Card2", "Card3")
 @Composable
 fun FavoritesScreen() {
     Column(
@@ -43,7 +42,7 @@ fun FavoritesScreen() {
             modifier = Modifier
                 .padding(5.dp)
         ) {
-            CardGrid(cards = FavoriteExample)
+            CardGrid(cards = cardsExamples, favorite = true)
         }
     }
 }
@@ -52,6 +51,6 @@ fun FavoritesScreen() {
 @Composable
 fun FavoriteScreenPreview() {
     MTGCreatureSearchTheme {
-        BrowseScreen()
+        FavoritesScreen()
     }
 }
