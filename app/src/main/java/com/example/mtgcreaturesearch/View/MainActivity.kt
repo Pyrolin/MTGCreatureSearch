@@ -179,31 +179,30 @@ fun HomeScreen(navController: NavController) {
             )
         }
 
-        // Spacer to push the Row to the bottom
-        Spacer(modifier = Modifier.weight(1f))
+
 
         // Bottom Tab Bar in a Row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(70.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(top = 230.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Box(
                 modifier = Modifier
-                    .size(25.dp)
+                    .size(30.dp)
                     .background(Color.Red)
             )
 
             Box(
                 modifier = Modifier
-                    .size(25.dp)
+                    .size(30.dp)
                     .background(Color.Green)
             )
 
             Box(
                 modifier = Modifier
-                    .size(25.dp)
+                    .size(30.dp)
                     .background(Color.Blue)
             )
         }
