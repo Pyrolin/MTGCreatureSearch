@@ -14,10 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.mtgcreaturesearch.Model.Creatures
 import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
 
 @Composable
-fun FavoritesScreen() {
+fun FavoritesScreen(elements: Creatures) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -42,7 +43,7 @@ fun FavoritesScreen() {
             modifier = Modifier
                 .padding(5.dp)
         ) {
-            CardGrid(cards = cardsExamples, favorite = true)
+            CardGrid(cards = elements, favorite = true)
         }
     }
 }
@@ -51,6 +52,6 @@ fun FavoritesScreen() {
 @Composable
 fun FavoriteScreenPreview() {
     MTGCreatureSearchTheme {
-        FavoritesScreen()
+        //FavoritesScreen(elements)
     }
 }

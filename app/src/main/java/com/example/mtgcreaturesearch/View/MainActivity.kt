@@ -36,17 +36,26 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
+import com.example.mtgcreaturesearch.Model.Creatures
 import com.example.mtgcreaturesearch.R
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val elements = remember { Creatures()
+
+            }
+            elements.addElement(cardsExample)
+            elements.addElement(cardsExample2)
+            elements.addElement(cardsExample3)
+            elements.addElement(cardsExample4)
+            elements.addElement(cardsExample5)
             val navController = rememberNavController()
             NavHost(navController, startDestination = "homeScreen") {
                 composable("homeScreen") { HomeScreen(navController) }
-                composable("browseScreen") { BrowseScreen() }
-                composable("favoritesScreen") { FavoritesScreen() }
+                composable("browseScreen") { BrowseScreen(elements) }
+                composable("favoritesScreen") { FavoritesScreen(elements) }
             }
         }
     }
