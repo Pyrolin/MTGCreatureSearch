@@ -189,11 +189,11 @@ fun HomeScreen(navController: NavController) {
         ) {
             // Replace the boxes with vector assets using Image and painterResource
             Image(
-                painter = painterResource(id = R.drawable.burgermenu), // Replace with your vector asset resource ID
+                painter = painterResource(id = R.drawable.burgermenu),
                 contentDescription = null,
                 modifier = Modifier
                     .size(30.dp)
-                    .background(Color.Transparent) // Set background color as needed
+                    .background(Color.Transparent)
                     .clickable {
                         // Navigate to favorites screen when favorites is clicked
                         navController.navigate("HomeScreen")
@@ -201,25 +201,23 @@ fun HomeScreen(navController: NavController) {
             )
 
             Image(
-                painter = painterResource(id = R.drawable.search), // Replace with your vector asset resource ID
+                painter = painterResource(id = R.drawable.search),
                 contentDescription = null,
                 modifier = Modifier
                     .size(30.dp)
-                    .background(Color.Transparent) // Set background color as needed
+                    .background(Color.Transparent)
                     .clickable {
-                        // Navigate to favorites screen when favorites is clicked
                         navController.navigate("BrowseScreen")
                     }
             )
 
             Image(
-                painter = painterResource(id = R.drawable.favorite), // Replace with your vector asset resource ID
+                painter = painterResource(id = R.drawable.favorite),
                 contentDescription = null,
                 modifier = Modifier
                     .size(30.dp)
-                    .background(Color.Transparent) // Set background color as needed
+                    .background(Color.Transparent)
                     .clickable {
-                        // Navigate to favorites screen when favorites is clicked
                         navController.navigate("favoritesScreen")
                     }
             )
