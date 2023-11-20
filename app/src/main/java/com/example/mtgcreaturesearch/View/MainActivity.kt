@@ -47,6 +47,7 @@ class MainActivity : ComponentActivity() {
                 composable("homeScreen") { HomeScreen(navController) }
                 composable("browseScreen") { BrowseScreen() }
                 composable("favoritesScreen") { FavoritesScreen() }
+                composable("FilterBar"){}
             }
         }
     }
