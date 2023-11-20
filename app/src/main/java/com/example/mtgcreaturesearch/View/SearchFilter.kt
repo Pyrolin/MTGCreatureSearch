@@ -1,3 +1,4 @@
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,15 +18,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mtgcreaturesearch.R
 
 @Composable
 fun FilterBar() {
@@ -99,21 +105,76 @@ fun CardSet(name: String, options: List<String>) {
     }
 }
 
+
 @Composable
 fun CardList() {
     val data = listOf(
         "Set" to listOf("Option 1", "Option 2", "Option 3"),
-        "Toughness" to listOf("Option A", "Option B", "Option C"),
-        "Power" to listOf("Option X", "Option Y", "Option Z"),
-        "Mana cost" to listOf("Option Red", "Option Blue", "Option Green")
+        "Toughness" to listOf("1", "2", "3", "4", "5", "6", "7", "8"),
+        "Power" to listOf("1", "2", "3", "4", "5", "6", "7", "8"),
+        "Mana cost" to listOf("1", "2", "3", "4", "5", "6", "7", "8")
     )
 
     LazyColumn {
         items(data) { (name, options) ->
             CardSet(name = name, options = options)
         }
+
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly, // Adjust the arrangement as needed
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.swamp),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(54.dp)
+                        .height(54.dp),
+                    contentScale = ContentScale.Crop
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.plains),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(54.dp)
+                        .height(54.dp),
+                    contentScale = ContentScale.Crop
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.island),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(54.dp)
+                        .height(54.dp),
+                    contentScale = ContentScale.Crop
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.mountain),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(54.dp)
+                        .height(54.dp),
+                    contentScale = ContentScale.Crop
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.forest),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(54.dp)
+                        .height(54.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
     }
 }
+
+
+
 
 @Composable
 fun MagicCards() {
