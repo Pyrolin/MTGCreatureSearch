@@ -184,7 +184,7 @@ fun HomeScreen(navController: NavController) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 200.dp),
+                .padding(top = 145.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             // Replace the boxes with vector assets using Image and painterResource
