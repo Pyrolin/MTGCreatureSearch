@@ -43,8 +43,6 @@ val cardsExample3 = Creature("Creature3", false);
 val cardsExample4 = Creature("Creature4", true);
 val cardsExample5 = Creature("Creature5", false);
 
-val cardsExamples = mutableStateListOf<Creature>(cardsExample, cardsExample2, cardsExample3, cardsExample4, cardsExample5);
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Card(card: Creature) {
