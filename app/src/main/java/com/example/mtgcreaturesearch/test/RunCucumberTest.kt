@@ -1,4 +1,4 @@
-package com.example.mtgcreaturesearch.Test
+package com.example.mtgcreaturesearch.test
 
 import io.cucumber.junit.CucumberOptions
 import io.cucumber.junit.Cucumber

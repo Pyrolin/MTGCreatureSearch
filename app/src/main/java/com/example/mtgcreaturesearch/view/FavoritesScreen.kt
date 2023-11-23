@@ -1,4 +1,4 @@
-package com.example.mtgcreaturesearch.View
+package com.example.mtgcreaturesearch.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.mtgcreaturesearch.Model.Creatures
-import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
+import com.example.mtgcreaturesearch.model.Creatures
+import com.example.mtgcreaturesearch.view.ui.theme.MTGCreatureSearchTheme
 
 @Composable
 fun FavoritesScreen(elements: Creatures) {

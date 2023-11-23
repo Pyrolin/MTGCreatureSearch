@@ -1,4 +1,4 @@
-package com.example.mtgcreaturesearch.View
+package com.example.mtgcreaturesearch.view
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -31,12 +31,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
+import com.example.mtgcreaturesearch.view.ui.theme.MTGCreatureSearchTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
-import com.example.mtgcreaturesearch.Model.Creatures
+import com.example.mtgcreaturesearch.model.Creatures
 import com.example.mtgcreaturesearch.R
 
 class MainActivity : ComponentActivity() {

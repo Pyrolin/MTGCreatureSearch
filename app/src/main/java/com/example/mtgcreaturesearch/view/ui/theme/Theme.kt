@@ -1,4 +1,4 @@
-package com.example.mtgcreaturesearch.View.ui.theme
+package com.example.mtgcreaturesearch.view.ui.theme
 
 import android.app.Activity
 import android.os.Build

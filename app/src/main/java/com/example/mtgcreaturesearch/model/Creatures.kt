@@ -1,4 +1,4 @@
-package com.example.mtgcreaturesearch.Model
+package com.example.mtgcreaturesearch.model
 
 import androidx.compose.runtime.mutableStateListOf
 

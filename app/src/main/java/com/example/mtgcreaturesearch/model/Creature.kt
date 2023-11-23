@@ -1,6 +1,5 @@
-package com.example.mtgcreaturesearch.Model
+package com.example.mtgcreaturesearch.model
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 
 class Creature constructor(creatureName: String, favorite: Boolean){
