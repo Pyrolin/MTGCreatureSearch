@@ -31,22 +31,28 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
 import com.example.mtgcreaturesearch.R
+import com.example.mtgcreaturesearch.ViewModel.CardViewModel
+import com.example.mtgcreaturesearch.View.BrowseScreen
+import com.example.mtgcreaturesearch.ViewModel.CardUiState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
+            val cardViewModel: CardViewModel = viewModel()
             NavHost(navController, startDestination = "homeScreen") {
                 composable("homeScreen") { HomeScreen(navController) }
-                composable("browseScreen") { BrowseScreen() }
+                composable("browseScreen") { BrowseScreen(cardUiState = cardViewModel.cardUiState) }
                 composable("favoritesScreen") { FavoritesScreen() }
+
             }
         }
     }
@@ -55,7 +61,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Title(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "$name",
+        text = name,
         modifier = modifier
     )
 }
@@ -180,11 +186,11 @@ fun HomeScreen(navController: NavController) { // Fix the parameter type
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    val navController = rememberNavController() // Create a mock NavController
-    MTGCreatureSearchTheme {
-        HomeScreen(navController = navController) // Pass the NavController
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeScreenPreview() {
+//    val navController = rememberNavController() // Create a mock NavController
+//    MTGCreatureSearchTheme {
+//        HomeScreen(navController = navController, cardUiState = cardViewModel.cardUiState) // Pass the NavController
+//    }
+//}
