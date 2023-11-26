@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,24 +37,28 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.mtgcreaturesearch.Model.Data
+import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
 import com.example.mtgcreaturesearch.ViewModel.CardUiState
 
-
-val cardsExample = listOf("Card1", "Card2", "Card3", "Card4", "Card5")
+var favorites: MutableList<String> = mutableListOf()
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Card(url: String) {
+fun Card(card: ShownCards) {
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
         ),
-        modifier = Modifier.fillMaxSize()
-//            .size(width = 110.dp, height = 153.dp)
+        modifier = Modifier.fillMaxSize(),
+//            .size(width = 110.dp, height = 153.dp),
+        onClick = {
+            if (favorites.contains(card.id)) favorites.remove(card.id) else favorites.add(card.id)
+        }
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxWidth(),
-            model = "${url}",
+            model = card.url,
             contentDescription = "Translated description of what the image contains",
             alignment = Alignment.Center,
             contentScale = ContentScale.FillWidth,
@@ -62,14 +67,15 @@ fun Card(url: String) {
 }
 
 @Composable
-fun CardGrid(cards: List<String>) {
+fun CardGrid(cards: List<ShownCards>, favorite: Boolean) {
+    val favorites = cards.filter { if(favorite) favorites.contains(it.id) else true }
     // [START android_compose_layouts_lazy_grid_adaptive]
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
 //        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
         modifier = Modifier.fillMaxSize()
     ) {
-        items(cards) { card ->
+        items(favorites) { card ->
             Card(card)
         }
     }
@@ -78,13 +84,14 @@ fun CardGrid(cards: List<String>) {
 
 @Composable
 fun BrowseScreen(cardUiState: CardUiState) {
-    var urlStrings: MutableList<String> = mutableListOf()
+    val cards: MutableList<ShownCards> = mutableListOf()
     when (cardUiState){
         is CardUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
         is CardUiState.Success ->
             for (i in 0.. cardUiState.photos.size-1){
-            urlStrings.add (i,cardUiState.photos[i].image_uris.png)
-        }
+                val card = ShownCards(cardUiState.photos[i].image_uris.png, cardUiState.photos[i].id)
+                cards.add(i, card)
+            }
 //        is CardUiState.Success -> ResultScreen(
 //            cardUiState.photos, modifier = Modifier.fillMaxWidth()
 //        )
@@ -118,7 +125,7 @@ fun BrowseScreen(cardUiState: CardUiState) {
             .padding(16.dp)
         )
         CardGrid(
-            cards = (urlStrings)
+            cards = cards, favorite = false
         )
     }
 }
