@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
             NavHost(navController, startDestination = "homeScreen") {
                 composable("homeScreen") { HomeScreen(navController) }
                 composable("browseScreen") { BrowseScreen(cardUiState = cardViewModel.cardUiState) }
-                composable("favoritesScreen") { FavoritesScreen() }
+                composable("favoritesScreen") { FavoritesScreen(cardUiState = cardViewModel.cardUiState) }
 
             }
         }

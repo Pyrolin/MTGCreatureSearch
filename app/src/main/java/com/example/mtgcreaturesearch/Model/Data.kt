@@ -28,7 +28,7 @@ data class Data(
 //    val full_art: Boolean,
 //    val games: List<String>,
 //    val highres_image: Boolean,
-//    val id: String,
+    val id: String,
 //    val illustration_id: String,
 //    val image_status: String,
     val image_uris: ImageUrisX,
