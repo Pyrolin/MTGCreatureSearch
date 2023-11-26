@@ -9,5 +9,5 @@ data class ImageUrisX(
 //    val large: String,
 //    val normal: String,
     val png: String,
-//    val small: String
+    val small: String
 )

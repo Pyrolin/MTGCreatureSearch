@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -50,17 +51,12 @@ fun Card(url: String) {
         modifier = Modifier.fillMaxSize()
 //            .size(width = 110.dp, height = 153.dp)
     ) {
-//        Text(
-//            text = title,
-//            modifier = Modifier
-//                .padding(16.dp),
-//            textAlign = TextAlign.Center,
-//        )
         AsyncImage(
+            modifier = Modifier.fillMaxWidth(),
             model = "${url}",
             contentDescription = "Translated description of what the image contains",
             alignment = Alignment.Center,
-
+            contentScale = ContentScale.FillWidth,
         )
     }
 }
@@ -70,10 +66,8 @@ fun CardGrid(cards: List<String>) {
     // [START android_compose_layouts_lazy_grid_adaptive]
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
-
 //        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
         modifier = Modifier.fillMaxSize()
-
     ) {
         items(cards) { card ->
             Card(card)

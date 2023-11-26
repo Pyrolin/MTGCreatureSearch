@@ -18,7 +18,8 @@ private val retrofit = Retrofit.Builder()
 
 
 interface CardApiService {
-    @GET("search?pretty=true&order=name&q=%28game%3Apaper%29+cmc>%3D15")
+//    @GET("search?pretty=true&order=name&q=%28game%3Apaper%29+cmc>%3D15")
+    @GET("search?q=type%3Acreature+game%3Apaper+cmc>%3D10&unique=cards&as=grid&order=name")
     suspend fun getPhotos(): Card
 
 
