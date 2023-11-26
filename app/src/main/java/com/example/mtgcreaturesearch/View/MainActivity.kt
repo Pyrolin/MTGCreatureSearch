@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 composable("homeScreen") { HomeScreen(navController) }
                 composable("browseScreen") { BrowseScreen(cardUiState = cardViewModel.cardUiState) }
                 composable("favoritesScreen") { FavoritesScreen(cardUiState = cardViewModel.cardUiState) }
-
+                composable("FilterBar"){}
             }
         }
     }
