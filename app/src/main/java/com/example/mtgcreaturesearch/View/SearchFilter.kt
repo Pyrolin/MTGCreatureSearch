@@ -177,7 +177,7 @@ fun CardList() {
 
 
 @Composable
-fun MagicCards() {
+fun SearchFilter() {
     Column {
         Box(modifier = Modifier.padding(16.dp)) {
             FilterBar()
@@ -189,5 +189,5 @@ fun MagicCards() {
 @Preview(backgroundColor = 0xFFFFFFFF)
 @Composable
 fun MagicCardsPreview() {
-    MagicCards()
+    SearchFilter()
 }
