@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 private val DarkColorScheme = darkColorScheme(
         primary = Purple80,
@@ -61,6 +63,7 @@ fun MTGCreatureSearchTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
+    val CardViewModel: CardViewModel = viewModel()
 
     MaterialTheme(
             colorScheme = colorScheme,

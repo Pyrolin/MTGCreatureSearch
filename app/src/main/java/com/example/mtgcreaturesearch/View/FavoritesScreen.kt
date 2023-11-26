@@ -14,11 +14,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
+import com.example.mtgcreaturesearch.ViewModel.CardUiState
 
-val FavoriteExample = listOf("Card1", "Card2", "Card3")
 @Composable
-fun FavoritesScreen() {
+fun FavoritesScreen(cardUiState: CardUiState) {
+    var cards: MutableList<ShownCards> = mutableListOf()
+    when (cardUiState){
+        is CardUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
+        is CardUiState.Success ->
+            for (i in 0.. cardUiState.photos.size-1){
+                val card = ShownCards(cardUiState.photos[i].image_uris.png, cardUiState.photos[i].id)
+                cards.add(i, card)
+            }
+//        is CardUiState.Success -> ResultScreen(
+//            cardUiState.photos, modifier = Modifier.fillMaxWidth()
+//        )
+        CardUiState.Error -> ErrorScreen( modifier = Modifier.fillMaxSize())
+        else -> {}
+    }
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -43,15 +58,17 @@ fun FavoritesScreen() {
             modifier = Modifier
                 .padding(5.dp)
         ) {
-            CardGrid(cards = FavoriteExample)
+            CardGrid(
+                cards = cards, favorite = true
+            )
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun FavoriteScreenPreview() {
-    MTGCreatureSearchTheme {
-        BrowseScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun FavoriteScreenPreview() {
+//    MTGCreatureSearchTheme {
+//        BrowseScreen()
+//    }
+//}

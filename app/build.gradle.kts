@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
 }
 
 android {
@@ -60,6 +61,8 @@ dependencies {
     implementation ("androidx.navigation:navigation-compose:2.4.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("io.cucumber:cucumber-java:7.14.0")
+    testImplementation("io.cucumber:cucumber-junit:7.14.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
@@ -69,4 +72,10 @@ dependencies {
     implementation ("androidx.compose.ui:ui:1.0.0")
     implementation ("androidx.compose.material:material:1.0.0")
     implementation ("androidx.compose.ui:ui-tooling:1.0.0")
+    
+    // API Stuff
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
 }
