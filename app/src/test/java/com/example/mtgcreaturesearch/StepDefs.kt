@@ -2,7 +2,6 @@ package com.example.mtgcreaturesearch
 
 import CardApi
 import com.example.mtgcreaturesearch.Model.Data
-import io.cucumber.java.PendingException
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
