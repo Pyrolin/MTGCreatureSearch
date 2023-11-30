@@ -41,8 +41,19 @@ import coil.compose.AsyncImage
 import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+
+import androidx.compose.runtime.collectAsState
 import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
 import com.example.mtgcreaturesearch.ViewModel.CardUiState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+//import androidx.paging.compose.collectAsLazyPagingItems
+//import androidx.paging.compose.itemContentType
+//import androidx.paging.compose.itemKey
+
+
+
 
 var favorites: MutableList<String> = mutableListOf()
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,6 +78,8 @@ fun Card(card: ShownCards) {
         )
     }
 }
+//val lazyPagingItems = pager.collectAsLazyPagingItems()
+
 
 @Composable
 fun CardGrid(cards: List<ShownCards>, favorite: Boolean) {
@@ -85,21 +98,8 @@ fun CardGrid(cards: List<ShownCards>, favorite: Boolean) {
 
 
 @Composable
-fun BrowseScreen(cardUiState: CardUiState, navController: NavController) {
-    val cards: MutableList<ShownCards> = mutableListOf()
-    when (cardUiState){
-        is CardUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
-        is CardUiState.Success ->
-            for (i in 0.. cardUiState.photos.size-1){
-                val card = ShownCards(cardUiState.photos[i].image_uris.png, cardUiState.photos[i].id)
-                cards.add(i, card)
-            }
-//        is CardUiState.Success -> ResultScreen(
-//            cardUiState.photos, modifier = Modifier.fillMaxWidth()
-//        )
-     CardUiState.Error -> ErrorScreen( modifier = Modifier.fillMaxSize())
-        else -> {}
-    }
+fun BrowseScreen(cardViewModel: CardViewModel=viewModel(),navController: NavController ) {
+    val cards = cardViewModel.browseCards()
 
     Column(
         modifier = Modifier.fillMaxSize()
