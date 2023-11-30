@@ -4,6 +4,7 @@ import CardApiService
 import androidx.compose.foundation.Image
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.*
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ShownCards
@@ -96,7 +98,7 @@ fun CardGrid(cards: List<ShownCards>, favorite: Boolean) {
 
 
 @Composable
-fun BrowseScreen(cardViewModel: CardViewModel=viewModel() ) {
+fun BrowseScreen(cardViewModel: CardViewModel=viewModel(),navController: NavController ) {
     val cards = cardViewModel.browseCards()
 
     Column(
@@ -123,6 +125,17 @@ fun BrowseScreen(cardViewModel: CardViewModel=viewModel() ) {
         SearchBar(modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+        )
+        Image(
+            painter = painterResource(id = R.drawable.burgermenu),
+            contentDescription = null,
+            modifier = Modifier
+                .size(30.dp)
+                .background(Color.Transparent)
+                .clickable {
+                    // Navigate to favorites screen when favorites is clicked
+                    navController.navigate("filterBar")
+                }
         )
         CardGrid(
             cards = cards, favorite = false

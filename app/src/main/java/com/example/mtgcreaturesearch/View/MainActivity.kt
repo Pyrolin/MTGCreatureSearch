@@ -1,5 +1,6 @@
 package com.example.mtgcreaturesearch.View
 
+import SearchFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -50,9 +51,9 @@ class MainActivity : ComponentActivity() {
             val cardViewModel: CardViewModel = viewModel()
             NavHost(navController, startDestination = "homeScreen") {
                 composable("homeScreen") { HomeScreen(navController) }
-                composable("browseScreen") { BrowseScreen(cardViewModel) }
+                composable("browseScreen") { BrowseScreen(cardViewModel, navController) }
                 composable("favoritesScreen") { FavoritesScreen(cardUiState = cardViewModel.cardUiState) }
-                composable("FilterBar"){}
+                composable("filterBar"){ SearchFilter() }
             }
         }
     }
