@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mtgcreaturesearch.Model.Data
+import com.example.mtgcreaturesearch.Model.ShownCards
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -17,6 +18,7 @@ sealed interface CardUiState {
     object Loading : CardUiState
 }
 class CardViewModel : ViewModel() {
+
     /** The mutable State that stores the status of the most recent request */
     var cardUiState: CardUiState by mutableStateOf(CardUiState.Loading)
         private set
@@ -40,7 +42,25 @@ class CardViewModel : ViewModel() {
                 CardUiState.Error
             }
         }
-
     }
+
+    fun browseCards(): List<ShownCards>{
+        //val cards: MutableList<ShownCards> = mutableListOf()
+            return when (val currentState=cardUiState){
+            is CardUiState.Success ->{
+                val cards = mutableListOf<ShownCards> ()
+                for (i in 0.. currentState.photos.size-1){
+                    val photo = currentState.photos[i]
+                    val card = ShownCards(photo.image_uris.small, photo.id)
+                    cards.add(card)
+                }
+                cards
+            }
+            else -> {
+                return emptyList()
+            }
+        }
+    }
+
 
 }
