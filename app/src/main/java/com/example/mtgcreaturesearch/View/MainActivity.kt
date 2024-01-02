@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -30,18 +31,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
-import com.example.mtgcreaturesearch.View.BrowseScreen
-import com.example.mtgcreaturesearch.ViewModel.CardUiState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +61,7 @@ class MainActivity : ComponentActivity() {
 fun Title(name: String, modifier: Modifier = Modifier) {
     Text(
         text = name,
+        color = Color.White,
         modifier = modifier
     )
 }
@@ -88,150 +87,190 @@ fun SearchBar(modifier: Modifier = Modifier) {
     )
 }
 
+
 @Composable
 fun HomeScreen(navController: NavController) {
-    Column(
+    Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Title and Divider
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Title(name = "MTG Card Organizer")
-        }
-
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray)
-        )
-
-        // Image
+        // Background Image
         Image(
-            painter = painterResource(id = R.drawable.logo), // Replace with your image resource ID
+            painter = painterResource(id = R.drawable.transparent_background),
             contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp),
+            modifier = Modifier.matchParentSize(),
             contentScale = ContentScale.Crop
         )
-
-        // Search Bar
-        SearchBar(modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp))
-
-        // Main Content
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
+            // Title and Divider
             Box(
                 modifier = Modifier
-                    .size(100.dp)
-                    .background(Color.Red)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Title(name = "MTG Card Organizer")
+            }
+
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.Gray)
             )
 
+            // Image
+            Image(
+                painter = painterResource(id = R.drawable.logo), // Replace with your image resource ID
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+                contentScale = ContentScale.Crop
+            )
+
+            // Search Bar
+            SearchBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+            )
+
+            // Main Content
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .background(Color.Red)
+                )
+
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .background(Color.Green)
+                )
+
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .background(Color.Blue)
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),  // This will make the Row take up the full width of the screen
+                horizontalArrangement = Arrangement.Center  // This centers its children horizontally
+            ) {
+                // Browse Bar Box
+                Box(
+                    modifier = Modifier
+                        .width(300.dp)
+                        .padding(16.dp)
+                        .height(50.dp)
+                        .background(Color(0xFFFFA500))  // Orange color
+                        .clickable { navController.navigate("browseScreen") },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Browse",
+                        color = Color.White,
+                        fontSize = 20.sp
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),  // This will make the Row take up the full width of the screen
+                horizontalArrangement = Arrangement.Center  // This centers its children horizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(300.dp)
+                        .padding(16.dp)
+                        .height(50.dp)
+                        .background(Color(0xFFFFA500))  // Orange color
+                        .clickable {
+                            navController.navigate("favoritesScreen")
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "View favorites",
+                        color = Color.White,
+                        fontSize = 20.sp
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
             Box(
                 modifier = Modifier
-                    .size(100.dp)
-                    .background(Color.Green)
-            )
+                    .fillMaxWidth()
+                    .height(55.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.blurred), // Replace with your image resource ID
+                    contentDescription = "Background Image",
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentScale = ContentScale.Crop // or ContentScale.FillBounds as needed
+                )
+                // Bottom Tab Bar in a Row
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(70.dp) // Set the height of the Row
+                        .padding(top = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically //
+                ) {
+                    // Replace the boxes with vector assets using Image and painterResource
+                    Image(
+                        painter = painterResource(id = R.drawable.burgermenu_hvid),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .background(Color.Transparent)
+                            .clickable {
+                                // Navigate to favorites screen when favorites is clicked
+                                navController.navigate("HomeScreen")
+                            }
+                    )
 
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .background(Color.Blue)
-            )
-        }
+                    Image(
+                        painter = painterResource(id = R.drawable.search),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .background(Color.Transparent)
+                            .clickable {
+                                navController.navigate("BrowseScreen")
+                            }
+                    )
 
-        // Browse Bar
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .background(Color.Gray)
-                .clickable {
-                    navController.navigate("browseScreen")
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Browse",
-                color = Color.White
-            )
-        }
-
-        // View Favorites Bar
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .background(Color.Gray)
-                .clickable {
-                    navController.navigate("favoritesScreen")
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "View favorites",
-                color = Color.White
-            )
-        }
-
-
-
-        // Bottom Tab Bar in a Row
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 145.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            // Replace the boxes with vector assets using Image and painterResource
-            Image(
-                painter = painterResource(id = R.drawable.burgermenu),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(30.dp)
-                    .background(Color.Transparent)
-                    .clickable {
-                        // Navigate to favorites screen when favorites is clicked
-                        navController.navigate("HomeScreen")
-                    }
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.search),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(30.dp)
-                    .background(Color.Transparent)
-                    .clickable {
-                        navController.navigate("BrowseScreen")
-                    }
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.favorite),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(30.dp)
-                    .background(Color.Transparent)
-                    .clickable {
-                        navController.navigate("favoritesScreen")
-                    }
-            )
+                    Image(
+                        painter = painterResource(id = R.drawable.favorite_hvid),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .background(Color.Transparent)
+                            .clickable {
+                                navController.navigate("favoritesScreen")
+                            }
+                    )
+                }
+            }
         }
     }
 }
-
 
 
 //@Preview(showBackground = true)
