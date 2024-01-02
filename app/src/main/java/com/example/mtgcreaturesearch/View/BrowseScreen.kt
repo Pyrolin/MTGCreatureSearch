@@ -140,7 +140,16 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                         navController.navigate("filterBar")
                     }
             )
-
+            Image(
+                painter = painterResource(id = R.drawable.backspace),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(30.dp)
+                    .background(Color.Transparent)
+                    .clickable {
+                        navController.navigate("HomeScreen")
+                    }
+            )
             CardGrid(cards = cardViewModel.browseCards(), favorite = false)
         }
     }
