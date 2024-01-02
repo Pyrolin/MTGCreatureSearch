@@ -98,51 +98,53 @@ fun CardGrid(cards: List<ShownCards>, favorite: Boolean) {
 
 
 @Composable
-fun BrowseScreen(cardViewModel: CardViewModel=viewModel(),navController: NavController ) {
-    val cards = cardViewModel.browseCards()
-
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Title(name = "MTG Card Organizer")
-        }
-
-        // Add a divider bar under the title
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray)
-        )
-
-        // Add the search bar
-        SearchBar(modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-        )
+fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Background Image
         Image(
-            painter = painterResource(id = R.drawable.burgermenu),
-            contentDescription = null,
-            modifier = Modifier
-                .size(30.dp)
-                .background(Color.Transparent)
-                .clickable {
-                    // Navigate to favorites screen when favorites is clicked
-                    navController.navigate("filterBar")
-                }
+            painter = painterResource(id = R.drawable.browse_background),
+            contentDescription = "Background Image",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
-        CardGrid(
-            cards = cards, favorite = false
-        )
+
+        Column(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Title(name = "MTG Card Organizer")
+            }
+
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.Gray)
+            )
+
+            SearchBar(modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+            )
+
+            Image(
+                painter = painterResource(id = R.drawable.burgermenu),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(30.dp)
+                    .background(Color.Transparent)
+                    .clickable {
+                        navController.navigate("filterBar")
+                    }
+            )
+
+            CardGrid(cards = cardViewModel.browseCards(), favorite = false)
+        }
     }
 }
-
 @Composable
 fun ResultScreen(photos: List<Data>, modifier: Modifier = Modifier) {
     Box(
