@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -108,7 +109,8 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
             contentScale = ContentScale.Crop
         )
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        // Main content area
+        Column {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -140,6 +142,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                         navController.navigate("filterBar")
                     }
             )
+
             Image(
                 painter = painterResource(id = R.drawable.backspace),
                 contentDescription = null,
@@ -150,10 +153,74 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                         navController.navigate("HomeScreen")
                     }
             )
+
             CardGrid(cards = cardViewModel.browseCards(), favorite = false)
+
+            // Spacer to push bottom bar to the bottom of the screen
+            Spacer(modifier = Modifier.weight(1f))
+        }
+
+        // Bottom Tab Bar
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(55.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.browse_bottom_background),
+                contentDescription = "Background Image",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+                    .padding(top = 10.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                    Image(
+                        painter = painterResource(id = R.drawable.burgermenu_hvid),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .background(Color.Transparent)
+                            .clickable {
+                                // Navigate to favorites screen when favorites is clicked
+                                navController.navigate("HomeScreen")
+                            }
+                    )
+
+                    Image(
+                        painter = painterResource(id = R.drawable.search),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .background(Color.Transparent)
+                            .clickable {
+                                navController.navigate("BrowseScreen")
+                            }
+                    )
+
+                    Image(
+                        painter = painterResource(id = R.drawable.favorite_hvid),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .background(Color.Transparent)
+                            .clickable {
+                                navController.navigate("favoritesScreen")
+                            }
+                    )
+                }
+            }
+
         }
     }
-}
 @Composable
 fun ResultScreen(photos: List<Data>, modifier: Modifier = Modifier) {
     Box(
