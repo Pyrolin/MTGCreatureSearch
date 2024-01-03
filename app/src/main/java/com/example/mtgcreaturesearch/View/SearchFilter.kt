@@ -1,5 +1,6 @@
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -34,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.View.Title
 
@@ -181,7 +184,7 @@ fun CardList() {
 
 
 @Composable
-fun SearchFilter() {
+fun SearchFilter(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
@@ -206,10 +209,20 @@ fun SearchFilter() {
                     .height(1.dp)
                     .background(Color.Gray)
             )
-
+            Image(
+                painter = painterResource(id = R.drawable.backspace),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(30.dp)
+                    .background(Color.Transparent)
+                    .clickable {
+                        navController.navigate("HomeScreen")
+                    }
+            )
             Box(modifier = Modifier.padding(16.dp)) {
                 FilterBar()
             }
+
             CardList()
         }
     }
@@ -219,5 +232,4 @@ fun SearchFilter() {
 @Preview(backgroundColor = 0xFFFFFFFF)
 @Composable
 fun MagicCardsPreview() {
-    SearchFilter()
 }
