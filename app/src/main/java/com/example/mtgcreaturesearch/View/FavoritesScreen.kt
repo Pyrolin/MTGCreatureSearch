@@ -70,7 +70,16 @@ fun FavoritesScreen(cardUiState: CardUiState,navController: NavController) {
                     .height(1.dp)
                     .background(Color.Gray)
             )
-
+            Image(
+                painter = painterResource(id = R.drawable.backspace),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(30.dp)
+                    .background(Color.Transparent)
+                    .clickable {
+                        navController.navigate("HomeScreen")
+                    }
+            )
             Box(modifier = Modifier.padding(5.dp)) {
                 CardGrid(cards = cards, favorite = true)
             }
