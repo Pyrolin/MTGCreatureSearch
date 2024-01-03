@@ -46,9 +46,17 @@ fun FilterBar() {
         onValueChange = { newText ->
             filterText.value = newText
         },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White),
         label = { Text("Search") },
         leadingIcon = { Icon(Icons.Filled.Search, "search") },
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.White,
+            cursorColor = Color.Black,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = { /* filter logic here */ })
     )

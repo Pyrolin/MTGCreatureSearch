@@ -47,10 +47,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val cardViewModel: CardViewModel = viewModel()
+
             NavHost(navController, startDestination = "homeScreen") {
                 composable("homeScreen") { HomeScreen(navController) }
                 composable("browseScreen") { BrowseScreen(cardViewModel, navController) }
-                composable("favoritesScreen") { FavoritesScreen(cardUiState = cardViewModel.cardUiState) }
+                composable("favoritesScreen") {
+                    FavoritesScreen(navController, cardUiState = cardViewModel.cardUiState)
+                }
                 composable("filterBar"){ SearchFilter() }
             }
         }
@@ -122,7 +125,7 @@ fun HomeScreen(navController: NavController) {
 
             // Image
             Image(
-                painter = painterResource(id = R.drawable.logo), // Replace with your image resource ID
+                painter = painterResource(id = R.drawable.logo),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -217,7 +220,7 @@ fun HomeScreen(navController: NavController) {
                     .height(55.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.blurred), // Replace with your image resource ID
+                    painter = painterResource(id = R.drawable.blurred),
                     contentDescription = "Background Image",
                     modifier = Modifier
                         .fillMaxSize(),
@@ -232,7 +235,7 @@ fun HomeScreen(navController: NavController) {
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically //
                 ) {
-                    // Replace the boxes with vector assets using Image and painterResource
+
                     Image(
                         painter = painterResource(id = R.drawable.burgermenu_hvid),
                         contentDescription = null,
