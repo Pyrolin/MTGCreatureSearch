@@ -19,16 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
-import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
 import com.example.mtgcreaturesearch.ViewModel.CardUiState
 
 @Composable
-fun FavoritesScreen(navController: NavController, cardUiState: CardUiState) {
+fun FavoritesScreen(cardUiState: CardUiState,navController: NavController) {
     var cards: MutableList<ShownCards> = mutableListOf()
     when (cardUiState) {
         is CardUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
