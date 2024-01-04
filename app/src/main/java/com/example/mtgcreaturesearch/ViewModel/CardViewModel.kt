@@ -75,7 +75,6 @@ class CardViewModel : ViewModel() {
 //                        println(currentState.photos[i].card_faces?.get(0)?.image_uris?.small)
 //                    }
                 }
-//                println(cards[52].url)
 //                println(currentState.photos[52].image_uris?.small)
 //                println(currentState.photos[52].card_faces?.get(0)?.image_uris?.small)
                 println(currentState.photos.size)
