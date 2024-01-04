@@ -20,10 +20,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.ViewModel.CardUiState
+import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 @Composable
 fun FavoritesScreen(cardUiState: CardUiState,navController: NavController) {
@@ -33,22 +35,19 @@ fun FavoritesScreen(cardUiState: CardUiState,navController: NavController) {
         is CardUiState.Success ->
             for (i in 0 until cardUiState.photos.size) {
                 val photo = cardUiState.photos[i]
-                if (photo.layout=="transform"){
+                if ( cardUiState.photos[i].layout=="transform"){
                     val card =
+                        cardUiState.photos[i].card_faces?.get(0)?.image_uris?.let { ShownCards(it.png, cardUiState.photos[i].id) }
 //                    ShownCards(cardUiState.photos[i].image_uris.small, cardUiState.photos[i].id)
-
                         //For transform cards
-                        cardUiState.photos[i].card_faces?.get(0)?.image_uris?.let { ShownCards(it.small, cardUiState.photos[i].id) }
-                    if (card != null) {
-                        cards.add(i, card)
-                        cards
-                    }
-                    }else{
-                val card = cardUiState.photos[i].image_uris?.let { ShownCards(it.small, cardUiState.photos[i].id) }
-                if (card != null) {
-                    cards.add(i, card)
-                    cards
-                }
+                        if (card != null) {
+                            cards.add(i, card)
+                        }
+                } else {
+                        val card = cardUiState.photos[i].image_uris?.let { ShownCards(it.png, cardUiState.photos[i].id) }
+                        if (card != null) {
+                            cards.add(i, card)
+                        }
 
                 }
             }

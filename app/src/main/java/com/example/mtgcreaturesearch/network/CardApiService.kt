@@ -28,10 +28,10 @@ interface CardApiService {
     // All creatures. like 15000 cards~
      //@GET("search?q=type%3Acreature+game%3Apaper&unique=cards&as=grid&order=name")
      // Page 2
-     @GET("search?format=json&include_extras=false&include_multilingual=false&include_variations=false&order=name&page=2&q=type%3Acreature+game%3Apaper&unique=cards")
+    // @GET("search?format=json&include_extras=false&include_multilingual=false&include_variations=false&order=name&page=2&q=type%3Acreature+game%3Apaper&unique=cards")
 
     //Page of 175 cards. Does not get 175 cards for some reason.
-    //@GET("search?format=json&include_extras=false&include_multilingual=false&include_variations=false&order=name&q=%28game%3Apaper%29+c%3Ared+pow%3D3+%28game%3Apaper%29&unique=cards")
+    @GET("search?format=json&include_extras=false&include_multilingual=false&include_variations=false&order=name&q=%28game%3Apaper%29+c%3Ared+pow%3D3+%28game%3Apaper%29&unique=cards")
 
     //739 CARDS
     //@GET("search?format=json&order=cmc&q=c%3Ared+pow%3D3&pretty=true")
