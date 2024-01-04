@@ -84,6 +84,7 @@ fun Card(card: ShownCards) {
 
 @Composable
 fun CardGrid(cards: List<ShownCards>, favorite: Boolean) {
+//    val favorites = cards.filter { if(favorite) favorites.contains(it.id) else true }
     val favorites = cards.filter { if(favorite) favorites.contains(it.id) else true }
     // [START android_compose_layouts_lazy_grid_adaptive]
     LazyVerticalGrid(

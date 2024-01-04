@@ -49,11 +49,40 @@ class CardViewModel : ViewModel() {
             return when (val currentState=cardUiState){
             is CardUiState.Success ->{
                 val cards = mutableListOf<ShownCards> ()
-                for (i in 0.. currentState.photos.size-1){
+                for (i in 0 until currentState.photos.size){
                     val photo = currentState.photos[i]
-                    val card = ShownCards(photo.image_uris.small, photo.id)
-                    cards.add(card)
+                    if (photo.layout=="transform"){
+                        val card = photo.card_faces?.get(0)?.image_uris?.let { ShownCards(it.small,photo.id) }
+                        if (card != null) {
+                            cards.add(card)
+//                            println(card.url)
+                            cards
+                        }
+                    } else {
+                        val card = photo.image_uris?.let { ShownCards(it.small, photo.id) }
+                        if (card != null) {
+                            cards.add(card)
+//                            println(card.url)
+                            cards
+                        }
+                    }
+//                    println(cards[60].url)
+//                    println(currentState.photos[60].image_uris?.small)
+//                    println(currentState.photos[60].card_faces?.get(0)?.image_uris?.small)
+//                    if(cards[i].url != currentState.photos[i].image_uris?.small && cards[i].url !=currentState.photos[i].card_faces?.get(0)?.image_uris?.small ){
+//                        println(cards[i].url)
+//                        println(currentState.photos[i].image_uris?.small)
+//                        println(currentState.photos[i].card_faces?.get(0)?.image_uris?.small)
+//                    }
                 }
+//                println(cards[52].url)
+//                println(currentState.photos[52].image_uris?.small)
+//                println(currentState.photos[52].card_faces?.get(0)?.image_uris?.small)
+                println(currentState.photos.size)
+//                println(currentState.photos[0])
+//                println(currentState.photos[174])
+                println(cards.size)
+//                println(cards[173].url)
                 cards
             }
             else -> {

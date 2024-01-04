@@ -32,9 +32,25 @@ fun FavoritesScreen(cardUiState: CardUiState,navController: NavController) {
         is CardUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
         is CardUiState.Success ->
             for (i in 0 until cardUiState.photos.size) {
-                val card =
-                    ShownCards(cardUiState.photos[i].image_uris.png, cardUiState.photos[i].id)
-                cards.add(i, card)
+                val photo = cardUiState.photos[i]
+                if (photo.layout=="transform"){
+                    val card =
+//                    ShownCards(cardUiState.photos[i].image_uris.small, cardUiState.photos[i].id)
+
+                        //For transform cards
+                        cardUiState.photos[i].card_faces?.get(0)?.image_uris?.let { ShownCards(it.small, cardUiState.photos[i].id) }
+                    if (card != null) {
+                        cards.add(i, card)
+                        cards
+                    }
+                    }else{
+                val card = cardUiState.photos[i].image_uris?.let { ShownCards(it.small, cardUiState.photos[i].id) }
+                if (card != null) {
+                    cards.add(i, card)
+                    cards
+                }
+
+                }
             }
 
         CardUiState.Error -> ErrorScreen(modifier = Modifier.fillMaxSize())

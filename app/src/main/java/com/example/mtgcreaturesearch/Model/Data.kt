@@ -1,5 +1,6 @@
 package com.example.mtgcreaturesearch.Model
 import kotlinx.serialization.Serializable
+import java.lang.NullPointerException
 
 
 @Serializable
@@ -11,7 +12,7 @@ data class Data(
 //    val booster: Boolean,
 //    val border_color: String,
 //    val card_back_id: String,
-//    val card_faces: List<CardFace>,
+    val card_faces: List<CardFace>?=null,
 //    val cardmarket_id: Int,
 //    val cmc: Double,
 //    val collector_number: String,
@@ -31,10 +32,10 @@ data class Data(
     val id: String,
 //    val illustration_id: String,
 //    val image_status: String,
-    val image_uris: ImageUrisX,
+    val image_uris: ImageUrisX?=null,
 //    val keywords: List<String>,
 //    val lang: String,
-//    val layout: String,
+    val layout: String,
 //    val legalities: Legalities,
 //    val mana_cost: String,
 //    val mtgo_foil_id: Int,
