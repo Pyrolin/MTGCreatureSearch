@@ -30,6 +30,7 @@ import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 @Composable
 fun FavoritesScreen(cardUiState: CardUiState,navController: NavController) {
     var cards: MutableList<ShownCards> = mutableListOf()
+
     when (cardUiState) {
         is CardUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
         is CardUiState.Success ->

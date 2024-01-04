@@ -43,6 +43,13 @@ import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        favorites_collection.document("favorites").get().addOnSuccessListener { document ->
+            if (document != null) {
+                if (document.data?.get("list") != null) {
+                    favorites = document.data?.get("list") as MutableList<String>
+                }
+            }
+        }
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
