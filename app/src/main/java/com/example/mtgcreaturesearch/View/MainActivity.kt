@@ -43,13 +43,6 @@ import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        favorites_collection.document("favorites").get().addOnSuccessListener { document ->
-            if (document != null) {
-                if (document.data?.get("list") != null) {
-                    favorites = document.data?.get("list") as MutableList<String>
-                }
-            }
-        }
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
@@ -116,7 +109,7 @@ fun HomeScreen(navController: NavController) {
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Title(name = "MTG Card Organizer")
+                Title(name = "MTG Creature Card Organizer")
             }
 
             Spacer(
@@ -186,7 +179,7 @@ fun HomeScreen(navController: NavController) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Browse",
+                        text = "Browse Creatures",
                         color = Color.White,
                         fontSize = 20.sp
                     )
