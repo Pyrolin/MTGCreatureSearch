@@ -68,8 +68,6 @@ fun Title(name: String, modifier: Modifier = Modifier) {
     )
 }
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(modifier: Modifier = Modifier) {
@@ -88,7 +86,6 @@ fun SearchBar(modifier: Modifier = Modifier) {
         }
     )
 }
-
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -170,7 +167,7 @@ fun HomeScreen(navController: NavController) {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                
+
                 // Browse Bar Box
                 Box(
                     modifier = Modifier
@@ -273,7 +270,6 @@ fun HomeScreen(navController: NavController) {
         }
     }
 }
-
 
 //@Preview(showBackground = true)
 //@Composable
