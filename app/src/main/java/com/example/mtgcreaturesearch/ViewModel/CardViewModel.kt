@@ -1,5 +1,7 @@
 package com.example.mtgcreaturesearch.ViewModel
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -7,10 +9,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ShownCards
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
+import com.google.firebase.installations.FirebaseInstallations
 import kotlinx.coroutines.launch
 import java.io.IOException
 
 //Filler
+
+@SuppressLint("StaticFieldLeak")
+val db = Firebase.firestore
+val favorites_collection = db.collection("favorites")
+
+var favorites: MutableList<String> =  mutableListOf()
+
+var devideID = ""
 
 sealed interface CardUiState {
     data class Success(val photos: List<Data>) : CardUiState
@@ -91,7 +104,7 @@ class CardViewModel : ViewModel() {
         }
     }
 
-    fun favoriteCards(favorites: MutableList<String>): List<ShownCards>{
+    fun favoriteCards(): List<ShownCards>{
         //val cards: MutableList<ShownCards> = mutableListOf()
         return when (val currentState=cardUiState){
             is CardUiState.Success ->{
@@ -136,6 +149,50 @@ class CardViewModel : ViewModel() {
                 return emptyList()
             }
         }
+    }
+
+    fun initFavorites() {
+            favorites_collection.document(devideID).get().addOnSuccessListener { document ->
+                if (document != null) {
+                    if (document.data?.get("favorites") != null) {
+                        favorites = document.data?.get("favorites") as MutableList<String>
+                    }
+                }
+            }
+    }
+
+    fun updateFavorites(card: ShownCards) {
+        favorites_collection.document(devideID).get().addOnSuccessListener { document ->
+            if (document != null) {
+                if (document.data?.get("favorites") != null) {
+                    favorites = document.data?.get("favorites") as MutableList<String>
+
+                    if (favorites.contains(card.id)) favorites.remove(card.id) else favorites.add(card.id)
+                } else {
+                    favorites.add(card.id)
+                }
+
+                val data = hashMapOf(
+                    "favorites" to favorites,
+                )
+
+                favorites_collection.document(devideID).set(data)
+            }
+        }
+    }
+
+    fun initDevice() {
+        // [START get_installation_id]
+        FirebaseInstallations.getInstance().id.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d("Installations", "Installation ID: " + task.result)
+                devideID = task.result
+                initFavorites()
+            } else {
+                Log.e("Installations", "Unable to get Installation ID")
+            }
+        }
+        // [END get_installation_id]
     }
 
 

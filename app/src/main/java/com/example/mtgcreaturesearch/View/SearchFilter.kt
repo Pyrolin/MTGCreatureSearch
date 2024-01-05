@@ -187,7 +187,7 @@ fun SearchFilter(navController: NavController) {
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Title(name = "MTG Creature Card Organizer")
+                Title(name = "MTG Card Organizer")
             }
             Spacer(
                 modifier = Modifier

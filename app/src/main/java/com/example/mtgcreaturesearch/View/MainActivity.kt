@@ -48,12 +48,13 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val cardViewModel: CardViewModel = viewModel()
 
+            cardViewModel.initDevice()
+
             NavHost(navController, startDestination = "homeScreen") {
                 composable("homeScreen") { HomeScreen(navController) }
                 composable("browseScreen") { BrowseScreen(cardViewModel, navController) }
                 composable("favoritesScreen") { FavoritesScreen(cardViewModel,navController) }
                 composable("filterBar"){ SearchFilter(navController) }
-
             }
         }
     }
@@ -109,7 +110,7 @@ fun HomeScreen(navController: NavController) {
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Title(name = "MTG Creature Card Organizer")
+                Title(name = "MTG Card Organizer")
             }
 
             Spacer(
@@ -179,7 +180,7 @@ fun HomeScreen(navController: NavController) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Browse Creatures",
+                        text = "Browse",
                         color = Color.White,
                         fontSize = 20.sp
                     )

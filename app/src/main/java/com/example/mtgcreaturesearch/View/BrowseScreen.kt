@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -36,26 +35,13 @@ import coil.compose.AsyncImage
 import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateOf
 
-import androidx.compose.runtime.collectAsState
-import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
-import com.example.mtgcreaturesearch.ViewModel.CardUiState
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 
-//import androidx.paging.compose.collectAsLazyPagingItems
-//import androidx.paging.compose.itemContentType
-//import androidx.paging.compose.itemKey
 
-
-
-
-var favorites: MutableList<String> = mutableListOf()
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Card(card: ShownCards) {
+fun Card(cardViewModel: CardViewModel = viewModel(),card: ShownCards) {
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
@@ -63,7 +49,7 @@ fun Card(card: ShownCards) {
         modifier = Modifier.fillMaxSize(),
 //            .size(width = 110.dp, height = 153.dp),
         onClick = {
-            if (favorites.contains(card.id)) favorites.remove(card.id) else favorites.add(card.id)
+            cardViewModel.updateFavorites(card)
         }
     ) {
         AsyncImage(
@@ -79,7 +65,7 @@ fun Card(card: ShownCards) {
 
 
 @Composable
-fun CardGrid(cards: List<ShownCards>) {
+fun CardGrid(cardViewModel: CardViewModel = viewModel(), cards: List<ShownCards>) {
     // [START android_compose_layouts_lazy_grid_adaptive]
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -87,7 +73,7 @@ fun CardGrid(cards: List<ShownCards>) {
         modifier = Modifier.fillMaxSize()
     ) {
         items(cards) { card ->
-            Card(card)
+            Card(cardViewModel, card)
         }
     }
 }
@@ -112,7 +98,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Title(name = "MTG Creature Card Organizer")
+                Title(name = "MTG Card Organizer")
             }
 
             Spacer(
