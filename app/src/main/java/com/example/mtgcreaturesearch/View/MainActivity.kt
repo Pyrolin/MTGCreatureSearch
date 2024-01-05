@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val cardViewModel: CardViewModel = viewModel()
 
-            cardViewModel.initFavorites()
+            cardViewModel.initDevice()
 
             NavHost(navController, startDestination = "homeScreen") {
                 composable("homeScreen") { HomeScreen(navController) }
