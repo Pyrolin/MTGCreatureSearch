@@ -217,7 +217,7 @@ fun SearchFilter(navController: NavController) {
                     contentDescription = null,
                     modifier = Modifier
                         .size(80.dp) // Size of the image
-                        .background(Color.Transparent)
+                        .background(Color(0xFFFFA500))
                 )
             }
 
