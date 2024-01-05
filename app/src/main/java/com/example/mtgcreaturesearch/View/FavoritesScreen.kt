@@ -29,7 +29,6 @@ import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 @Composable
 
-                if ( cardUiState.photos[i].layout=="transform"){
 fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: NavController) {
 
     Box(modifier = Modifier.fillMaxSize()) {
