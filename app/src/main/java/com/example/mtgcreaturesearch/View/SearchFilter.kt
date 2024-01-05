@@ -66,10 +66,11 @@ fun FilterBar() {
     )
 }
 
+// Drop down menus
 @Composable
 fun CardSet(name: String, options: List<String>) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf(options.firstOrNull()) }
+    var selectedOption by remember { mutableStateOf<String?>(null) }
 
     Card(modifier = Modifier.padding(16.dp)) {
         Column {
@@ -85,8 +86,11 @@ fun CardSet(name: String, options: List<String>) {
                     modifier = Modifier.padding(start = 16.dp)
                 )
 
-                if (expanded) {
-                    Spacer(modifier = Modifier.weight(1f)) // Add a spacer to push the selected option to the right
+                Spacer(modifier = Modifier.weight(1f))
+
+                if (selectedOption != null) {
+                    Spacer(modifier = Modifier.width(16.dp))
+
                     Text(
                         text = selectedOption ?: "",
                         modifier = Modifier.padding(end = 16.dp),
@@ -121,6 +125,7 @@ fun CardSet(name: String, options: List<String>) {
     }
 }
 
+// Drop down options
 @Composable
 fun CardList() {
     val data = listOf(
@@ -164,6 +169,7 @@ fun CardList() {
     }
 }
 
+//Actual composable
 @Composable
 fun SearchFilter(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) {
