@@ -109,7 +109,7 @@ fun HomeScreen(navController: NavController) {
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Title(name = "MTG Card Organizer")
+                Title(name = "MTG Creature Card Organizer")
             }
 
             Spacer(
@@ -179,7 +179,7 @@ fun HomeScreen(navController: NavController) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Browse",
+                        text = "Browse Creatures",
                         color = Color.White,
                         fontSize = 20.sp
                     )

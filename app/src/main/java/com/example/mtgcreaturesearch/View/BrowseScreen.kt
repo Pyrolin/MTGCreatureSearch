@@ -114,7 +114,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Title(name = "MTG Card Organizer")
+                Title(name = "MTG Creature Card Organizer")
             }
 
             Spacer(

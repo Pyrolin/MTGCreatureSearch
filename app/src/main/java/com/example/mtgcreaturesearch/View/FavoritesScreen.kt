@@ -50,7 +50,7 @@ fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: Na
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Title(name = "MTG Card Organizer")
+                Title(name = "MTG Creature Card Organizer")
             }
 
             Spacer(
