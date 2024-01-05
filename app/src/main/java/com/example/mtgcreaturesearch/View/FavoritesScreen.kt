@@ -28,6 +28,7 @@ import com.example.mtgcreaturesearch.ViewModel.CardUiState
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 @Composable
+
 fun FavoritesScreen(cardUiState: CardUiState,navController: NavController) {
     var cards: MutableList<ShownCards> = mutableListOf()
 
@@ -97,7 +98,7 @@ fun FavoritesScreen(cardUiState: CardUiState,navController: NavController) {
                     }
             )
             Box(modifier = Modifier.padding(5.dp)) {
-                CardGrid(cards = cards, favorite = true)
+                CardGrid(cards = cardViewModel.browseCards(), favorite = true)
             }
         }
 
