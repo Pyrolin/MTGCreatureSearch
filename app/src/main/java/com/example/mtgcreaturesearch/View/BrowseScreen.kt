@@ -1,5 +1,6 @@
 // BrowseScreen.kt
 package com.example.mtgcreaturesearch.View
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 import androidx.compose.foundation.background
@@ -44,15 +45,21 @@ import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
 import com.example.mtgcreaturesearch.ViewModel.CardUiState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
 //import androidx.paging.compose.collectAsLazyPagingItems
 //import androidx.paging.compose.itemContentType
 //import androidx.paging.compose.itemKey
 
 
+@SuppressLint("StaticFieldLeak")
+val db = Firebase.firestore
 
+val favorites_collection = db.collection("cards")
 
-var favorites: MutableList<String> = mutableListOf()
+var favorites: MutableList<String> =  mutableListOf()
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Card(card: ShownCards) {
@@ -63,7 +70,24 @@ fun Card(card: ShownCards) {
         modifier = Modifier.fillMaxSize(),
 //            .size(width = 110.dp, height = 153.dp),
         onClick = {
-            if (favorites.contains(card.id)) favorites.remove(card.id) else favorites.add(card.id)
+            favorites_collection.document("favorites").get().addOnSuccessListener { document ->
+                if (document != null) {
+                    if (document.data?.get("list") != null) {
+                        favorites = document.data?.get("list") as MutableList<String>
+
+                        if (favorites.contains(card.id)) favorites.remove(card.id) else favorites.add(card.id)
+                    } else {
+                        favorites.add(card.id)
+                    }
+
+                    val data = hashMapOf(
+                        "list" to favorites,
+                    )
+
+                    favorites_collection.document("favorites").set(data)
+                }
+            }
+
         }
     ) {
         AsyncImage(
@@ -79,14 +103,17 @@ fun Card(card: ShownCards) {
 
 
 @Composable
-fun CardGrid(cards: List<ShownCards>) {
+fun CardGrid(cards: List<ShownCards>, favorite: Boolean) {
+
+//    val favorites = cards.filter { if(favorite) favorites.contains(it.id) else true }
+    val favorites = cards.filter { if(favorite) favorites.contains(it.id) else true }
     // [START android_compose_layouts_lazy_grid_adaptive]
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
 //        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
         modifier = Modifier.fillMaxSize()
     ) {
-        items(cards) { card ->
+        items(favorites) { card ->
             Card(card)
         }
     }
@@ -112,7 +139,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Title(name = "MTG Creature Card Organizer")
+                Title(name = "MTG Card Organizer")
             }
 
             Spacer(
@@ -149,7 +176,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     }
             )
 
-            CardGrid(cards = cardViewModel.browseCards())
+            CardGrid(cards = cardViewModel.browseCards(), favorite = false)
 
             // Spacer to push bottom bar to the bottom of the screen
             Spacer(modifier = Modifier.weight(1f))

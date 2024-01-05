@@ -28,6 +28,7 @@ import com.example.mtgcreaturesearch.ViewModel.CardUiState
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 @Composable
+
 fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: NavController) {
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -50,7 +51,7 @@ fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: Na
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Title(name = "MTG Creature Card Organizer")
+                Title(name = "MTG Card Organizer")
             }
 
             Spacer(
@@ -70,7 +71,7 @@ fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: Na
                     }
             )
             Box(modifier = Modifier.padding(5.dp)) {
-                CardGrid(cards = cardViewModel.favoriteCards(favorites = favorites))
+                CardGrid(cards = cardViewModel.browseCards(), favorite = true)
             }
         }
 
