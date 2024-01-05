@@ -79,16 +79,14 @@ fun Card(card: ShownCards) {
 
 
 @Composable
-fun CardGrid(cards: List<ShownCards>, favorite: Boolean) {
-//    val favorites = cards.filter { if(favorite) favorites.contains(it.id) else true }
-    val favorites = cards.filter { if(favorite) favorites.contains(it.id) else true }
+fun CardGrid(cards: List<ShownCards>) {
     // [START android_compose_layouts_lazy_grid_adaptive]
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
 //        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
         modifier = Modifier.fillMaxSize()
     ) {
-        items(favorites) { card ->
+        items(cards) { card ->
             Card(card)
         }
     }
@@ -151,7 +149,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     }
             )
 
-            CardGrid(cards = cardViewModel.browseCards(), favorite = false)
+            CardGrid(cards = cardViewModel.browseCards())
 
             // Spacer to push bottom bar to the bottom of the screen
             Spacer(modifier = Modifier.weight(1f))
