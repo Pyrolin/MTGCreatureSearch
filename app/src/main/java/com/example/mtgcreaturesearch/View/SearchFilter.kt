@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -175,7 +174,7 @@ fun SearchFilter(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
-            painter = painterResource(id = R.drawable.filter_background), // Replace with your background image resource ID
+            painter = painterResource(id = R.drawable.filter_background),
             contentDescription = "Background Image",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -214,15 +213,15 @@ fun SearchFilter(navController: NavController) {
 
             Box(
                 modifier = Modifier
-                    .fillMaxWidth() // Fill the width of the parent
-                    .height(80.dp), // Height of the box
-                contentAlignment = Alignment.Center // Center the content (Image) inside the Box
+                    .fillMaxWidth()
+                    .height(80.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.search),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(80.dp) // Size of the image
+                        .size(80.dp)
                         .background(Color(0xFFFFA500))
                 )
             }
@@ -238,8 +237,9 @@ fun SearchFilter(navController: NavController) {
                     contentDescription = "Background Image",
                     modifier = Modifier
                         .fillMaxSize(),
-                    contentScale = ContentScale.Crop // or ContentScale.FillBounds as needed
+                    contentScale = ContentScale.Crop
                 )
+
                 // Bottom Tab Bar in a Row
                 Row(
                     modifier = Modifier
@@ -257,7 +257,6 @@ fun SearchFilter(navController: NavController) {
                             .size(30.dp)
                             .background(Color.Transparent)
                             .clickable {
-                                // Navigate to favorites screen when favorites is clicked
                                 navController.navigate("HomeScreen")
                             }
                     )
