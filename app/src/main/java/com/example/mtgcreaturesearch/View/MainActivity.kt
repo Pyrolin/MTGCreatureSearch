@@ -167,9 +167,10 @@ fun HomeScreen(navController: NavController) {
 
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),  // This will make the Row take up the full width of the screen
-                horizontalArrangement = Arrangement.Center  // This centers its children horizontally
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ) {
+                
                 // Browse Bar Box
                 Box(
                     modifier = Modifier
@@ -190,15 +191,15 @@ fun HomeScreen(navController: NavController) {
 
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),  // This will make the Row take up the full width of the screen
-                horizontalArrangement = Arrangement.Center  // This centers its children horizontally
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ) {
                 Box(
                     modifier = Modifier
                         .width(300.dp)
                         .padding(16.dp)
                         .height(50.dp)
-                        .background(Color(0xFFFFA500))  // Orange color
+                        .background(Color(0xFFFFA500))
                         .clickable {
                             navController.navigate("favoritesScreen")
                         },
@@ -223,13 +224,13 @@ fun HomeScreen(navController: NavController) {
                     contentDescription = "Background Image",
                     modifier = Modifier
                         .fillMaxSize(),
-                    contentScale = ContentScale.Crop // or ContentScale.FillBounds as needed
+                    contentScale = ContentScale.Crop
                 )
                 // Bottom Tab Bar in a Row
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(70.dp) // Set the height of the Row
+                        .height(70.dp)
                         .padding(top = 10.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically //
@@ -242,7 +243,6 @@ fun HomeScreen(navController: NavController) {
                             .size(30.dp)
                             .background(Color.Transparent)
                             .clickable {
-                                // Navigate to favorites screen when favorites is clicked
                                 navController.navigate("HomeScreen")
                             }
                     )
