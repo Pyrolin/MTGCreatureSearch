@@ -43,24 +43,18 @@ import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        favorites_collection.document("favorites").get().addOnSuccessListener { document ->
-            if (document != null) {
-                if (document.data?.get("list") != null) {
-                    favorites = document.data?.get("list") as MutableList<String>
-                }
-            }
-        }
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
             val cardViewModel: CardViewModel = viewModel()
+
+            cardViewModel.initFavorites()
 
             NavHost(navController, startDestination = "homeScreen") {
                 composable("homeScreen") { HomeScreen(navController) }
                 composable("browseScreen") { BrowseScreen(cardViewModel, navController) }
                 composable("favoritesScreen") { FavoritesScreen(cardViewModel,navController) }
                 composable("filterBar"){ SearchFilter(navController) }
-
             }
         }
     }
