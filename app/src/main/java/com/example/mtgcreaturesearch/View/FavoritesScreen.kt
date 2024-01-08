@@ -22,39 +22,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
-import com.example.mtgcreaturesearch.ViewModel.CardUiState
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 @Composable
-fun FavoritesScreen(cardUiState: CardUiState,navController: NavController) {
-    var cards: MutableList<ShownCards> = mutableListOf()
-    when (cardUiState) {
-        is CardUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
-        is CardUiState.Success ->
-            for (i in 0 until cardUiState.photos.size) {
-                val photo = cardUiState.photos[i]
-                if ( cardUiState.photos[i].layout=="transform"){
-                    val card =
-                        cardUiState.photos[i].card_faces?.get(0)?.image_uris?.let { ShownCards(it.png, cardUiState.photos[i].id) }
-//                    ShownCards(cardUiState.photos[i].image_uris.small, cardUiState.photos[i].id)
-                        //For transform cards
-                        if (card != null) {
-                            cards.add(i, card)
-                        }
-                } else {
-                        val card = cardUiState.photos[i].image_uris?.let { ShownCards(it.png, cardUiState.photos[i].id) }
-                        if (card != null) {
-                            cards.add(i, card)
-                        }
 
-                }
-            }
-
-        CardUiState.Error -> ErrorScreen(modifier = Modifier.fillMaxSize())
-        else -> {}
-    }
+fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: NavController) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
@@ -96,7 +69,7 @@ fun FavoritesScreen(cardUiState: CardUiState,navController: NavController) {
                     }
             )
             Box(modifier = Modifier.padding(5.dp)) {
-                CardGrid(cards = cards, favorite = true)
+                CardGrid(cards = cardViewModel.favoriteCards())
             }
         }
 

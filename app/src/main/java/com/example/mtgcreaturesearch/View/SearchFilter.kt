@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,6 +27,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -52,8 +52,8 @@ fun FilterBar() {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White),
-        label = { Text("Search") },
-        leadingIcon = { Icon(Icons.Filled.Search, "search") },
+        label = { Text("Search for a creature card") },
+        leadingIcon = { Icon(Icons.Filled.Search, "Search for a creature card") },
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.White,
             cursorColor = Color.Black,
@@ -65,10 +65,11 @@ fun FilterBar() {
     )
 }
 
+// Drop down menus
 @Composable
 fun CardSet(name: String, options: List<String>) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf(options.firstOrNull()) }
+    var selectedOption by remember { mutableStateOf<String?>(null) }
 
     Card(modifier = Modifier.padding(16.dp)) {
         Column {
@@ -84,8 +85,11 @@ fun CardSet(name: String, options: List<String>) {
                     modifier = Modifier.padding(start = 16.dp)
                 )
 
-                if (expanded) {
-                    Spacer(modifier = Modifier.weight(1f)) // Add a spacer to push the selected option to the right
+                Spacer(modifier = Modifier.weight(1f))
+
+                if (selectedOption != null) {
+                    Spacer(modifier = Modifier.width(16.dp))
+
                     Text(
                         text = selectedOption ?: "",
                         modifier = Modifier.padding(end = 16.dp),
@@ -120,15 +124,19 @@ fun CardSet(name: String, options: List<String>) {
     }
 }
 
-
+// Drop down options
 @Composable
 fun CardList() {
     val data = listOf(
         "Set" to listOf("Option 1", "Option 2", "Option 3"),
-        "Toughness" to listOf("1", "2", "3", "4", "5", "6", "7", "8"),
-        "Power" to listOf("1", "2", "3", "4", "5", "6", "7", "8"),
-        "Mana cost" to listOf("1", "2", "3", "4", "5", "6", "7", "8")
+        "Toughness" to listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
+        "Power" to listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
+        "Mana cost" to listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "X")
     )
+
+    val imageIds = listOf(R.drawable.swamp, R.drawable.plains, R.drawable.island, R.drawable.mountain, R.drawable.forest)
+
+    val clickStates = remember { mutableStateMapOf<Int, Boolean>().apply { imageIds.forEach { put(it, false) } } }
 
     LazyColumn {
         items(data) { (name, options) ->
@@ -140,63 +148,33 @@ fun CardList() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(100.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly, // Adjust the arrangement as needed
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.swamp),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(54.dp)
-                        .height(54.dp),
-                    contentScale = ContentScale.Crop
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.plains),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(54.dp)
-                        .height(54.dp),
-                    contentScale = ContentScale.Crop
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.island),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(54.dp)
-                        .height(54.dp),
-                    contentScale = ContentScale.Crop
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.mountain),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(54.dp)
-                        .height(54.dp),
-                    contentScale = ContentScale.Crop
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.forest),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(54.dp)
-                        .height(54.dp),
-                    contentScale = ContentScale.Crop
-                )
+                imageIds.forEach { imageId ->
+                    Image(
+                        painter = painterResource(id = imageId),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .width(54.dp)
+                            .height(54.dp)
+                            .clickable { clickStates[imageId] = !clickStates.getValue(imageId) }
+                            .background(if (clickStates[imageId] == true) Color(0xFFFFA500) else Color.Transparent),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
         }
     }
 }
 
-
-
-
+//Actual composable
 @Composable
 fun SearchFilter(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
-            painter = painterResource(id = R.drawable.filter_background), // Replace with your background image resource ID
+            painter = painterResource(id = R.drawable.filter_background),
             contentDescription = "Background Image",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -224,7 +202,7 @@ fun SearchFilter(navController: NavController) {
                     .size(30.dp)
                     .background(Color.Transparent)
                     .clickable {
-                        navController.navigate("HomeScreen")
+                        navController.navigate("browseScreen")
                     }
             )
             Box(modifier = Modifier.padding(16.dp)) {
@@ -232,6 +210,21 @@ fun SearchFilter(navController: NavController) {
             }
 
             CardList()
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.search),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .background(Color(0xFFFFA500))
+                )
+            }
 
             Spacer(modifier = Modifier.weight(1f))
             Box(
@@ -244,8 +237,9 @@ fun SearchFilter(navController: NavController) {
                     contentDescription = "Background Image",
                     modifier = Modifier
                         .fillMaxSize(),
-                    contentScale = ContentScale.Crop // or ContentScale.FillBounds as needed
+                    contentScale = ContentScale.Crop
                 )
+
                 // Bottom Tab Bar in a Row
                 Row(
                     modifier = Modifier
@@ -263,7 +257,6 @@ fun SearchFilter(navController: NavController) {
                             .size(30.dp)
                             .background(Color.Transparent)
                             .clickable {
-                                // Navigate to favorites screen when favorites is clicked
                                 navController.navigate("HomeScreen")
                             }
                     )
@@ -295,7 +288,6 @@ fun SearchFilter(navController: NavController) {
         }
     }
 }
-
 
 @Preview(backgroundColor = 0xFFFFFFFF)
 @Composable

@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -36,60 +35,75 @@ import coil.compose.AsyncImage
 import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateOf
 
-import androidx.compose.runtime.collectAsState
-import com.example.mtgcreaturesearch.View.ui.theme.MTGCreatureSearchTheme
-import com.example.mtgcreaturesearch.ViewModel.CardUiState
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconToggleButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
-//import androidx.paging.compose.collectAsLazyPagingItems
-//import androidx.paging.compose.itemContentType
-//import androidx.paging.compose.itemKey
-
-
-
-
-var favorites: MutableList<String> = mutableListOf()
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Card(card: ShownCards) {
-    ElevatedCard(
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        ),
-        modifier = Modifier.fillMaxSize(),
+fun Card(cardViewModel: CardViewModel = viewModel(),card: ShownCards) {
+    Box(contentAlignment = Alignment.TopEnd) {
+        ElevatedCard(
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 6.dp
+            ),
+            modifier = Modifier.fillMaxSize(),
 //            .size(width = 110.dp, height = 153.dp),
-        onClick = {
-            if (favorites.contains(card.id)) favorites.remove(card.id) else favorites.add(card.id)
+            onClick = {
+            }
+        ) {
+            AsyncImage(
+                modifier = Modifier.fillMaxWidth(),
+                model = card.url,
+                contentDescription = "Translated description of what the image contains",
+                alignment = Alignment.Center,
+                contentScale = ContentScale.FillWidth,
+            )
         }
-    ) {
-        AsyncImage(
-            modifier = Modifier.fillMaxWidth(),
-            model = card.url,
-            contentDescription = "Translated description of what the image contains",
-            alignment = Alignment.Center,
-            contentScale = ContentScale.FillWidth,
-        )
+
+        var isFavorite by remember { mutableStateOf(cardViewModel.isFavorited(card)) }
+
+        IconToggleButton(
+            checked = isFavorite,
+            onCheckedChange = {
+                isFavorite = !isFavorite
+                cardViewModel.updateFavorites(card)
+            }
+        ) {
+            Icon(
+                tint = Color.Red,
+
+                imageVector = if (isFavorite) {
+                    Icons.Filled.Favorite
+                } else {
+                    Icons.Default.FavoriteBorder
+                },
+                contentDescription = null
+            )
+        }
     }
 }
 //val lazyPagingItems = pager.collectAsLazyPagingItems()
 
 
 @Composable
-fun CardGrid(cards: List<ShownCards>, favorite: Boolean) {
-//    val favorites = cards.filter { if(favorite) favorites.contains(it.id) else true }
-    val favorites = cards.filter { if(favorite) favorites.contains(it.id) else true }
+fun CardGrid(cardViewModel: CardViewModel = viewModel(), cards: List<ShownCards>) {
     // [START android_compose_layouts_lazy_grid_adaptive]
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
 //        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
         modifier = Modifier.fillMaxSize()
     ) {
-        items(favorites) { card ->
-            Card(card)
+        items(cards) { card ->
+            Card(cardViewModel, card)
         }
     }
 }
@@ -151,7 +165,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     }
             )
 
-            CardGrid(cards = cardViewModel.browseCards(), favorite = false)
+            CardGrid(cards = cardViewModel.browseCards())
 
             // Spacer to push bottom bar to the bottom of the screen
             Spacer(modifier = Modifier.weight(1f))
