@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -38,6 +41,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
+import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
@@ -51,7 +55,7 @@ class MainActivity : ComponentActivity() {
             cardViewModel.initDevice()
 
             NavHost(navController, startDestination = "homeScreen") {
-                composable("homeScreen") { HomeScreen(navController) }
+                composable("homeScreen") { HomeScreen(cardViewModel, navController) }
                 composable("browseScreen") { BrowseScreen(cardViewModel, navController) }
                 composable("favoritesScreen") { FavoritesScreen(cardViewModel,navController) }
                 composable("filterBar"){ SearchFilter(navController) }
@@ -89,7 +93,28 @@ fun SearchBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun CardRow(cards: List<ShownCards>) {
+    when (cards.isNotEmpty()) {
+        true -> {
+            val startCard = (0..cards.size-3).random()
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(cards.subList(startCard, startCard+3)) { card ->
+                    Card(card = card)
+                }
+            }
+        }
+
+        else -> {}
+    }
+
+}
+
+@Composable
+fun HomeScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -137,31 +162,7 @@ fun HomeScreen(navController: NavController) {
                     .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
             )
 
-            // Main Content
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .background(Color.Red)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .background(Color.Green)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .background(Color.Blue)
-                )
-            }
+            CardRow(cards = cardViewModel.browseCards())
 
             Row(
                 modifier = Modifier

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,7 +50,7 @@ import androidx.compose.runtime.setValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Card(cardViewModel: CardViewModel = viewModel(),card: ShownCards) {
+fun Card(cardViewModel: CardViewModel = viewModel(), card: ShownCards) {
     Box(contentAlignment = Alignment.TopEnd) {
         ElevatedCard(
             elevation = CardDefaults.cardElevation(
@@ -76,7 +77,8 @@ fun Card(cardViewModel: CardViewModel = viewModel(),card: ShownCards) {
             onCheckedChange = {
                 isFavorite = !isFavorite
                 cardViewModel.updateFavorites(card)
-            }
+            },
+            modifier = Modifier.absoluteOffset(y = 7.dp)
         ) {
             Icon(
                 tint = Color.Red,
