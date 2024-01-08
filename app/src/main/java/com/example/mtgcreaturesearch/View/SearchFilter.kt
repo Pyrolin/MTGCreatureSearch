@@ -36,9 +36,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.View.Title
+import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 @Composable
 fun FilterBar() {
@@ -67,7 +69,7 @@ fun FilterBar() {
 
 // Drop down menus
 @Composable
-fun CardSet(name: String, options: List<String>) {
+fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: List<String>) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf<String?>(null) }
 
@@ -223,6 +225,9 @@ fun SearchFilter(navController: NavController) {
                     modifier = Modifier
                         .size(80.dp)
                         .background(Color(0xFFFFA500))
+                        .clickable {
+                            navController.navigate("BrowseScreen")
+                        }
                 )
             }
 

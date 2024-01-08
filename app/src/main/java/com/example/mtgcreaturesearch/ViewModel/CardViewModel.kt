@@ -57,6 +57,57 @@ class CardViewModel : ViewModel() {
         }
     }
 
+    fun getQuery(mana: Int? = null,
+                 toughness: Int? = null,
+                 power: Int? = null,
+                 swamp: Boolean = false,
+                 plains: Boolean = false,
+                 island: Boolean = false,
+                 mountain: Boolean = false,
+                 forest: Boolean = false,) {
+
+        var basequery ="search?order=name&q=type%3Acreature"
+
+        if (swamp) {
+        basequery += "+color%3DB"
+        }
+
+        if (plains) {
+            basequery += "+color%3DW"
+        }
+
+        if (island) {
+            basequery += "+color%3DU"
+        }
+
+        if (mountain) {
+            basequery += "+color%3DR"
+        }
+
+        if (forest) {
+            basequery += "+color%3DG"
+        }
+
+        basequery += "+%28game%3Apaper%29"
+
+        if (mana != null) {
+            basequery += "+mana%3D$mana"
+        }
+
+        if (toughness != null) {
+            basequery += "+tou%3D$toughness"
+        }
+
+        if (power != null) {
+            basequery += "+pow%3D$power"
+        }
+    }
+
+
+
+
+    }
+
     fun browseCards(): List<ShownCards>{
         //val cards: MutableList<ShownCards> = mutableListOf()
             return when (val currentState=cardUiState){
