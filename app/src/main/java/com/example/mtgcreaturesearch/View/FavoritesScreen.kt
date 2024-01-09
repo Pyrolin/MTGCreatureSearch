@@ -58,16 +58,36 @@ fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: Na
                     .height(1.dp)
                     .background(Color.Gray)
             )
-            Image(
-                painter = painterResource(id = R.drawable.backspace),
-                contentDescription = null,
+
+            Row(
                 modifier = Modifier
-                    .size(30.dp)
-                    .background(Color.Transparent)
-                    .clickable {
-                        navController.navigate("HomeScreen")
-                    }
-            )
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.backspace),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(Color.Transparent)
+                        .clickable {
+                            navController.navigate("HomeScreen")
+                        }
+                )
+
+                Image(
+                    painter = painterResource(id = R.drawable.burgermenu),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(Color.Transparent)
+                        .clickable {
+                            navController.navigate("filterBar")
+                        }
+                )
+            }
+
             Box(modifier = Modifier.padding(5.dp)) {
                 CardGrid(cards = cardViewModel.favoriteCards())
             }

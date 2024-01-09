@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -50,7 +50,7 @@ import androidx.compose.runtime.setValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Card(cardViewModel: CardViewModel = viewModel(), card: ShownCards) {
+fun Card(cardViewModel: CardViewModel = viewModel(),card: ShownCards) {
     Box(contentAlignment = Alignment.TopEnd) {
         ElevatedCard(
             elevation = CardDefaults.cardElevation(
@@ -77,8 +77,7 @@ fun Card(cardViewModel: CardViewModel = viewModel(), card: ShownCards) {
             onCheckedChange = {
                 isFavorite = !isFavorite
                 cardViewModel.updateFavorites(card)
-            },
-            modifier = Modifier.absoluteOffset(y = 7.dp)
+            }
         ) {
             Icon(
                 tint = Color.Red,
@@ -145,27 +144,33 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                 .padding(16.dp)
             )
 
-            Image(
-                painter = painterResource(id = R.drawable.burgermenu),
-                contentDescription = null,
+            Row(
                 modifier = Modifier
-                    .size(30.dp)
-                    .background(Color.Transparent)
-                    .clickable {
-                        navController.navigate("filterBar")
-                    }
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.backspace),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(30.dp)
-                    .background(Color.Transparent)
-                    .clickable {
-                        navController.navigate("HomeScreen")
-                    }
-            )
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.backspace),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(Color.Transparent)
+                        .clickable {
+                            navController.navigate("HomeScreen")
+                        }
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.burgermenu),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(Color.Transparent)
+                        .clickable {
+                            navController.navigate("filterBar")
+                        }
+                )
+            }
 
             CardGrid(cards = cardViewModel.browseCards())
 
