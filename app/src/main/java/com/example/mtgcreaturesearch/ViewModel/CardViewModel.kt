@@ -52,38 +52,41 @@ class CardViewModel : ViewModel() {
             cardUiState = try {
                 val listResult = CardApi.retrofitService.getPhotos().data
                 CardUiState.Success(listResult)
-            } catch (e:IOException) {
+            } catch (e: IOException) {
                 CardUiState.Error
             }
         }
     }
+
     var filteredCardUiState: CardUiState by mutableStateOf(CardUiState.Loading)
         private set
 
     fun getFilteredCards(url: String) {
-                viewModelScope.launch{
-                    filteredCardUiState = try {
-                        val listResult = CardApi.retrofitService.getPhotos(url).data
-                        CardUiState.Success(listResult)
-                    } catch (e:IOException) {
-                        CardUiState.Error
-                    }
-                }
+        viewModelScope.launch {
+            filteredCardUiState = try {
+                val listResult = CardApi.retrofitService.getPhotos(url).data
+                CardUiState.Success(listResult)
+            } catch (e: IOException) {
+                CardUiState.Error
+            }
+        }
     }
 
-    fun getQuery(mana: Int? = null,
-                 toughness: Int? = null,
-                 power: Int? = null,
-                 swamp: Boolean = false,
-                 plains: Boolean = false,
-                 island: Boolean = false,
-                 mountain: Boolean = false,
-                 forest: Boolean = false,): String{
+    fun getQuery(
+        mana: Int? = null,
+        toughness: Int? = null,
+        power: Int? = null,
+        swamp: Boolean = false,
+        plains: Boolean = false,
+        island: Boolean = false,
+        mountain: Boolean = false,
+        forest: Boolean = false,
+    ): String {
 
-        var basequery ="search?order=name&q=type%3Acreature"
+        var basequery = "search?order=name&q=type%3Acreature"
 
         if (swamp) {
-        basequery += "+color%3DB"
+            basequery += "+color%3DB"
         }
 
         if (plains) {
@@ -118,18 +121,20 @@ class CardViewModel : ViewModel() {
         return basequery
     }
 
-
-    }
-
-    fun browseCards(): List<ShownCards>{
+    fun browseCards(): List<ShownCards> {
         //val cards: MutableList<ShownCards> = mutableListOf()
-            return when (val currentState=cardUiState){
-            is CardUiState.Success ->{
-                val cards = mutableListOf<ShownCards> ()
-                for (i in 0 until currentState.photos.size){
+        return when (val currentState = cardUiState) {
+            is CardUiState.Success -> {
+                val cards = mutableListOf<ShownCards>()
+                for (i in 0 until currentState.photos.size) {
                     val photo = currentState.photos[i]
-                    if (photo.layout=="transform"){
-                        val card = photo.card_faces?.get(0)?.image_uris?.let { ShownCards(it.small,photo.id) }
+                    if (photo.layout == "transform") {
+                        val card = photo.card_faces?.get(0)?.image_uris?.let {
+                            ShownCards(
+                                it.small,
+                                photo.id
+                            )
+                        }
                         if (card != null) {
                             cards.add(card)
 //                            println(card.url)
@@ -162,22 +167,28 @@ class CardViewModel : ViewModel() {
 //                println(cards[173].url)
                 cards
             }
+
             else -> {
                 return emptyList()
             }
         }
     }
 
-    fun filteredCards(url: String): List<ShownCards>{
+    fun filteredCards(url: String): List<ShownCards> {
         getFilteredCards(url)
         //val cards: MutableList<ShownCards> = mutableListOf()
-        return when (val currentState=filteredCardUiState){
-            is CardUiState.Success ->{
-                val cards = mutableListOf<ShownCards> ()
-                for (i in 0 until currentState.photos.size){
+        return when (val currentState = filteredCardUiState) {
+            is CardUiState.Success -> {
+                val cards = mutableListOf<ShownCards>()
+                for (i in 0 until currentState.photos.size) {
                     val photo = currentState.photos[i]
-                    if (photo.layout=="transform"){
-                        val card = photo.card_faces?.get(0)?.image_uris?.let { ShownCards(it.small,photo.id) }
+                    if (photo.layout == "transform") {
+                        val card = photo.card_faces?.get(0)?.image_uris?.let {
+                            ShownCards(
+                                it.small,
+                                photo.id
+                            )
+                        }
                         if (card != null) {
                             cards.add(card)
                             cards
@@ -192,21 +203,27 @@ class CardViewModel : ViewModel() {
                 }
                 cards
             }
+
             else -> {
                 return emptyList()
             }
         }
     }
 
-    fun favoriteCards(): List<ShownCards>{
+    fun favoriteCards(): List<ShownCards> {
         //val cards: MutableList<ShownCards> = mutableListOf()
-        return when (val currentState=cardUiState){
-            is CardUiState.Success ->{
-                val cards = mutableListOf<ShownCards> ()
-                for (i in 0 until currentState.photos.size){
+        return when (val currentState = cardUiState) {
+            is CardUiState.Success -> {
+                val cards = mutableListOf<ShownCards>()
+                for (i in 0 until currentState.photos.size) {
                     val photo = currentState.photos[i]
-                    if (photo.layout=="transform"){
-                        val card = photo.card_faces?.get(0)?.image_uris?.let { ShownCards(it.small,photo.id) }
+                    if (photo.layout == "transform") {
+                        val card = photo.card_faces?.get(0)?.image_uris?.let {
+                            ShownCards(
+                                it.small,
+                                photo.id
+                            )
+                        }
                         if (card != null && favorites.contains(card.id)) {
                             cards.add(card)
 //                            println(card.url)
@@ -239,6 +256,7 @@ class CardViewModel : ViewModel() {
 //                println(cards[173].url)
                 cards
             }
+
             else -> {
                 return emptyList()
             }
@@ -246,13 +264,13 @@ class CardViewModel : ViewModel() {
     }
 
     fun initFavorites() {
-            favorites_collection.document(devideID).get().addOnSuccessListener { document ->
-                if (document != null) {
-                    if (document.data?.get("favorites") != null) {
-                        favorites = document.data?.get("favorites") as MutableList<String>
-                    }
+        favorites_collection.document(devideID).get().addOnSuccessListener { document ->
+            if (document != null) {
+                if (document.data?.get("favorites") != null) {
+                    favorites = document.data?.get("favorites") as MutableList<String>
                 }
             }
+        }
     }
 
     fun updateFavorites(card: ShownCards) {
@@ -261,7 +279,9 @@ class CardViewModel : ViewModel() {
                 if (document.data?.get("favorites") != null) {
                     favorites = document.data?.get("favorites") as MutableList<String>
 
-                    if (favorites.contains(card.id)) favorites.remove(card.id) else favorites.add(card.id)
+                    if (favorites.contains(card.id)) favorites.remove(card.id) else favorites.add(
+                        card.id
+                    )
                 } else {
                     favorites.add(card.id)
                 }
@@ -288,3 +308,4 @@ class CardViewModel : ViewModel() {
         }
         // [END get_installation_id]
     }
+}
