@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,77 +34,111 @@ import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
 
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import coil.request.ImageRequest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Card(cardViewModel: CardViewModel = viewModel(),card: ShownCards) {
-    Box(contentAlignment = Alignment.TopEnd) {
-        ElevatedCard(
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 6.dp
-            ),
-            modifier = Modifier.fillMaxSize(),
-//            .size(width = 110.dp, height = 153.dp),
-            onClick = {
-            }
-        ) {
-            AsyncImage(
-                modifier = Modifier.fillMaxWidth(),
-                model = card.url,
-                contentDescription = "Translated description of what the image contains",
-                alignment = Alignment.Center,
-                contentScale = ContentScale.FillWidth,
-            )
-        }
 
-        var isFavorite by remember { mutableStateOf(cardViewModel.isFavorited(card)) }
-
-        IconToggleButton(
-            checked = isFavorite,
-            onCheckedChange = {
-                isFavorite = !isFavorite
-                cardViewModel.updateFavorites(card)
-            }
-        ) {
-            Icon(
-                tint = Color.Red,
-
-                imageVector = if (isFavorite) {
-                    Icons.Filled.Favorite
-                } else {
-                    Icons.Default.FavoriteBorder
-                },
-                contentDescription = null
-            )
-        }
-    }
 }
 //val lazyPagingItems = pager.collectAsLazyPagingItems()
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardGrid(cardViewModel: CardViewModel = viewModel(), cards: List<ShownCards>) {
+fun CardGrid(cardViewModel: CardViewModel = viewModel(), card: ShownCards, viewModel: CardViewModel = hiltViewModel()) {
     // [START android_compose_layouts_lazy_grid_adaptive]
+    val response = viewModel.cardResponse.collectAsLazyPagingItems()
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
 //        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
         modifier = Modifier.fillMaxSize()
-    ) {
-        items(cards) { card ->
-            Card(cardViewModel, card)
+    )
+//    {
+//        items(cards) { card ->
+//            Card(cardViewModel, card)
+//        }
+//    }
+    {
+        items(response.itemCount) {
+
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(response[it]?.image_uris ?: "-")
+                            .crossfade(true)
+                            .build(),
+                        placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = "",
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+            var isFavorite by remember { mutableStateOf(cardViewModel.isFavorited(card)) }
+
+            IconToggleButton(
+                checked = isFavorite,
+                onCheckedChange = {
+                    isFavorite = !isFavorite
+                    cardViewModel.updateFavorites(card)
+                }
+            ) {
+                Icon(
+                    tint = Color.Red,
+
+                    imageVector = if (isFavorite) {
+                        Icons.Filled.Favorite
+                    } else {
+                        Icons.Default.FavoriteBorder
+                    },
+                    contentDescription = null
+                )
+            }
+                }
+                response.apply {
+                    when {
+                        loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading -> {
+                            item {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.align(Alignment.Center)
+                                    )
+                                }
+                            }
+                        }
+
+                        loadState.refresh is LoadState.Error || loadState.append is LoadState.Error -> {
+                            item {
+                                Text(text = "Error")
+                            }
+                        }
+
+                        loadState.refresh is LoadState.NotLoading -> {
+                        }
+                    }
+                }
+
+
+
         }
     }
-}
+
 
 
 @Composable
@@ -165,7 +197,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     }
             )
 
-            CardGrid(cards = cardViewModel.browseCards())
+            CardGrid(card = cardViewModel.browseCards()[0])
 
             // Spacer to push bottom bar to the bottom of the screen
             Spacer(modifier = Modifier.weight(1f))

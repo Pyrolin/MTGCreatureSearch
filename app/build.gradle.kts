@@ -73,6 +73,7 @@ dependencies {
     implementation ("androidx.compose.ui:ui:1.0.0")
     implementation ("androidx.compose.material:material:1.0.0")
     implementation ("androidx.compose.ui:ui-tooling:1.0.0")
+
     
     // API Stuff
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
@@ -86,6 +87,13 @@ dependencies {
     // Declare the dependency for the Cloud Firestore library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-firestore")
-
     implementation("com.google.firebase:firebase-installations:17.2.0")
+
+    //Hilt + Paging
+    implementation ("com.google.dagger:hilt-android:2.44")
+//    implementation ("com.google.dagger:hilt-compiler:2.44")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    implementation ("androidx.paging:paging-runtime:3.1.1")
+    implementation ("androidx.paging:paging-compose:1.0.0-alpha17")
 }

@@ -1,5 +1,6 @@
 package com.example.mtgcreaturesearch.ViewModel
 
+import CardPagingSource
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -7,13 +8,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.installations.FirebaseInstallations
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
+import javax.inject.Inject
 
 //Filler
 
@@ -30,7 +39,30 @@ sealed interface CardUiState {
     object Error : CardUiState
     object Loading : CardUiState
 }
-class CardViewModel : ViewModel() {
+@HiltViewModel
+class CardViewModel @Inject constructor(
+    private val cardPagingSource: CardPagingSource
+) : ViewModel() {
+    private val _cardResponse: MutableStateFlow<PagingData<Data>> =
+        MutableStateFlow(PagingData.empty())
+    var cardResponse = _cardResponse.asStateFlow()
+        private set
+
+    init {
+        viewModelScope.launch {
+            Pager(
+                config = PagingConfig(
+                    175, enablePlaceholders = true
+                )
+            ) {
+                cardPagingSource
+            }.flow.cachedIn(viewModelScope).collect {
+                _cardResponse.value = it
+            }
+        }
+    }
+
+
 
     /** The mutable State that stores the status of the most recent request */
     var cardUiState: CardUiState by mutableStateOf(CardUiState.Loading)
@@ -49,7 +81,7 @@ class CardViewModel : ViewModel() {
     fun getCardPhotos() {
         viewModelScope.launch {
             cardUiState = try {
-                val listResult = CardApi.retrofitService.getPhotos().data
+                val listResult = CardApi.retrofitService.getPhotos(0).data
                 CardUiState.Success(listResult)
             } catch (e:IOException) {
                 CardUiState.Error
