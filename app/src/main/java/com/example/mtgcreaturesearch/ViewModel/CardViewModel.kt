@@ -1,5 +1,6 @@
 package com.example.mtgcreaturesearch.ViewModel
 
+import CardApi
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -55,6 +56,19 @@ class CardViewModel : ViewModel() {
                 CardUiState.Error
             }
         }
+    }
+    var filteredCardUiState: CardUiState by mutableStateOf(CardUiState.Loading)
+        private set
+
+    fun getFilteredCards(url: String) {
+                viewModelScope.launch{
+                    filteredCardUiState = try {
+                        val listResult = CardApi.retrofitService.getPhotos(url).data
+                        CardUiState.Success(listResult)
+                    } catch (e:IOException) {
+                        CardUiState.Error
+                    }
+                }
     }
 
     fun getQuery(mana: Int? = null,
@@ -154,6 +168,36 @@ class CardViewModel : ViewModel() {
         }
     }
 
+    fun filteredCards(url: String): List<ShownCards>{
+        getFilteredCards(url)
+        //val cards: MutableList<ShownCards> = mutableListOf()
+        return when (val currentState=filteredCardUiState){
+            is CardUiState.Success ->{
+                val cards = mutableListOf<ShownCards> ()
+                for (i in 0 until currentState.photos.size){
+                    val photo = currentState.photos[i]
+                    if (photo.layout=="transform"){
+                        val card = photo.card_faces?.get(0)?.image_uris?.let { ShownCards(it.small,photo.id) }
+                        if (card != null) {
+                            cards.add(card)
+                            cards
+                        }
+                    } else {
+                        val card = photo.image_uris?.let { ShownCards(it.small, photo.id) }
+                        if (card != null) {
+                            cards.add(card)
+                            cards
+                        }
+                    }
+                }
+                cards
+            }
+            else -> {
+                return emptyList()
+            }
+        }
+    }
+
     fun favoriteCards(): List<ShownCards>{
         //val cards: MutableList<ShownCards> = mutableListOf()
         return when (val currentState=cardUiState){
@@ -244,6 +288,3 @@ class CardViewModel : ViewModel() {
         }
         // [END get_installation_id]
     }
-
-
-}

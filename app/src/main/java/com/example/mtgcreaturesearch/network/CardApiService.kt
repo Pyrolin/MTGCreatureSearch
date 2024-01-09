@@ -5,6 +5,8 @@ import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 //import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
+
 val json = Json { isLenient = true; prettyPrint = true; ignoreUnknownKeys = true; }
 
 private const val BASE_URL =
@@ -20,7 +22,7 @@ private val retrofit = Retrofit.Builder()
 
 interface CardApiService {
     //Works
-   @GET("search?pretty=true&order=name&q=%28game%3Apaper%29+cmc>%3D10")
+   @GET("{url}")
     //works now but 1 page is 175 cards.
     // 174 cards. works??? Mv = 9
     //@GET("search?pretty=true&order=name&q=%28game%3Apaper%29+cmc>%3D9&pretty=true")
@@ -40,7 +42,7 @@ interface CardApiService {
     //@GET("search?q=Tormented+Pariah&unique=cards&as=grid&order=name")
 
     // All
-    suspend fun getPhotos(): Card
+    suspend fun getPhotos(@Path("url") url: String = "search?pretty=true&order=name&q=%28game%3Apaper%29+cmc>%3D10"): Card
 
 
 }

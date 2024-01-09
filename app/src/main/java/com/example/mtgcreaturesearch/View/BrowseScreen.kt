@@ -136,9 +136,13 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     }
             )
 
-            CardGrid(cards = cardViewModel.browseCards())
-
-            // Spacer to push bottom bar to the bottom of the screen
+            if (url.length > 0) {
+                CardGrid(cards = cardViewModel.filteredCards(url))
+            }
+            else {
+                CardGrid(cards = cardViewModel.browseCards())
+            }
+            
             Spacer(modifier = Modifier.weight(1f))
         }
 
