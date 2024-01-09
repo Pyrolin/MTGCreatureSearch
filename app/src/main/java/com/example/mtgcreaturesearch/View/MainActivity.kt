@@ -4,6 +4,9 @@ import SearchFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,6 +45,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
@@ -55,10 +61,32 @@ class MainActivity : ComponentActivity() {
             cardViewModel.initDevice()
 
             NavHost(navController, startDestination = "homeScreen") {
-                composable("homeScreen") { HomeScreen(cardViewModel, navController) }
+                composable(route = "homeScreen") { HomeScreen(cardViewModel, navController) }
                 composable("browseScreen") { BrowseScreen(cardViewModel, navController) }
                 composable("favoritesScreen") { FavoritesScreen(cardViewModel,navController) }
                 composable("filterBar"){ SearchFilter(navController) }
+                composable(
+                    route = "cardScreen/{cardID}",
+                    arguments = listOf(navArgument("cardID") { type = NavType.StringType }),
+                    enterTransition = {
+                        when (initialState.destination.route) {
+                            "homeScreen" ->
+                                expandIn(
+                                    // Overwrites the default spring animation with tween
+                                    animationSpec = tween(500, easing = LinearOutSlowInEasing),
+                                    // Overwrites the corner of the content that is first revealed
+                                    expandFrom = Alignment.Center
+                                ) {
+                                    IntSize(50, 50)
+                                }
+
+                            else -> null
+                        }
+                    }
+                ) {backStackEntry ->
+                    backStackEntry.arguments?.getString("cardID")
+                        ?.let { CardScreen(cardViewModel, navController, cardViewModel.getCardFromID(it)) }
+                }
             }
         }
     }
@@ -93,7 +121,7 @@ fun SearchBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CardRow(cards: List<ShownCards>) {
+fun CardRow(navController: NavController, cards: List<ShownCards>) {
     when (cards.isNotEmpty()) {
         true -> {
             val startCard = (0..cards.size-3).random()
@@ -103,12 +131,30 @@ fun CardRow(cards: List<ShownCards>) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 items(cards.subList(startCard, startCard+3)) { card ->
-                    Card(card = card)
+                    Card(navController = navController, card = card)
                 }
             }
         }
 
         else -> {}
+    }
+
+}
+
+fun getQuery(mana: Int? = null, toughness: Int? = null, power: Int? = null) {
+
+    var url = "asfiasdonfao"
+
+    if (mana != null) {
+        url += "mana%3D$mana"
+    }
+
+    if (toughness != null) {
+        url += "mana%3D$toughness"
+    }
+
+    if (power != null) {
+        url += "mana%3D$power"
     }
 
 }
@@ -162,7 +208,7 @@ fun HomeScreen(cardViewModel: CardViewModel = viewModel(), navController: NavCon
                     .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
             )
 
-            CardRow(cards = cardViewModel.browseCards())
+            CardRow(navController = navController, cards = cardViewModel.browseCards())
 
             Row(
                 modifier = Modifier

@@ -88,4 +88,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
 
     implementation("com.google.firebase:firebase-installations:17.2.0")
+
+    //Animations
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.16.0")
 }

@@ -151,6 +151,28 @@ class CardViewModel : ViewModel() {
         }
     }
 
+    fun getCardFromID(cardID: String): ShownCards {
+            //val cards: MutableList<ShownCards> = mutableListOf()
+            return when (val currentState=cardUiState){
+                is CardUiState.Success ->{
+                    for (i in 0 until currentState.photos.size){
+                        if(currentState.photos[i].id == cardID) {
+                            if (currentState.photos[i].layout=="transform"){
+                                return currentState.photos[i].card_faces?.get(0)?.image_uris?.let { ShownCards(it.small, currentState.photos[i].id) }!!
+
+                            } else {
+                                return currentState.photos[i].image_uris?.let { ShownCards(it.small, currentState.photos[i].id) }!!
+                            }
+                        }
+                    }
+                    return ShownCards("", "")
+                }
+                else -> {
+                    return ShownCards("", "")
+                }
+            }
+        }
+
     fun initFavorites() {
             favorites_collection.document(devideID).get().addOnSuccessListener { document ->
                 if (document != null) {

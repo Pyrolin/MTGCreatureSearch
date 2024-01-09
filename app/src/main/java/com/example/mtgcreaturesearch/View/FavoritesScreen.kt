@@ -69,7 +69,7 @@ fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: Na
                     }
             )
             Box(modifier = Modifier.padding(5.dp)) {
-                CardGrid(cards = cardViewModel.favoriteCards())
+                CardGrid(navController = navController, cards = cardViewModel.favoriteCards())
             }
         }
 
