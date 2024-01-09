@@ -104,8 +104,6 @@ class CardViewModel : ViewModel() {
     }
 
 
-
-
     }
 
     fun browseCards(): List<ShownCards>{

@@ -42,6 +42,15 @@ import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.View.Title
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
+var mana: Int? = null
+var toughness: Int? = null
+var power: Int? = null
+var swamp: Boolean = false
+var plains: Boolean = false
+var island: Boolean = false
+var mountain: Boolean = false
+var forest: Boolean = false
+
 @Composable
 fun FilterBar() {
     val filterText = remember { mutableStateOf("") }
@@ -115,6 +124,18 @@ fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: L
                             onClick = {
                                 selectedOption = option
                                 expanded = false
+
+                                if (name == "Toughness") {
+                                    toughness = option.toInt()
+                                }
+
+                                if (name == "Power") {
+                                    power = option.toInt()
+                                }
+
+                                if(name == "Mana Cost") {
+                                    mana = option.toInt()
+                                }
                             }
                         ) {
                             Text(option)
@@ -160,7 +181,24 @@ fun CardList() {
                         modifier = Modifier
                             .width(54.dp)
                             .height(54.dp)
-                            .clickable { clickStates[imageId] = !clickStates.getValue(imageId) }
+                            .clickable {
+                                clickStates[imageId] = !clickStates.getValue(imageId)
+                                if (imageId == R.drawable.swamp) {
+                                    swamp = (clickStates[imageId] == true)
+                                }
+                                if (imageId == R.drawable.plains) {
+                                    plains = (clickStates[imageId] == true)
+                                }
+                                if (imageId == R.drawable.island) {
+                                    island = (clickStates[imageId] == true)
+                                }
+                                if (imageId == R.drawable.mountain) {
+                                    mountain = (clickStates[imageId] == true)
+                                }
+                                if (imageId == R.drawable.forest) {
+                                    forest = (clickStates[imageId] == true)
+                                }
+                            }
                             .background(if (clickStates[imageId] == true) Color(0xFFFFA500) else Color.Transparent),
                         contentScale = ContentScale.Crop
                     )
