@@ -37,6 +37,7 @@ import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
 
 import androidx.compose.foundation.lazy.grid.items
+import java.net.URL
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,7 +81,7 @@ fun CardGrid(cardViewModel: CardViewModel = viewModel(), cards: List<ShownCards>
 
 
 @Composable
-fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController) {
+fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController, url: String = "") {
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
@@ -195,6 +196,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                             .background(Color.Transparent)
                             .clickable {
                                 navController.navigate("favoritesScreen")
+
                             }
                     )
                 }

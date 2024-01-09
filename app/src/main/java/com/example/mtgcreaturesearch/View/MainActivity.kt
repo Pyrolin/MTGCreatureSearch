@@ -38,6 +38,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
@@ -52,9 +54,16 @@ class MainActivity : ComponentActivity() {
 
             NavHost(navController, startDestination = "homeScreen") {
                 composable("homeScreen") { HomeScreen(navController) }
-                composable("browseScreen") { BrowseScreen(cardViewModel, navController) }
+                composable(
+                    route = "browseScreen/{url}",
+                    arguments = listOf(navArgument("url") {type = NavType.StringType})) {
+                    backStackEntry ->
+                    backStackEntry.arguments?.getString("url")
+                        ?.let { BrowseScreen(cardViewModel, navController, it) }
+                }
+
                 composable("favoritesScreen") { FavoritesScreen(cardViewModel,navController) }
-                composable("filterBar"){ SearchFilter(navController) }
+                composable("filterBar"){ SearchFilter(cardViewModel, navController) }
             }
         }
     }

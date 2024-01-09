@@ -64,7 +64,7 @@ class CardViewModel : ViewModel() {
                  plains: Boolean = false,
                  island: Boolean = false,
                  mountain: Boolean = false,
-                 forest: Boolean = false,) {
+                 forest: Boolean = false,): String{
 
         var basequery ="search?order=name&q=type%3Acreature"
 
@@ -101,6 +101,7 @@ class CardViewModel : ViewModel() {
         if (power != null) {
             basequery += "+pow%3D$power"
         }
+        return basequery
     }
 
 

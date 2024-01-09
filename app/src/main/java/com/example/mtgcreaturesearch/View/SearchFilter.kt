@@ -210,7 +210,7 @@ fun CardList() {
 
 //Actual composable
 @Composable
-fun SearchFilter(navController: NavController) {
+fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
@@ -264,7 +264,8 @@ fun SearchFilter(navController: NavController) {
                         .size(80.dp)
                         .background(Color(0xFFFFA500))
                         .clickable {
-                            navController.navigate("BrowseScreen")
+                            var url = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest)
+                            navController.navigate("browseScreen/${url}")
                         }
                 )
             }
