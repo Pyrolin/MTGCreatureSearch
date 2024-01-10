@@ -45,6 +45,14 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
+import forest
+import island
+import mana
+import mountain
+import plains
+import power
+import swamp
+import toughness
 
 var queryString = ""
 
@@ -92,19 +100,23 @@ fun Title(name: String, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(cardViewModel: CardViewModel ,modifier: Modifier = Modifier, navController: NavController) {
-    var searchQuery by remember { mutableStateOf("") }
+fun SearchBar(
+    cardViewModel: CardViewModel,
+    modifier: Modifier = Modifier,
+    navController: NavController,
+) {
+    var searchQuery by remember { mutableStateOf(com.example.mtgcreaturesearch.View.queryString) }
 
     TextField(
         value = searchQuery,
         onValueChange = { newValue ->
-            queryString = newValue
+            com.example.mtgcreaturesearch.View.queryString = newValue
             searchQuery = newValue
         },
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(
             onDone ={
-                val query = cardViewModel.getQuery(search = searchQuery)
+                val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
                 navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
             }
         ),
@@ -162,11 +174,12 @@ fun HomeScreen(cardViewModel: CardViewModel ,navController: NavController) {
             )
 
             // Search Bar
-            SearchBar( cardViewModel,
+            SearchBar(
+                cardViewModel,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
-                navController
+                navController,
             )
 
             // Main Content

@@ -40,6 +40,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.View.Title
+import com.example.mtgcreaturesearch.View.queryString
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 var mana: String = ""
@@ -246,7 +247,8 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
                     .size(30.dp)
                     .background(Color.Transparent)
                     .clickable {
-                        navController.navigate("browseScreen")
+                        val query = cardViewModel.getQuery(search = queryString)
+                        navController.navigate("browseScreen?q=${query.q}")
                     }
             )
             Image(
@@ -283,7 +285,7 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
                         .size(80.dp)
                         .background(Color(0xFFFFA500))
                         .clickable {
-                            var query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest)
+                            var query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
                             navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
                         }
                 )
