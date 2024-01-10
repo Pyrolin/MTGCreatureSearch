@@ -37,6 +37,7 @@ import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
 
 import androidx.compose.foundation.lazy.grid.items
+import com.example.mtgcreaturesearch.Model.Query
 import java.net.URL
 
 
@@ -81,7 +82,7 @@ fun CardGrid(cardViewModel: CardViewModel = viewModel(), cards: List<ShownCards>
 
 
 @Composable
-fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController, url: String = "") {
+fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController, order: String = "", q: String = "") {
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
@@ -136,8 +137,9 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     }
             )
 
-            if (url.length > 0) {
-                CardGrid(cards = cardViewModel.filteredCards(url))
+            if (order.isNotEmpty() || q.isNotEmpty()) {
+                val query = Query(order,q)
+                CardGrid(cards = cardViewModel.filteredCards(query))
             }
             else {
                 CardGrid(cards = cardViewModel.browseCards())

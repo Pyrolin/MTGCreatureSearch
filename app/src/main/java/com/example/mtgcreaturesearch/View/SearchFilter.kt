@@ -133,7 +133,7 @@ fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: L
                                     power = option.toInt()
                                 }
 
-                                if(name == "Mana Cost") {
+                                if(name == "Mana cost") {
                                     mana = option.toInt()
                                 }
                             }
@@ -264,8 +264,8 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
                         .size(80.dp)
                         .background(Color(0xFFFFA500))
                         .clickable {
-                            var url = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest)
-                            navController.navigate("browseScreen/${url}")
+                            var query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest)
+                            navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
                         }
                 )
             }

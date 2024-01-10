@@ -55,11 +55,18 @@ class MainActivity : ComponentActivity() {
             NavHost(navController, startDestination = "homeScreen") {
                 composable("homeScreen") { HomeScreen(navController) }
                 composable(
-                    route = "browseScreen/{url}",
-                    arguments = listOf(navArgument("url") {type = NavType.StringType})) {
+                    route = "browseScreen?order={order}&q={q}",
+                    arguments = listOf(navArgument("order") {defaultValue = "name"},
+                        navArgument("q") {defaultValue = "type%3Acreature+%28game%3Apaper%29"}
+                    )) {
                     backStackEntry ->
-                    backStackEntry.arguments?.getString("url")
-                        ?.let { BrowseScreen(cardViewModel, navController, it) }
+                    val order = backStackEntry.arguments?.getString("order")
+                    val q = backStackEntry.arguments?.getString("q")
+                    if (order != null) {
+                        if (q != null) {
+                            BrowseScreen(cardViewModel, navController, order, q)
+                        }
+                    }
                 }
 
                 composable("favoritesScreen") { FavoritesScreen(cardViewModel,navController) }

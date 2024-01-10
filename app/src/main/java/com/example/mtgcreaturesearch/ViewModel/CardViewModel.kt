@@ -9,11 +9,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mtgcreaturesearch.Model.Data
+import com.example.mtgcreaturesearch.Model.Query
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.installations.FirebaseInstallations
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.IOException
 
 //Filler
@@ -61,12 +63,19 @@ class CardViewModel : ViewModel() {
     var filteredCardUiState: CardUiState by mutableStateOf(CardUiState.Loading)
         private set
 
-    fun getFilteredCards(url: String) {
+    fun getFilteredCards(query: Query) {
         viewModelScope.launch {
             filteredCardUiState = try {
-                val listResult = CardApi.retrofitService.getPhotos(url).data
+                val listResult = CardApi.retrofitService.getPhotos(query.order, query.q).data
                 CardUiState.Success(listResult)
-            } catch (e: IOException) {
+            } catch (e: HttpException) {
+                e.response()?.errorBody()?.string().let {
+                    if (it != null) {
+                        Log.e("HTTP ERROR", it)
+                    }
+                }
+                e.response().toString().let { Log.e("HTTP ERROR", it) }
+
                 CardUiState.Error
             }
         }
@@ -81,44 +90,43 @@ class CardViewModel : ViewModel() {
         island: Boolean = false,
         mountain: Boolean = false,
         forest: Boolean = false,
-    ): String {
+    ): Query {
 
-        var basequery = "search?order=name&q=type%3Acreature"
+        var order = "name"
+        var q = "type%3Acreature+%28game%3Apaper%29"
 
         if (swamp) {
-            basequery += "+color%3DB"
+            q += "+color%3DB"
         }
 
         if (plains) {
-            basequery += "+color%3DW"
+            q += "+color%3DW"
         }
 
         if (island) {
-            basequery += "+color%3DU"
+            q += "+color%3DU"
         }
 
         if (mountain) {
-            basequery += "+color%3DR"
+            q += "+color%3DR"
         }
 
         if (forest) {
-            basequery += "+color%3DG"
+            q += "+color%3DG"
         }
 
-        basequery += "+%28game%3Apaper%29"
-
         if (mana != null) {
-            basequery += "+mana%3D$mana"
+            q += "+cmc%3D$mana"
         }
 
         if (toughness != null) {
-            basequery += "+tou%3D$toughness"
+            q += "+tou%3D$toughness"
         }
 
         if (power != null) {
-            basequery += "+pow%3D$power"
+            q += "+pow%3D$power"
         }
-        return basequery
+        return Query(order,q)
     }
 
     fun browseCards(): List<ShownCards> {
@@ -174,8 +182,8 @@ class CardViewModel : ViewModel() {
         }
     }
 
-    fun filteredCards(url: String): List<ShownCards> {
-        getFilteredCards(url)
+    fun filteredCards(query: Query): List<ShownCards> {
+        getFilteredCards(query)
         //val cards: MutableList<ShownCards> = mutableListOf()
         return when (val currentState = filteredCardUiState) {
             is CardUiState.Success -> {
