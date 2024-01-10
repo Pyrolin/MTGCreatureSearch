@@ -110,10 +110,11 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     .background(Color.Gray)
             )
 
-            SearchBar(modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-            )
+           SearchBar(cardViewModel ,modifier = Modifier
+               .fillMaxWidth()
+               .padding(16.dp),
+               navController
+           )
 
             Image(
                 painter = painterResource(id = R.drawable.burgermenu),

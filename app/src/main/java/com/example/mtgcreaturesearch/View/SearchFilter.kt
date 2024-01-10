@@ -51,31 +51,6 @@ var island: Boolean = false
 var mountain: Boolean = false
 var forest: Boolean = false
 
-@Composable
-fun FilterBar() {
-    val filterText = remember { mutableStateOf("") }
-
-    TextField(
-        value = filterText.value,
-        onValueChange = { newText ->
-            filterText.value = newText
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White),
-        label = { Text("Search for a creature card") },
-        leadingIcon = { Icon(Icons.Filled.Search, "Search for a creature card") },
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.White,
-            cursorColor = Color.Black,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(onSearch = { /* filter logic here */ })
-    )
-}
-
 // Drop down menus
 @Composable
 fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: List<String>) {
@@ -159,10 +134,10 @@ fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: L
 @Composable
 fun CardList() {
     val data = listOf(
-        "Set" to listOf("Option 1", "Option 2", "Option 3"),
-        "Toughness" to listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
-        "Power" to listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
-        "Mana cost" to listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "X")
+        "Set" to listOf("","Option 1", "Option 2", "Option 3"),
+        "Toughness" to listOf("","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
+        "Power" to listOf("","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
+        "Mana cost" to listOf("","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "X")
     )
 
     val imageIds = listOf(R.drawable.swamp, R.drawable.plains, R.drawable.island, R.drawable.mountain, R.drawable.forest)
@@ -274,9 +249,24 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
                         navController.navigate("browseScreen")
                     }
             )
-            Box(modifier = Modifier.padding(16.dp)) {
-                FilterBar()
-            }
+            Image(
+                painter = painterResource(id = R.drawable.reset),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(30.dp)
+                    .background(Color.Transparent)
+                    .clickable {
+                        mana = ""
+                        toughness = ""
+                        power = ""
+                        swamp = false
+                        plains = false
+                        island = false
+                        mountain = false
+                        forest = false
+                        navController.navigate("filterBar")
+                    }
+            )
 
             CardList()
 

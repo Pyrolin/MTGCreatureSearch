@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -31,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -43,6 +46,8 @@ import androidx.navigation.navArgument
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
+var queryString = ""
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +58,7 @@ class MainActivity : ComponentActivity() {
             cardViewModel.initDevice()
 
             NavHost(navController, startDestination = "homeScreen") {
-                composable("homeScreen") { HomeScreen(navController) }
+                composable("homeScreen") { HomeScreen(cardViewModel ,navController) }
                 composable(
                     route = "browseScreen?order={order}&q={q}",
                     arguments = listOf(navArgument("order") {defaultValue = "name"},
@@ -87,14 +92,24 @@ fun Title(name: String, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(modifier: Modifier = Modifier) {
+fun SearchBar(cardViewModel: CardViewModel ,modifier: Modifier = Modifier, navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
 
     TextField(
         value = searchQuery,
         onValueChange = { newValue ->
+            queryString = newValue
             searchQuery = newValue
         },
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(
+            onDone ={
+                val query = cardViewModel.getQuery(search = searchQuery)
+                navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+            }
+        ),
+
+
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White),
@@ -105,7 +120,7 @@ fun SearchBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(cardViewModel: CardViewModel ,navController: NavController) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -147,10 +162,11 @@ fun HomeScreen(navController: NavController) {
             )
 
             // Search Bar
-            SearchBar(
+            SearchBar( cardViewModel,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
+                navController
             )
 
             // Main Content

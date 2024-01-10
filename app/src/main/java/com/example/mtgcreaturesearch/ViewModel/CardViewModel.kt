@@ -79,10 +79,19 @@ class CardViewModel : ViewModel() {
         island: Boolean = false,
         mountain: Boolean = false,
         forest: Boolean = false,
+        search: String = "",
     ): Query {
 
         var order = "name"
-        var q = "type%3Acreature+%28game%3Apaper%29"
+        var q = ""
+        if (search.isNotEmpty()) {
+            q += search
+            q += "+type%3Acreature+%28game%3Apaper%29"
+        }
+        else {
+            q += "type%3Acreature+%28game%3Apaper%29"
+        }
+
 
         var hasColor = false;
 
