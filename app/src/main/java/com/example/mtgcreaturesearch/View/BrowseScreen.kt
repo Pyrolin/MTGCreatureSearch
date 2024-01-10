@@ -137,13 +137,8 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     }
             )
 
-            if (order.isNotEmpty() || q.isNotEmpty()) {
-                val query = Query(order,q)
-                CardGrid(cards = cardViewModel.filteredCards(query))
-            }
-            else {
-                CardGrid(cards = cardViewModel.browseCards())
-            }
+            val query = Query(order,q)
+            CardGrid(cards = cardViewModel.browseCards(query))
             
             Spacer(modifier = Modifier.weight(1f))
         }

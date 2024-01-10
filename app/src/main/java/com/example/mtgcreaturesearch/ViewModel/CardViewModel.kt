@@ -43,30 +43,19 @@ class CardViewModel : ViewModel() {
      * Call getCardPhotos() on init so we can display status immediately.
      */
     init {
-        getCardPhotos()
+        getCardPhotos(Query("", ""))
     }
 
     /**
      * Gets Card data from the ScryfallAPI Retrofit service.
      */
-    fun getCardPhotos() {
+    fun getCardPhotos(query: Query) {
         viewModelScope.launch {
             cardUiState = try {
-                val listResult = CardApi.retrofitService.getPhotos().data
-                CardUiState.Success(listResult)
-            } catch (e: IOException) {
-                CardUiState.Error
-            }
-        }
-    }
+                val order = if (query.order.isNotEmpty()) query.order else "name"
+                val q = if (query.q.isNotEmpty()) query.q else "type%3Acreature+%28game%3Apaper%29"
 
-    var filteredCardUiState: CardUiState by mutableStateOf(CardUiState.Loading)
-        private set
-
-    fun getFilteredCards(query: Query) {
-        viewModelScope.launch {
-            filteredCardUiState = try {
-                val listResult = CardApi.retrofitService.getPhotos(query.order, query.q).data
+                val listResult = CardApi.retrofitService.getPhotos(order, q).data
                 CardUiState.Success(listResult)
             } catch (e: HttpException) {
                 e.response()?.errorBody()?.string().let {
@@ -82,9 +71,9 @@ class CardViewModel : ViewModel() {
     }
 
     fun getQuery(
-        mana: Int? = null,
-        toughness: Int? = null,
-        power: Int? = null,
+        mana: String = "",
+        toughness: String = "",
+        power: String = "",
         swamp: Boolean = false,
         plains: Boolean = false,
         island: Boolean = false,
@@ -95,41 +84,65 @@ class CardViewModel : ViewModel() {
         var order = "name"
         var q = "type%3Acreature+%28game%3Apaper%29"
 
+        var hasColor = false;
+
         if (swamp) {
             q += "+color%3DB"
+            hasColor = true
         }
 
         if (plains) {
-            q += "+color%3DW"
+            if (hasColor) {
+                q += "W"
+            } else {
+                q += "+color%3DW"
+            }
+            hasColor = true
         }
 
         if (island) {
-            q += "+color%3DU"
+            if (hasColor) {
+                q += "U"
+            } else {
+                q += "+color%3DU"
+            }
+            hasColor = true
         }
 
         if (mountain) {
-            q += "+color%3DR"
+            if (hasColor) {
+                q += "R"
+            } else {
+                q += "+color%3DR"
+            }
+            hasColor = true
         }
 
         if (forest) {
-            q += "+color%3DG"
+            if (hasColor) {
+                q += "G"
+            } else {
+                q += "+color%3DG"
+            }
+            hasColor = true
         }
 
-        if (mana != null) {
+        if (mana.isNotEmpty()) {
             q += "+cmc%3D$mana"
         }
 
-        if (toughness != null) {
+        if (toughness.isNotEmpty()) {
             q += "+tou%3D$toughness"
         }
 
-        if (power != null) {
+        if (power.isNotEmpty()) {
             q += "+pow%3D$power"
         }
         return Query(order,q)
     }
 
-    fun browseCards(): List<ShownCards> {
+    fun browseCards(query: Query): List<ShownCards> {
+        getCardPhotos(query)
         //val cards: MutableList<ShownCards> = mutableListOf()
         return when (val currentState = cardUiState) {
             is CardUiState.Success -> {
@@ -182,41 +195,6 @@ class CardViewModel : ViewModel() {
         }
     }
 
-    fun filteredCards(query: Query): List<ShownCards> {
-        getFilteredCards(query)
-        //val cards: MutableList<ShownCards> = mutableListOf()
-        return when (val currentState = filteredCardUiState) {
-            is CardUiState.Success -> {
-                val cards = mutableListOf<ShownCards>()
-                for (i in 0 until currentState.photos.size) {
-                    val photo = currentState.photos[i]
-                    if (photo.layout == "transform") {
-                        val card = photo.card_faces?.get(0)?.image_uris?.let {
-                            ShownCards(
-                                it.small,
-                                photo.id
-                            )
-                        }
-                        if (card != null) {
-                            cards.add(card)
-                            cards
-                        }
-                    } else {
-                        val card = photo.image_uris?.let { ShownCards(it.small, photo.id) }
-                        if (card != null) {
-                            cards.add(card)
-                            cards
-                        }
-                    }
-                }
-                cards
-            }
-
-            else -> {
-                return emptyList()
-            }
-        }
-    }
 
     fun favoriteCards(): List<ShownCards> {
         //val cards: MutableList<ShownCards> = mutableListOf()

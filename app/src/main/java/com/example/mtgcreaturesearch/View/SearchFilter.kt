@@ -42,9 +42,9 @@ import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.View.Title
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
-var mana: Int? = null
-var toughness: Int? = null
-var power: Int? = null
+var mana: String = ""
+var toughness: String = ""
+var power: String = ""
 var swamp: Boolean = false
 var plains: Boolean = false
 var island: Boolean = false
@@ -81,6 +81,14 @@ fun FilterBar() {
 fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: List<String>) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf<String?>(null) }
+
+    if (name == "Toughness") {
+        selectedOption = toughness
+    } else if (name == "Power") {
+        selectedOption = power
+    } else if (name == "Mana cost") {
+        selectedOption = mana
+    }
 
     Card(modifier = Modifier.padding(16.dp)) {
         Column {
@@ -126,15 +134,15 @@ fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: L
                                 expanded = false
 
                                 if (name == "Toughness") {
-                                    toughness = option.toInt()
+                                    toughness = option
                                 }
 
                                 if (name == "Power") {
-                                    power = option.toInt()
+                                    power = option
                                 }
 
                                 if(name == "Mana cost") {
-                                    mana = option.toInt()
+                                    mana = option
                                 }
                             }
                         ) {
@@ -159,7 +167,28 @@ fun CardList() {
 
     val imageIds = listOf(R.drawable.swamp, R.drawable.plains, R.drawable.island, R.drawable.mountain, R.drawable.forest)
 
-    val clickStates = remember { mutableStateMapOf<Int, Boolean>().apply { imageIds.forEach { put(it, false) } } }
+    val clickStates = remember {
+        mutableStateMapOf<Int, Boolean>().apply {
+            imageIds.forEach {
+                put(
+                    it,
+                    if (it == R.drawable.swamp) {
+                        swamp
+                    } else if (it == R.drawable.plains) {
+                        plains
+                    } else if (it == R.drawable.island) {
+                        island
+                    } else if (it == R.drawable.mountain) {
+                        mountain
+                    } else if (it == R.drawable.forest) {
+                        forest
+                    } else {
+                        false
+                    }
+                )
+            }
+        }
+    }
 
     LazyColumn {
         items(data) { (name, options) ->
