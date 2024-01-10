@@ -52,6 +52,14 @@ var island: Boolean = false
 var mountain: Boolean = false
 var forest: Boolean = false
 
+var tmp_mana: String = ""
+var tmp_toughness: String = ""
+var tmp_power: String = ""
+var tmp_swamp: Boolean = false
+var tmp_plains: Boolean = false
+var tmp_island: Boolean = false
+var tmp_mountain: Boolean = false
+var tmp_forest: Boolean = false
 // Drop down menus
 @Composable
 fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: List<String>) {
@@ -110,15 +118,15 @@ fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: L
                                 expanded = false
 
                                 if (name == "Toughness") {
-                                    toughness = option
+                                    tmp_toughness = option
                                 }
 
                                 if (name == "Power") {
-                                    power = option
+                                    tmp_power = option
                                 }
 
                                 if(name == "Mana cost") {
-                                    mana = option
+                                    tmp_mana = option
                                 }
                             }
                         ) {
@@ -149,15 +157,15 @@ fun CardList() {
                 put(
                     it,
                     if (it == R.drawable.swamp) {
-                        swamp
+                        tmp_swamp
                     } else if (it == R.drawable.plains) {
-                        plains
+                        tmp_plains
                     } else if (it == R.drawable.island) {
-                        island
+                        tmp_island
                     } else if (it == R.drawable.mountain) {
-                        mountain
+                        tmp_mountain
                     } else if (it == R.drawable.forest) {
-                        forest
+                        tmp_forest
                     } else {
                         false
                     }
@@ -189,19 +197,19 @@ fun CardList() {
                             .clickable {
                                 clickStates[imageId] = !clickStates.getValue(imageId)
                                 if (imageId == R.drawable.swamp) {
-                                    swamp = (clickStates[imageId] == true)
+                                    tmp_swamp = (clickStates[imageId] == true)
                                 }
                                 if (imageId == R.drawable.plains) {
-                                    plains = (clickStates[imageId] == true)
+                                    tmp_plains = (clickStates[imageId] == true)
                                 }
                                 if (imageId == R.drawable.island) {
-                                    island = (clickStates[imageId] == true)
+                                    tmp_island = (clickStates[imageId] == true)
                                 }
                                 if (imageId == R.drawable.mountain) {
-                                    mountain = (clickStates[imageId] == true)
+                                    tmp_mountain = (clickStates[imageId] == true)
                                 }
                                 if (imageId == R.drawable.forest) {
-                                    forest = (clickStates[imageId] == true)
+                                    tmp_forest = (clickStates[imageId] == true)
                                 }
                             }
                             .background(if (clickStates[imageId] == true) Color(0xFFFFA500) else Color.Transparent),
@@ -216,6 +224,15 @@ fun CardList() {
 //Actual composable
 @Composable
 fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
+    tmp_mana = mana
+    tmp_toughness = toughness
+    tmp_power = power
+    tmp_swamp = swamp
+    tmp_plains = plains
+    tmp_island = island
+    tmp_mountain = mountain
+    tmp_forest = forest
+
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
@@ -247,7 +264,7 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
                     .size(30.dp)
                     .background(Color.Transparent)
                     .clickable {
-                        val query = cardViewModel.getQuery(search = queryString)
+                        val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
                         navController.navigate("browseScreen?q=${query.q}")
                     }
             )
@@ -285,7 +302,15 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
                         .size(80.dp)
                         .background(Color(0xFFFFA500))
                         .clickable {
-                            var query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
+                            mana = tmp_mana
+                            toughness = tmp_toughness
+                            power = tmp_power
+                            swamp = tmp_swamp
+                            plains = tmp_plains
+                            island = tmp_island
+                            mountain = tmp_mountain
+                            forest = tmp_forest
+                            val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
                             navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
                         }
                 )
