@@ -56,7 +56,7 @@ fun CardScreen(cardViewModel: CardViewModel = viewModel(), navController: NavCon
         ) {
             // BottomTabBar Background
             Image(
-                painter = painterResource(id = R.drawable.favorites_tabbar_background),
+                painter = painterResource(id = R.drawable.black_bar),
                 contentDescription = "Tab Bar Background",
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
