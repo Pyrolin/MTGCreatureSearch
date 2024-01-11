@@ -43,7 +43,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
-import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
@@ -108,12 +107,12 @@ fun SearchBar(
     navController: NavController,
     reloadPage: Boolean = false
 ) {
-    var searchQuery by remember { mutableStateOf(com.example.mtgcreaturesearch.View.queryString) }
+    var searchQuery by remember { mutableStateOf(queryString) }
 
     TextField(
         value = searchQuery,
         onValueChange = { newValue ->
-            com.example.mtgcreaturesearch.View.queryString = newValue
+            queryString = newValue
             searchQuery = newValue
         },
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
@@ -146,6 +145,68 @@ fun SearchBar(
             Text(text = "Search...")
         }
     )
+}
+
+@Composable
+fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifier: Modifier, backgroundImage: Int) {
+    // Bottom Tab Bar
+    Box(
+        modifier = modifier
+    ) {
+        Image(
+            painter = painterResource(id = backgroundImage),
+            contentDescription = "Background Image",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(70.dp)
+                .padding(top = 10.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Image(
+                painter = painterResource(id = R.drawable.burgermenu_hvid),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(30.dp)
+                    .background(Color.Transparent)
+                    .clickable {
+                        // Navigate to favorites screen when favorites is clicked
+                        navController.navigate("HomeScreen")
+                    }
+            )
+
+            Image(
+                painter = painterResource(id = R.drawable.search),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(30.dp)
+                    .background(Color.Transparent)
+                    .clickable {
+                        val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
+                        navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+                    }
+            )
+
+            Image(
+                painter = painterResource(id = R.drawable.favorite_hvid),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(30.dp)
+                    .background(Color.Transparent)
+                    .clickable {
+                        navController.navigate("favoritesScreen")
+
+                    }
+            )
+        }
+    }
+
 }
 
 @Composable
@@ -238,7 +299,10 @@ fun HomeScreen(cardViewModel: CardViewModel ,navController: NavController) {
                         .padding(16.dp)
                         .height(50.dp)
                         .background(Color(0xFFFFA500))  // Orange color
-                        .clickable { navController.navigate("browseScreen") },
+                        .clickable {
+                            val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
+                            navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+                                   },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -274,62 +338,11 @@ fun HomeScreen(cardViewModel: CardViewModel ,navController: NavController) {
             }
 
             Spacer(modifier = Modifier.weight(1f))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.blurred),
-                    contentDescription = "Background Image",
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-                // Bottom Tab Bar in a Row
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(70.dp)
-                        .padding(top = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically //
-                ) {
 
-                    Image(
-                        painter = painterResource(id = R.drawable.burgermenu_hvid),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                navController.navigate("HomeScreen")
-                            }
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.search),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                navController.navigate("BrowseScreen")
-                            }
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.favorite_hvid),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                navController.navigate("favoritesScreen")
-                            }
-                    )
-                }
-            }
+            BottomBar(navController = navController, cardViewModel = cardViewModel, modifier = Modifier
+                .fillMaxWidth()
+                .height(55.dp),
+                R.drawable.blurred)
         }
     }
 }

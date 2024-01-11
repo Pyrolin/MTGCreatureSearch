@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,10 +34,9 @@ import coil.compose.AsyncImage
 import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
-
 import androidx.compose.foundation.lazy.grid.items
 import com.example.mtgcreaturesearch.Model.Query
-import java.net.URL
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -145,65 +143,11 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
             Spacer(modifier = Modifier.weight(1f))
         }
 
-        // Bottom Tab Bar
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(55.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.browse_bottom_background),
-                contentDescription = "Background Image",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
-                    .padding(top = 10.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                    Image(
-                        painter = painterResource(id = R.drawable.burgermenu_hvid),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                // Navigate to favorites screen when favorites is clicked
-                                navController.navigate("HomeScreen")
-                            }
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.search),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                navController.navigate("BrowseScreen")
-                            }
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.favorite_hvid),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                navController.navigate("favoritesScreen")
-
-                            }
-                    )
-                }
-            }
+        BottomBar(navController = navController, cardViewModel = cardViewModel, modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .fillMaxWidth()
+            .height(55.dp),
+            R.drawable.browse_bottom_background)
 
         }
     }
