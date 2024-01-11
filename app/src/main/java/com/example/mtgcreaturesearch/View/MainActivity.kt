@@ -21,6 +21,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.IconButton
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -44,6 +47,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
 import androidx.navigation.navArgument
+import com.example.mtgcreaturesearch.Model.Query
+import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 import forest
@@ -73,7 +78,7 @@ class MainActivity : ComponentActivity() {
                     arguments = listOf(navArgument("order") {defaultValue = "name"},
                         navArgument("q") {defaultValue = "type%3Acreature+%28game%3Apaper%29"}
                     )) {
-                    backStackEntry ->
+                        backStackEntry ->
                     val order = backStackEntry.arguments?.getString("order")
                     val q = backStackEntry.arguments?.getString("q")
                     if (order != null) {
@@ -82,7 +87,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
-
                 composable("favoritesScreen") { FavoritesScreen(cardViewModel,navController) }
                 composable("filterBar"){ SearchFilter(cardViewModel, navController) }
             }
@@ -188,7 +192,17 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
                     .size(30.dp)
                     .background(Color.Transparent)
                     .clickable {
-                        val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
+                        val query = cardViewModel.getQuery(
+                            mana,
+                            toughness,
+                            power,
+                            swamp,
+                            plains,
+                            island,
+                            mountain,
+                            forest,
+                            queryString
+                        )
                         navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
                     }
             )
@@ -206,146 +220,141 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
             )
         }
     }
-
 }
+    @Composable
+        fun CardRow(cards: List<ShownCards>) {
+            when (cards.isNotEmpty()) {
+                true -> {
+                    val startCard = (0..cards.size-3).random()
 
-@Composable
-fun HomeScreen(cardViewModel: CardViewModel ,navController: NavController) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Background Image
-        Image(
-            painter = painterResource(id = R.drawable.transparent_background),
-            contentDescription = null,
-            modifier = Modifier.matchParentSize(),
-            contentScale = ContentScale.Crop
-        )
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            // Title and Divider
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Title(name = "MTG Card Organizer")
-            }
-
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.Gray)
-            )
-
-            // Image
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                contentScale = ContentScale.Crop
-            )
-
-            // Search Bar
-            SearchBar(
-                cardViewModel,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
-                navController,
-            )
-
-            // Main Content
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .background(Color.Red)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .background(Color.Green)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .background(Color.Blue)
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-
-                // Browse Bar Box
-                Box(
-                    modifier = Modifier
-                        .width(300.dp)
-                        .padding(16.dp)
-                        .height(50.dp)
-                        .background(Color(0xFFFFA500))  // Orange color
-                        .clickable {
-                            val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
-                            navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
-                                   },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Browse",
-                        color = Color.White,
-                        fontSize = 20.sp
-                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        items(cards.subList(startCard, startCard+3)) { card ->
+                            Card(card = card)
+                        }
+                    }
                 }
+
+                else -> {}
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Box(
-                    modifier = Modifier
-                        .width(300.dp)
-                        .padding(16.dp)
-                        .height(50.dp)
-                        .background(Color(0xFFFFA500))
-                        .clickable {
-                            navController.navigate("favoritesScreen")
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "View favorites",
-                        color = Color.White,
-                        fontSize = 20.sp
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            BottomBar(navController = navController, cardViewModel = cardViewModel, modifier = Modifier
-                .fillMaxWidth()
-                .height(55.dp),
-                R.drawable.blurred)
         }
-    }
-}
+
+        @Composable
+        fun HomeScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                // Background Image
+                Image(
+                    painter = painterResource(id = R.drawable.transparent_background),
+                    contentDescription = null,
+                    modifier = Modifier.matchParentSize(),
+                    contentScale = ContentScale.Crop
+                )
+                Column(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    // Title and Divider
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Title(name = "MTG Card Organizer")
+                    }
+
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(Color.Gray)
+                    )
+
+                    // Image
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        contentScale = ContentScale.Crop
+                    )
+
+                    // Search Bar
+                    SearchBar(
+                        cardViewModel,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
+                        navController,
+                    )
+
+                    CardRow(cards = cardViewModel.browseCards(Query("", "")))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+
+                        // Browse Bar Box
+                        Box(
+                            modifier = Modifier
+                                .width(300.dp)
+                                .padding(16.dp)
+                                .height(50.dp)
+                                .background(Color(0xFFFFA500))  // Orange color
+                                .clickable {
+                                    val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
+                                    navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Browse",
+                                color = Color.White,
+                                fontSize = 20.sp
+                            )
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .width(300.dp)
+                                .padding(16.dp)
+                                .height(50.dp)
+                                .background(Color(0xFFFFA500))
+                                .clickable {
+                                    navController.navigate("favoritesScreen")
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "View favorites",
+                                color = Color.White,
+                                fontSize = 20.sp
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    BottomBar(navController = navController, cardViewModel = cardViewModel, modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp),
+                        R.drawable.blurred)
+                }
+            }
+        }
 
 //@Preview(showBackground = true)
 //@Composable

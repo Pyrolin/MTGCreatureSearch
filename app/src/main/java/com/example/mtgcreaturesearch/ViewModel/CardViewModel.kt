@@ -290,6 +290,10 @@ class CardViewModel : ViewModel() {
         }
     }
 
+    fun isFavorited(card: ShownCards): Boolean {
+        return favorites.contains(card.id);
+    }
+
     fun initDevice() {
         // [START get_installation_id]
         FirebaseInstallations.getInstance().id.addOnCompleteListener { task ->

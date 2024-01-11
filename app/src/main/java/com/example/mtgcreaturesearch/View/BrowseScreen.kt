@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -36,29 +37,58 @@ import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
 import androidx.compose.foundation.lazy.grid.items
 import com.example.mtgcreaturesearch.Model.Query
-
-
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconToggleButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Card(cardViewModel: CardViewModel = viewModel(),card: ShownCards) {
-    ElevatedCard(
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        ),
-        modifier = Modifier.fillMaxSize(),
+    Box(contentAlignment = Alignment.TopEnd) {
+        ElevatedCard(
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 6.dp
+            ),
+            modifier = Modifier.fillMaxSize(),
 //            .size(width = 110.dp, height = 153.dp),
-        onClick = {
-            cardViewModel.updateFavorites(card)
+            onClick = {
+            }
+        ) {
+            AsyncImage(
+                modifier = Modifier.fillMaxWidth(),
+                model = card.url,
+                contentDescription = "Translated description of what the image contains",
+                alignment = Alignment.Center,
+                contentScale = ContentScale.FillWidth,
+            )
         }
-    ) {
-        AsyncImage(
-            modifier = Modifier.fillMaxWidth(),
-            model = card.url,
-            contentDescription = "Translated description of what the image contains",
-            alignment = Alignment.Center,
-            contentScale = ContentScale.FillWidth,
-        )
+
+        var isFavorite by remember { mutableStateOf(cardViewModel.isFavorited(card)) }
+
+        IconToggleButton(
+            checked = isFavorite,
+            onCheckedChange = {
+                isFavorite = !isFavorite
+                cardViewModel.updateFavorites(card)
+            }
+        ) {
+            Icon(
+                tint = Color.Red,
+
+                imageVector = if (isFavorite) {
+                    Icons.Filled.Favorite
+                } else {
+                    Icons.Default.FavoriteBorder
+                },
+                contentDescription = null
+            )
+        }
     }
 }
 //val lazyPagingItems = pager.collectAsLazyPagingItems()
@@ -115,27 +145,33 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                reloadPage = true
            )
 
-            Image(
-                painter = painterResource(id = R.drawable.burgermenu),
-                contentDescription = null,
+            Row(
                 modifier = Modifier
-                    .size(30.dp)
-                    .background(Color.Transparent)
-                    .clickable {
-                        navController.navigate("filterBar")
-                    }
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.backspace),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(30.dp)
-                    .background(Color.Transparent)
-                    .clickable {
-                        navController.navigate("HomeScreen")
-                    }
-            )
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.backspace),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(Color.Transparent)
+                        .clickable {
+                            navController.navigate("HomeScreen")
+                        }
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.burgermenu),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(Color.Transparent)
+                        .clickable {
+                            navController.navigate("filterBar")
+                        }
+                )
+            }
 
             val query = Query(order,q)
             CardGrid(cards = cardViewModel.browseCards(query))
