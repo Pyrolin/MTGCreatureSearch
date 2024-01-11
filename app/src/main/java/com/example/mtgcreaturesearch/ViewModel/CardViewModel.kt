@@ -1,5 +1,6 @@
 package com.example.mtgcreaturesearch.ViewModel
 
+import CardApi
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -8,11 +9,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mtgcreaturesearch.Model.Data
+import com.example.mtgcreaturesearch.Model.Query
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.installations.FirebaseInstallations
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.IOException
 
 //Filler
@@ -40,32 +43,128 @@ class CardViewModel : ViewModel() {
      * Call getCardPhotos() on init so we can display status immediately.
      */
     init {
-        getCardPhotos()
+        getCardPhotos(Query("", ""))
     }
 
     /**
      * Gets Card data from the ScryfallAPI Retrofit service.
      */
-    fun getCardPhotos() {
+    fun getCardPhotos(query: Query) {
         viewModelScope.launch {
             cardUiState = try {
-                val listResult = CardApi.retrofitService.getPhotos().data
+                val order = if (query.order.isNotEmpty()) query.order else "name"
+                val q = if (query.q.isNotEmpty()) query.q else "type%3Acreature+%28game%3Apaper%29"
+
+                val listResult = CardApi.retrofitService.getPhotos(order, q).data
                 CardUiState.Success(listResult)
-            } catch (e:IOException) {
+            } catch (e: HttpException) {
+                e.response()?.errorBody()?.string().let {
+                    if (it != null) {
+                        Log.e("HTTP ERROR", it)
+                    }
+                }
+                e.response().toString().let { Log.e("HTTP ERROR", it) }
+
                 CardUiState.Error
             }
         }
     }
 
-    fun browseCards(): List<ShownCards>{
+    fun getQuery(
+        mana: String = "",
+        toughness: String = "",
+        power: String = "",
+        swamp: Boolean = false,
+        plains: Boolean = false,
+        island: Boolean = false,
+        mountain: Boolean = false,
+        forest: Boolean = false,
+        search: String = "",
+    ): Query {
+
+        var order = "name"
+        var q = ""
+        if (search.isNotEmpty()) {
+            q += search
+            q += "+type%3Acreature+%28game%3Apaper%29"
+        }
+        else {
+            q += "type%3Acreature+%28game%3Apaper%29"
+        }
+
+
+        var hasColor = false;
+
+        if (swamp) {
+            q += "+color%3DB"
+            hasColor = true
+        }
+
+        if (plains) {
+            if (hasColor) {
+                q += "W"
+            } else {
+                q += "+color%3DW"
+            }
+            hasColor = true
+        }
+
+        if (island) {
+            if (hasColor) {
+                q += "U"
+            } else {
+                q += "+color%3DU"
+            }
+            hasColor = true
+        }
+
+        if (mountain) {
+            if (hasColor) {
+                q += "R"
+            } else {
+                q += "+color%3DR"
+            }
+            hasColor = true
+        }
+
+        if (forest) {
+            if (hasColor) {
+                q += "G"
+            } else {
+                q += "+color%3DG"
+            }
+            hasColor = true
+        }
+
+        if (mana.isNotEmpty()) {
+            q += "+cmc%3D$mana"
+        }
+
+        if (toughness.isNotEmpty()) {
+            q += "+tou%3D$toughness"
+        }
+
+        if (power.isNotEmpty()) {
+            q += "+pow%3D$power"
+        }
+        return Query(order,q)
+    }
+
+    fun browseCards(query: Query): List<ShownCards> {
+        getCardPhotos(query)
         //val cards: MutableList<ShownCards> = mutableListOf()
-            return when (val currentState=cardUiState){
-            is CardUiState.Success ->{
-                val cards = mutableListOf<ShownCards> ()
-                for (i in 0 until currentState.photos.size){
+        return when (val currentState = cardUiState) {
+            is CardUiState.Success -> {
+                val cards = mutableListOf<ShownCards>()
+                for (i in 0 until currentState.photos.size) {
                     val photo = currentState.photos[i]
-                    if (photo.layout=="transform"){
-                        val card = photo.card_faces?.get(0)?.image_uris?.let { ShownCards(it.small,photo.id) }
+                    if (photo.layout == "transform") {
+                        val card = photo.card_faces?.get(0)?.image_uris?.let {
+                            ShownCards(
+                                it.small,
+                                photo.id
+                            )
+                        }
                         if (card != null) {
                             cards.add(card)
 //                            println(card.url)
@@ -98,21 +197,28 @@ class CardViewModel : ViewModel() {
 //                println(cards[173].url)
                 cards
             }
+
             else -> {
                 return emptyList()
             }
         }
     }
 
-    fun favoriteCards(): List<ShownCards>{
+
+    fun favoriteCards(): List<ShownCards> {
         //val cards: MutableList<ShownCards> = mutableListOf()
-        return when (val currentState=cardUiState){
-            is CardUiState.Success ->{
-                val cards = mutableListOf<ShownCards> ()
-                for (i in 0 until currentState.photos.size){
+        return when (val currentState = cardUiState) {
+            is CardUiState.Success -> {
+                val cards = mutableListOf<ShownCards>()
+                for (i in 0 until currentState.photos.size) {
                     val photo = currentState.photos[i]
-                    if (photo.layout=="transform"){
-                        val card = photo.card_faces?.get(0)?.image_uris?.let { ShownCards(it.small,photo.id) }
+                    if (photo.layout == "transform") {
+                        val card = photo.card_faces?.get(0)?.image_uris?.let {
+                            ShownCards(
+                                it.small,
+                                photo.id
+                            )
+                        }
                         if (card != null && favorites.contains(card.id)) {
                             cards.add(card)
 //                            println(card.url)
@@ -145,6 +251,7 @@ class CardViewModel : ViewModel() {
 //                println(cards[173].url)
                 cards
             }
+
             else -> {
                 return emptyList()
             }
@@ -152,13 +259,13 @@ class CardViewModel : ViewModel() {
     }
 
     fun initFavorites() {
-            favorites_collection.document(devideID).get().addOnSuccessListener { document ->
-                if (document != null) {
-                    if (document.data?.get("favorites") != null) {
-                        favorites = document.data?.get("favorites") as MutableList<String>
-                    }
+        favorites_collection.document(devideID).get().addOnSuccessListener { document ->
+            if (document != null) {
+                if (document.data?.get("favorites") != null) {
+                    favorites = document.data?.get("favorites") as MutableList<String>
                 }
             }
+        }
     }
 
     fun updateFavorites(card: ShownCards) {
@@ -167,7 +274,9 @@ class CardViewModel : ViewModel() {
                 if (document.data?.get("favorites") != null) {
                     favorites = document.data?.get("favorites") as MutableList<String>
 
-                    if (favorites.contains(card.id)) favorites.remove(card.id) else favorites.add(card.id)
+                    if (favorites.contains(card.id)) favorites.remove(card.id) else favorites.add(
+                        card.id
+                    )
                 } else {
                     favorites.add(card.id)
                 }
@@ -198,6 +307,4 @@ class CardViewModel : ViewModel() {
         }
         // [END get_installation_id]
     }
-
-
 }

@@ -93,54 +93,11 @@ fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: Na
             }
         }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(55.dp)
-        ) {
-            // BottomTabBar Background
-            Image(
-                painter = painterResource(id = R.drawable.favorites_tabbar_background),
-                contentDescription = "Tab Bar Background",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
-                    .padding(top = 10.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Home Tab
-                Image(
-                    painter = painterResource(id = R.drawable.burgermenu_hvid),
-                    contentDescription = "Home",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clickable { navController.navigate("homeScreen") }
-                )
-
-                // Browse Tab
-                Image(
-                    painter = painterResource(id = R.drawable.search),
-                    contentDescription = "Browse",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clickable { navController.navigate("browseScreen") }
-                )
-
-                // Favorites Tab
-                Image(
-                    painter = painterResource(id = R.drawable.favorite_hvid),
-                    contentDescription = "Favorites",
-                    modifier = Modifier.size(30.dp) // Not clickable since it's the current screen
-                )
-            }
-        }
+        BottomBar(navController = navController, cardViewModel = cardViewModel, modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .fillMaxWidth()
+            .height(55.dp),
+            R.drawable.favorites_tabbar_background)
     }
 }
 

@@ -36,8 +36,8 @@ import coil.compose.AsyncImage
 import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
-
 import androidx.compose.foundation.lazy.grid.items
+import com.example.mtgcreaturesearch.Model.Query
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -111,7 +111,7 @@ fun CardGrid(cardViewModel: CardViewModel = viewModel(), cards: List<ShownCards>
 
 
 @Composable
-fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController) {
+fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController, order: String = "", q: String = "") {
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
@@ -139,10 +139,12 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     .background(Color.Gray)
             )
 
-            SearchBar(modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-            )
+           SearchBar(cardViewModel ,modifier = Modifier
+               .fillMaxWidth()
+               .padding(16.dp),
+               navController,
+               reloadPage = true
+           )
 
             Row(
                 modifier = Modifier
@@ -172,70 +174,17 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                 )
             }
 
-            CardGrid(cards = cardViewModel.browseCards())
-
-            // Spacer to push bottom bar to the bottom of the screen
+            val query = Query(order,q)
+            CardGrid(cards = cardViewModel.browseCards(query))
+            
             Spacer(modifier = Modifier.weight(1f))
         }
 
-        // Bottom Tab Bar
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(55.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.browse_bottom_background),
-                contentDescription = "Background Image",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
-                    .padding(top = 10.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                    Image(
-                        painter = painterResource(id = R.drawable.burgermenu_hvid),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                // Navigate to favorites screen when favorites is clicked
-                                navController.navigate("HomeScreen")
-                            }
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.search),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                navController.navigate("BrowseScreen")
-                            }
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.favorite_hvid),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                navController.navigate("favoritesScreen")
-                            }
-                    )
-                }
-            }
+        BottomBar(navController = navController, cardViewModel = cardViewModel, modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .fillMaxWidth()
+            .height(55.dp),
+            R.drawable.browse_bottom_background)
 
         }
     }

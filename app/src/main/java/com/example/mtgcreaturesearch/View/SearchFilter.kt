@@ -36,40 +36,43 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.View.Title
+import com.example.mtgcreaturesearch.View.queryString
+import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
-@Composable
-fun FilterBar() {
-    val filterText = remember { mutableStateOf("") }
+var mana: String = ""
+var toughness: String = ""
+var power: String = ""
+var swamp: Boolean = false
+var plains: Boolean = false
+var island: Boolean = false
+var mountain: Boolean = false
+var forest: Boolean = false
 
-    TextField(
-        value = filterText.value,
-        onValueChange = { newText ->
-            filterText.value = newText
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White),
-        label = { Text("Search for a creature card") },
-        leadingIcon = { Icon(Icons.Filled.Search, "Search for a creature card") },
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.White,
-            cursorColor = Color.Black,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(onSearch = { /* filter logic here */ })
-    )
-}
-
+var tmp_mana: String = ""
+var tmp_toughness: String = ""
+var tmp_power: String = ""
+var tmp_swamp: Boolean = false
+var tmp_plains: Boolean = false
+var tmp_island: Boolean = false
+var tmp_mountain: Boolean = false
+var tmp_forest: Boolean = false
 // Drop down menus
 @Composable
-fun CardSet(name: String, options: List<String>) {
+fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: List<String>) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf<String?>(null) }
+
+    if (name == "Toughness") {
+        selectedOption = toughness
+    } else if (name == "Power") {
+        selectedOption = power
+    } else if (name == "Mana cost") {
+        selectedOption = mana
+    }
 
     Card(modifier = Modifier.padding(16.dp)) {
         Column {
@@ -113,6 +116,18 @@ fun CardSet(name: String, options: List<String>) {
                             onClick = {
                                 selectedOption = option
                                 expanded = false
+
+                                if (name == "Toughness") {
+                                    tmp_toughness = option
+                                }
+
+                                if (name == "Power") {
+                                    tmp_power = option
+                                }
+
+                                if(name == "Mana cost") {
+                                    tmp_mana = option
+                                }
                             }
                         ) {
                             Text(option)
@@ -128,15 +143,36 @@ fun CardSet(name: String, options: List<String>) {
 @Composable
 fun CardList() {
     val data = listOf(
-        "Set" to listOf("Option 1", "Option 2", "Option 3"),
-        "Toughness" to listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
-        "Power" to listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
-        "Mana cost" to listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "X")
+        "Set" to listOf("","Option 1", "Option 2", "Option 3"),
+        "Toughness" to listOf("","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
+        "Power" to listOf("","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
+        "Mana cost" to listOf("","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "X")
     )
 
     val imageIds = listOf(R.drawable.swamp, R.drawable.plains, R.drawable.island, R.drawable.mountain, R.drawable.forest)
 
-    val clickStates = remember { mutableStateMapOf<Int, Boolean>().apply { imageIds.forEach { put(it, false) } } }
+    val clickStates = remember {
+        mutableStateMapOf<Int, Boolean>().apply {
+            imageIds.forEach {
+                put(
+                    it,
+                    if (it == R.drawable.swamp) {
+                        tmp_swamp
+                    } else if (it == R.drawable.plains) {
+                        tmp_plains
+                    } else if (it == R.drawable.island) {
+                        tmp_island
+                    } else if (it == R.drawable.mountain) {
+                        tmp_mountain
+                    } else if (it == R.drawable.forest) {
+                        tmp_forest
+                    } else {
+                        false
+                    }
+                )
+            }
+        }
+    }
 
     LazyColumn {
         items(data) { (name, options) ->
@@ -158,7 +194,24 @@ fun CardList() {
                         modifier = Modifier
                             .width(54.dp)
                             .height(54.dp)
-                            .clickable { clickStates[imageId] = !clickStates.getValue(imageId) }
+                            .clickable {
+                                clickStates[imageId] = !clickStates.getValue(imageId)
+                                if (imageId == R.drawable.swamp) {
+                                    tmp_swamp = (clickStates[imageId] == true)
+                                }
+                                if (imageId == R.drawable.plains) {
+                                    tmp_plains = (clickStates[imageId] == true)
+                                }
+                                if (imageId == R.drawable.island) {
+                                    tmp_island = (clickStates[imageId] == true)
+                                }
+                                if (imageId == R.drawable.mountain) {
+                                    tmp_mountain = (clickStates[imageId] == true)
+                                }
+                                if (imageId == R.drawable.forest) {
+                                    tmp_forest = (clickStates[imageId] == true)
+                                }
+                            }
                             .background(if (clickStates[imageId] == true) Color(0xFFFFA500) else Color.Transparent),
                         contentScale = ContentScale.Crop
                     )
@@ -170,7 +223,16 @@ fun CardList() {
 
 //Actual composable
 @Composable
-fun SearchFilter(navController: NavController) {
+fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
+    tmp_mana = mana
+    tmp_toughness = toughness
+    tmp_power = power
+    tmp_swamp = swamp
+    tmp_plains = plains
+    tmp_island = island
+    tmp_mountain = mountain
+    tmp_forest = forest
+
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
@@ -202,12 +264,28 @@ fun SearchFilter(navController: NavController) {
                     .size(30.dp)
                     .background(Color.Transparent)
                     .clickable {
-                        navController.navigate("browseScreen")
+                        val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
+                        navController.navigate("browseScreen?q=${query.q}")
                     }
             )
-            Box(modifier = Modifier.padding(16.dp)) {
-                FilterBar()
-            }
+            Image(
+                painter = painterResource(id = R.drawable.reset),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(30.dp)
+                    .background(Color.Transparent)
+                    .clickable {
+                        mana = ""
+                        toughness = ""
+                        power = ""
+                        swamp = false
+                        plains = false
+                        island = false
+                        mountain = false
+                        forest = false
+                        navController.navigate("filterBar")
+                    }
+            )
 
             CardList()
 
@@ -223,6 +301,18 @@ fun SearchFilter(navController: NavController) {
                     modifier = Modifier
                         .size(80.dp)
                         .background(Color(0xFFFFA500))
+                        .clickable {
+                            mana = tmp_mana
+                            toughness = tmp_toughness
+                            power = tmp_power
+                            swamp = tmp_swamp
+                            plains = tmp_plains
+                            island = tmp_island
+                            mountain = tmp_mountain
+                            forest = tmp_forest
+                            val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
+                            navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+                        }
                 )
             }
 
