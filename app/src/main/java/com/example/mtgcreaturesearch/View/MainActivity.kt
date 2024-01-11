@@ -20,7 +20,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.IconButton
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -104,6 +106,7 @@ fun SearchBar(
     cardViewModel: CardViewModel,
     modifier: Modifier = Modifier,
     navController: NavController,
+    reloadPage: Boolean = false
 ) {
     var searchQuery by remember { mutableStateOf(com.example.mtgcreaturesearch.View.queryString) }
 
@@ -120,6 +123,20 @@ fun SearchBar(
                 navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
             }
         ),
+        trailingIcon = {
+            IconButton(onClick = {
+                searchQuery = ""
+                queryString = ""
+                if (reloadPage) {
+                    navController.navigate("browseScreen")
+                }
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.reset_text),
+                    contentDescription = "Clear text"
+                )
+            }
+        },
 
 
         modifier = modifier

@@ -113,7 +113,8 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
            SearchBar(cardViewModel ,modifier = Modifier
                .fillMaxWidth()
                .padding(16.dp),
-               navController
+               navController,
+               reloadPage = true
            )
 
             Image(
