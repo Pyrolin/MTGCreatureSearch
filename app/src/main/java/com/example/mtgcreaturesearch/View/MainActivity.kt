@@ -223,7 +223,7 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
 }
     @Composable
         fun CardRow(cards: List<ShownCards>) {
-            when (cards.isNotEmpty()) {
+            when (cards.size > 3) {
                 true -> {
                     val startCard = (0..cards.size-3).random()
 
