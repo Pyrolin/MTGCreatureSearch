@@ -24,7 +24,7 @@ import java.io.IOException
 val db = Firebase.firestore
 val favorites_collection = db.collection("favorites")
 
-var favorites: MutableList<String> =  mutableListOf()
+var favorites: MutableList<ShownCards> =  mutableListOf()
 
 var devideID = ""
 
@@ -206,92 +206,83 @@ class CardViewModel : ViewModel() {
 
 
     fun favoriteCards(): List<ShownCards> {
-        //val cards: MutableList<ShownCards> = mutableListOf()
-        return when (val currentState = cardUiState) {
-            is CardUiState.Success -> {
-                val cards = mutableListOf<ShownCards>()
-                for (i in 0 until currentState.photos.size) {
-                    val photo = currentState.photos[i]
-                    if (photo.layout == "transform") {
-                        val card = photo.card_faces?.get(0)?.image_uris?.let {
-                            ShownCards(
-                                it.small,
-                                photo.id
-                            )
-                        }
-                        if (card != null && favorites.contains(card.id)) {
-                            cards.add(card)
-//                            println(card.url)
-                            cards
-                        }
-                    } else {
-                        val card = photo.image_uris?.let { ShownCards(it.small, photo.id) }
-                        if (card != null && favorites.contains(card.id)) {
-                            cards.add(card)
-//                            println(card.url)
-                            cards
-                        }
-                    }
-//                    println(cards[60].url)
-//                    println(currentState.photos[60].image_uris?.small)
-//                    println(currentState.photos[60].card_faces?.get(0)?.image_uris?.small)
-//                    if(cards[i].url != currentState.photos[i].image_uris?.small && cards[i].url !=currentState.photos[i].card_faces?.get(0)?.image_uris?.small ){
-//                        println(cards[i].url)
-//                        println(currentState.photos[i].image_uris?.small)
-//                        println(currentState.photos[i].card_faces?.get(0)?.image_uris?.small)
-//                    }
-                }
-//                println(cards[52].url)
-//                println(currentState.photos[52].image_uris?.small)
-//                println(currentState.photos[52].card_faces?.get(0)?.image_uris?.small)
-                println(currentState.photos.size)
-//                println(currentState.photos[0])
-//                println(currentState.photos[174])
-                println(cards.size)
-//                println(cards[173].url)
-                cards
-            }
-
-            else -> {
-                return emptyList()
-            }
-        }
+        return favorites
     }
 
     fun initFavorites() {
         favorites_collection.document(devideID).get().addOnSuccessListener { document ->
             if (document != null) {
                 if (document.data?.get("favorites") != null) {
-                    favorites = document.data?.get("favorites") as MutableList<String>
+                    val fetchedFavorites = document.data?.get("favorites") as MutableList<HashMap<String, String>>
+
+                    favorites = makeFavoritesList(fetchedFavorites)
                 }
             }
         }
+    }
+
+    fun makeFavoritesList(cardMapList: MutableList<HashMap<String, String>>): MutableList<ShownCards> {
+        val cardList: MutableList<ShownCards> = mutableListOf()
+
+        cardMapList.forEach { it ->
+            var id = ""
+            var url = ""
+            it.forEach { (key, value) ->
+                if (key == "id") {
+                    id = value
+                } else if (key == "url") {
+                    url = value
+                }
+            }
+            cardList.add(ShownCards(url, id))
+        }
+
+        return cardList
+    }
+
+    fun makeFirebaseList(cardList: MutableList<ShownCards>): MutableList<HashMap<String, String>> {
+        val cardMapList: MutableList<HashMap<String, String>> = mutableListOf()
+
+        cardList.forEach { card ->
+            val data = hashMapOf(
+                "id" to card.id,
+                "url" to card.url
+            )
+            cardMapList.add(data)
+        }
+
+        return cardMapList
     }
 
     fun updateFavorites(card: ShownCards) {
-        favorites_collection.document(devideID).get().addOnSuccessListener { document ->
-            if (document != null) {
-                if (document.data?.get("favorites") != null) {
-                    favorites = document.data?.get("favorites") as MutableList<String>
+        if (isFavorited(card)) removeFavorited(card) else addFavorited(card)
 
-                    if (favorites.contains(card.id)) favorites.remove(card.id) else favorites.add(
-                        card.id
-                    )
-                } else {
-                    favorites.add(card.id)
-                }
+        val data = hashMapOf(
+            "favorites" to makeFirebaseList(favorites),
+        )
 
-                val data = hashMapOf(
-                    "favorites" to favorites,
-                )
-
-                favorites_collection.document(devideID).set(data)
-            }
-        }
+        favorites_collection.document(devideID).set(data)
     }
 
     fun isFavorited(card: ShownCards): Boolean {
-        return favorites.contains(card.id);
+        for (favoriteCard in favorites) {
+            if (favoriteCard.id == card.id) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun removeFavorited(card: ShownCards) {
+        for (favoriteCard in favorites) {
+            if (favoriteCard.id == card.id) {
+                favorites.remove(favoriteCard)
+                return
+            }
+        }
+    }
+    fun addFavorited(card: ShownCards) {
+        favorites.add(card)
     }
 
     fun initDevice() {
