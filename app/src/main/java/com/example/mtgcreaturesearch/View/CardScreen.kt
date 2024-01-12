@@ -46,6 +46,16 @@ fun CardScreen(cardViewModel: CardViewModel = viewModel(), navController: NavCon
                             navController.navigate("HomeScreen")
                         }
                 )
+                //turn_card not implemented yet
+                Image(painter = painterResource(id = R.drawable.turn_card),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(Color.Transparent)
+                        .clickable {
+                            navController.navigate("HomeScreen")
+                        }
+                    )
             }
         }
         Box(
