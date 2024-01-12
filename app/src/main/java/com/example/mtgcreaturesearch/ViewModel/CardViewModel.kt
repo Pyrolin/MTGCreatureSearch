@@ -209,6 +209,28 @@ class CardViewModel : ViewModel() {
         return favorites
     }
 
+    fun getCardFromID(cardID: String): ShownCards {
+            //val cards: MutableList<ShownCards> = mutableListOf()
+            return when (val currentState=cardUiState){
+                is CardUiState.Success ->{
+                    for (i in 0 until currentState.photos.size){
+                        if(currentState.photos[i].id == cardID) {
+                            if (currentState.photos[i].layout=="transform"){
+                                return currentState.photos[i].card_faces?.get(0)?.image_uris?.let { ShownCards(it.small, currentState.photos[i].id) }!!
+
+                            } else {
+                                return currentState.photos[i].image_uris?.let { ShownCards(it.small, currentState.photos[i].id) }!!
+                            }
+                        }
+                    }
+                    return getFavoritedFromID(cardID)
+                }
+                else -> {
+                    return getFavoritedFromID(cardID)
+                }
+            }
+        }
+
     fun initFavorites() {
         favorites_collection.document(devideID).get().addOnSuccessListener { document ->
             if (document != null) {
@@ -283,6 +305,15 @@ class CardViewModel : ViewModel() {
     }
     fun addFavorited(card: ShownCards) {
         favorites.add(card)
+    }
+
+    fun getFavoritedFromID(cardID: String): ShownCards {
+        for (favoriteCard in favorites) {
+            if (favoriteCard.id == cardID) {
+                return favoriteCard
+            }
+        }
+        return ShownCards("", "")
     }
 
     fun initDevice() {

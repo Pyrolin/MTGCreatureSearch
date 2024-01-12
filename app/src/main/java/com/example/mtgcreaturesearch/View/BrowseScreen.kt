@@ -50,7 +50,7 @@ import androidx.compose.runtime.setValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Card(cardViewModel: CardViewModel = viewModel(),card: ShownCards) {
+fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavController, card: ShownCards, setonClick: Boolean = true) {
     Box(contentAlignment = Alignment.TopEnd) {
         ElevatedCard(
             elevation = CardDefaults.cardElevation(
@@ -59,6 +59,9 @@ fun Card(cardViewModel: CardViewModel = viewModel(),card: ShownCards) {
             modifier = Modifier.fillMaxSize(),
 //            .size(width = 110.dp, height = 153.dp),
             onClick = {
+                if (setonClick) {
+                    navController.navigate("cardScreen/${card.id}")
+                }
             }
         ) {
             AsyncImage(
@@ -97,7 +100,7 @@ fun Card(cardViewModel: CardViewModel = viewModel(),card: ShownCards) {
 
 
 @Composable
-fun CardGrid(cardViewModel: CardViewModel = viewModel(), cards: List<ShownCards>) {
+fun CardGrid(cardViewModel: CardViewModel = viewModel(), navController: NavController,  cards: List<ShownCards>) {
     // [START android_compose_layouts_lazy_grid_adaptive]
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -105,7 +108,7 @@ fun CardGrid(cardViewModel: CardViewModel = viewModel(), cards: List<ShownCards>
         modifier = Modifier.fillMaxSize()
     ) {
         items(cards) { card ->
-            Card(cardViewModel, card)
+            Card(cardViewModel, navController, card)
         }
     }
 }
@@ -179,11 +182,11 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
             val browseCards = cardViewModel.browseCards(query)
             when (browseCards.isNotEmpty()) {
                 true -> {
-                    CardGrid(cards = browseCards)
+                    CardGrid(navController = navController, cards = browseCards)
                 }
 
                 else -> {
-                    CardGrid(cards = cardViewModel.browseCards(query))
+                    CardGrid(navController = navController, cards = cardViewModel.browseCards(query))
                 }
             }
 

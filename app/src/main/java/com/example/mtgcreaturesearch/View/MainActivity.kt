@@ -4,6 +4,9 @@ import SearchFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,6 +50,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.navArgument
 import com.example.mtgcreaturesearch.Model.Query
 import com.example.mtgcreaturesearch.Model.ShownCards
@@ -89,6 +95,13 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("favoritesScreen") { FavoritesScreen(cardViewModel,navController) }
                 composable("filterBar"){ SearchFilter(cardViewModel, navController) }
+                                composable(
+                    route = "cardScreen/{cardID}",
+                    arguments = listOf(navArgument("cardID") { type = NavType.StringType })
+                ) {backStackEntry ->
+                    backStackEntry.arguments?.getString("cardID")
+                        ?.let { CardScreen(cardViewModel, navController, cardViewModel.getCardFromID(it)) }
+                }
             }
         }
     }
@@ -215,24 +228,22 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
                     .background(Color.Transparent)
                     .clickable {
                         navController.navigate("favoritesScreen")
-
                     }
             )
         }
     }
 }
     @Composable
-        fun CardRow(cards: List<ShownCards>) {
+        fun CardRow(cards: List<ShownCards>, navController: NavController) {
             when (cards.size > 3) {
                 true -> {
                     val startCard = (0..cards.size-3).random()
-
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         items(cards.subList(startCard, startCard+3)) { card ->
-                            Card(card = card)
+                            Card(navController = navController, card = card)
                         }
                     }
                 }
@@ -293,7 +304,7 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
                         navController,
                     )
 
-                    CardRow(cards = cardViewModel.browseCards(Query("", "")))
+                    CardRow(cards = cardViewModel.browseCards(Query("", "")), navController = navController)
 
                     Row(
                         modifier = Modifier
