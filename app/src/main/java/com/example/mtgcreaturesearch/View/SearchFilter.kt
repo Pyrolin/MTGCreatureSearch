@@ -270,18 +270,7 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
                         .size(50.dp)
                         .background(Color.Transparent)
                         .clickable {
-                            val query = cardViewModel.getQuery(
-                                mana,
-                                toughness,
-                                power,
-                                swamp,
-                                plains,
-                                island,
-                                mountain,
-                                forest,
-                                queryString
-                            )
-                            navController.navigate("browseScreen?q=${query.q}")
+                            navController.popBackStack()
                         }
                 )
                 
