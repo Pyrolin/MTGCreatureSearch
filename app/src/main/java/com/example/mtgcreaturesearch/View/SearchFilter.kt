@@ -251,42 +251,61 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
             ) {
                 Title(name = "MTG Card Organizer")
             }
+
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp)
                     .background(Color.Gray)
             )
-            Image(
-                painter = painterResource(id = R.drawable.backspace),
-                contentDescription = null,
+            Row(
                 modifier = Modifier
-                    .size(30.dp)
-                    .background(Color.Transparent)
-                    .clickable {
-                        val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
-                        navController.navigate("browseScreen?q=${query.q}")
-                    }
-            )
-            Image(
-                painter = painterResource(id = R.drawable.reset),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(30.dp)
-                    .background(Color.Transparent)
-                    .clickable {
-                        mana = ""
-                        toughness = ""
-                        power = ""
-                        swamp = false
-                        plains = false
-                        island = false
-                        mountain = false
-                        forest = false
-                        navController.navigate("filterBar")
-                    }
-            )
-
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 14.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.backspace),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .background(Color.Transparent)
+                        .clickable {
+                            val query = cardViewModel.getQuery(
+                                mana,
+                                toughness,
+                                power,
+                                swamp,
+                                plains,
+                                island,
+                                mountain,
+                                forest,
+                                queryString
+                            )
+                            navController.navigate("browseScreen?q=${query.q}")
+                        }
+                )
+                
+                Spacer(modifier = Modifier.weight(1f))
+                
+                Image(
+                    painter = painterResource(id = R.drawable.reset),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .background(Color.Transparent)
+                        .clickable {
+                            mana = ""
+                            toughness = ""
+                            power = ""
+                            swamp = false
+                            plains = false
+                            island = false
+                            mountain = false
+                            forest = false
+                            navController.navigate("filterBar")
+                        }
+                )
+            }
             CardList()
 
             Box(
@@ -310,7 +329,17 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
                             island = tmp_island
                             mountain = tmp_mountain
                             forest = tmp_forest
-                            val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
+                            val query = cardViewModel.getQuery(
+                                mana,
+                                toughness,
+                                power,
+                                swamp,
+                                plains,
+                                island,
+                                mountain,
+                                forest,
+                                queryString
+                            )
                             navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
                         }
                 )
