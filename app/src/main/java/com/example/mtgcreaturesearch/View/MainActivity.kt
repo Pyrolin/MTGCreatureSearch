@@ -94,8 +94,14 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 composable("favoritesScreen") { FavoritesScreen(cardViewModel,navController) }
-                composable("filterBar"){ SearchFilter(cardViewModel, navController) }
-                                composable(
+                composable(
+                    route  = "filterBar/{startDestination}",
+                    arguments = listOf(navArgument("startDestination") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    backStackEntry.arguments?.getString("startDestination")
+                        ?.let { SearchFilter(cardViewModel, navController, it) }
+                }
+                composable(
                     route = "cardScreen/{cardID}",
                     arguments = listOf(navArgument("cardID") { type = NavType.StringType })
                 ) {backStackEntry ->

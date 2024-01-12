@@ -173,7 +173,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                         .size(30.dp)
                         .background(Color.Transparent)
                         .clickable {
-                            navController.navigate("filterBar")
+                            navController.navigate("filterBar/browseScreen")
                         }
                 )
             }

@@ -83,7 +83,7 @@ fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: Na
                         .size(30.dp)
                         .background(Color.Transparent)
                         .clickable {
-                            navController.navigate("filterBar")
+                            navController.navigate("filterBar/favoritesScreen")
                         }
                 )
             }

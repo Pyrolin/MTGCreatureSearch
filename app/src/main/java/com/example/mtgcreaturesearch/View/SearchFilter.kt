@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -261,7 +262,7 @@ fun filterSearch(
 
 //Actual composable
 @Composable
-fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
+fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, startDestination: String) {
     tmp_mana = mana
     tmp_toughness = toughness
     tmp_power = power
@@ -308,7 +309,7 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
                         .size(50.dp)
                         .background(Color.Transparent)
                         .clickable {
-                            navController.popBackStack()
+                            navController.navigate(startDestination)
                         }
                 )
                 
@@ -330,7 +331,7 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
                             mountain = false
                             forest = false
                             textSearch = ""
-                            navController.navigate("filterBar")
+                            navController.navigate("filterBar/${startDestination}")
                         }
                 )
             }
@@ -360,6 +361,7 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
                             island = tmp_island
                             mountain = tmp_mountain
                             forest = tmp_forest
+
                             val query = cardViewModel.getQuery(
                                 mana,
                                 toughness,
