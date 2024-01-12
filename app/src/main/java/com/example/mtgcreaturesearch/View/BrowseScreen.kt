@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -36,8 +36,8 @@ import coil.compose.AsyncImage
 import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
-
 import androidx.compose.foundation.lazy.grid.items
+import com.example.mtgcreaturesearch.Model.Query
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -73,15 +73,15 @@ fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavControlle
             )
         }
 
-        var isFavorite by remember { mutableStateOf(cardViewModel.isFavorited(card)) }
+        var isFavorite by remember { mutableStateOf(false) }
+        isFavorite = cardViewModel.isFavorited(card)
 
         IconToggleButton(
             checked = isFavorite,
             onCheckedChange = {
                 isFavorite = !isFavorite
                 cardViewModel.updateFavorites(card)
-            },
-            modifier = Modifier.absoluteOffset(y = 7.dp)
+            }
         ) {
             Icon(
                 tint = Color.Red,
@@ -115,7 +115,7 @@ fun CardGrid(cardViewModel: CardViewModel = viewModel(), navController: NavContr
 
 
 @Composable
-fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController) {
+fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController, order: String = "", q: String = "") {
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
@@ -143,97 +143,61 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     .background(Color.Gray)
             )
 
-            SearchBar(modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.burgermenu),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(30.dp)
-                    .background(Color.Transparent)
-                    .clickable {
-                        navController.navigate("filterBar")
-                    }
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.backspace),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(30.dp)
-                    .background(Color.Transparent)
-                    .clickable {
-                        navController.navigate("HomeScreen")
-                    }
-            )
-
-            CardGrid(navController = navController, cards = cardViewModel.browseCards())
-
-            // Spacer to push bottom bar to the bottom of the screen
-            Spacer(modifier = Modifier.weight(1f))
-        }
-
-        // Bottom Tab Bar
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(55.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.browse_bottom_background),
-                contentDescription = "Background Image",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
+           SearchBar(cardViewModel ,modifier = Modifier
+               .fillMaxWidth()
+               .padding(8.dp),
+               navController,
+               reloadPage = true
+           )
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(70.dp)
-                    .padding(top = 10.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(vertical = 8.dp, horizontal = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                Image(
+                    painter = painterResource(id = R.drawable.backspace),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(Color.Transparent)
+                        .clickable {
+                            navController.navigate("HomeScreen")
+                        }
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.burgermenu),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(Color.Transparent)
+                        .clickable {
+                            navController.navigate("filterBar")
+                        }
+                )
+            }
 
-                    Image(
-                        painter = painterResource(id = R.drawable.burgermenu_hvid),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                // Navigate to favorites screen when favorites is clicked
-                                navController.navigate("HomeScreen")
-                            }
-                    )
+            val query = Query(order,q)
+            val browseCards = cardViewModel.browseCards(query)
+            when (browseCards.isNotEmpty()) {
+                true -> {
+                    CardGrid(cards = browseCards)
+                }
 
-                    Image(
-                        painter = painterResource(id = R.drawable.search),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                navController.navigate("BrowseScreen")
-                            }
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.favorite_hvid),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                navController.navigate("favoritesScreen")
-                            }
-                    )
+                else -> {
+                    CardGrid(cards = cardViewModel.browseCards(query))
                 }
             }
+
+            Spacer(modifier = Modifier.weight(1f))
+        }
+
+        BottomBar(navController = navController, cardViewModel = cardViewModel, modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .fillMaxWidth()
+            .height(55.dp),
+            R.drawable.browse_bottom_background)
 
         }
     }
