@@ -64,6 +64,7 @@ import mountain
 import plains
 import power
 import swamp
+import textSearch
 import toughness
 
 var queryString = ""
@@ -141,7 +142,7 @@ fun SearchBar(
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(
             onDone ={
-                val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
+                val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString, textSearch)
                 navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
             }
         ),
@@ -150,7 +151,8 @@ fun SearchBar(
                 searchQuery = ""
                 queryString = ""
                 if (reloadPage) {
-                    navController.navigate("browseScreen")
+                    val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString, textSearch)
+                    navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
                 }
             }) {
                 Icon(
