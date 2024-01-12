@@ -234,7 +234,7 @@ class CardViewModel : ViewModel() {
                     url = value
                 }
             }
-            cardList.add(ShownCards(id, url))
+            cardList.add(ShownCards(url, id))
         }
 
         return cardList

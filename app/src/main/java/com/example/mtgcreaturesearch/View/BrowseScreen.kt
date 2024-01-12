@@ -70,7 +70,8 @@ fun Card(cardViewModel: CardViewModel = viewModel(),card: ShownCards) {
             )
         }
 
-        var isFavorite by remember { mutableStateOf(cardViewModel.isFavorited(card)) }
+        var isFavorite by remember { mutableStateOf(false) }
+        isFavorite = cardViewModel.isFavorited(card)
 
         IconToggleButton(
             checked = isFavorite,
@@ -175,8 +176,17 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
             }
 
             val query = Query(order,q)
-            CardGrid(cards = cardViewModel.browseCards(query))
-            
+            val browseCards = cardViewModel.browseCards(query)
+            when (browseCards.isNotEmpty()) {
+                true -> {
+                    CardGrid(cards = browseCards)
+                }
+
+                else -> {
+                    CardGrid(cards = cardViewModel.browseCards(query))
+                }
+            }
+
             Spacer(modifier = Modifier.weight(1f))
         }
 
