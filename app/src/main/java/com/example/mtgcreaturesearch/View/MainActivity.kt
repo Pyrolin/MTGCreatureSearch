@@ -97,23 +97,7 @@ class MainActivity : ComponentActivity() {
                 composable("filterBar"){ SearchFilter(cardViewModel, navController) }
                                 composable(
                     route = "cardScreen/{cardID}",
-                    arguments = listOf(navArgument("cardID") { type = NavType.StringType }),
-                    enterTransition = {
-                        when (initialState.destination.route) {
-                            "homeScreen" ->
-                                expandIn(
-                                    // Overwrites the default spring animation with tween
-                                    animationSpec = tween(500, easing = LinearOutSlowInEasing),
-                                    // Overwrites the corner of the content that is first revealed
-                                    expandFrom = Alignment.Center
-                                ) {
-                                    IntSize(50, 50)
-                                }
-
-
-                            else -> null
-                        }
-                    }
+                    arguments = listOf(navArgument("cardID") { type = NavType.StringType })
                 ) {backStackEntry ->
                     backStackEntry.arguments?.getString("cardID")
                         ?.let { CardScreen(cardViewModel, navController, cardViewModel.getCardFromID(it)) }
@@ -250,7 +234,7 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
     }
 }
     @Composable
-        fun CardRow(cards: List<ShownCards>) {
+        fun CardRow(cards: List<ShownCards>, navController: NavController) {
             when (cards.size > 3) {
                 true -> {
                     val startCard = (0..cards.size-3).random()
@@ -259,7 +243,7 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         items(cards.subList(startCard, startCard+3)) { card ->
-                            Card(card = card)
+                            Card(navController = navController, card = card)
                         }
                     }
                 }
@@ -320,7 +304,7 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
                         navController,
                     )
 
-                    CardRow(cards = cardViewModel.browseCards(Query("", "")))
+                    CardRow(cards = cardViewModel.browseCards(Query("", "")), navController = navController)
 
                     Row(
                         modifier = Modifier

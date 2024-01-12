@@ -223,10 +223,10 @@ class CardViewModel : ViewModel() {
                             }
                         }
                     }
-                    return ShownCards("", "")
+                    return getFavoritedFromID(cardID)
                 }
                 else -> {
-                    return ShownCards("", "")
+                    return getFavoritedFromID(cardID)
                 }
             }
         }
@@ -305,6 +305,15 @@ class CardViewModel : ViewModel() {
     }
     fun addFavorited(card: ShownCards) {
         favorites.add(card)
+    }
+
+    fun getFavoritedFromID(cardID: String): ShownCards {
+        for (favoriteCard in favorites) {
+            if (favoriteCard.id == cardID) {
+                return favoriteCard
+            }
+        }
+        return ShownCards("", "")
     }
 
     fun initDevice() {
