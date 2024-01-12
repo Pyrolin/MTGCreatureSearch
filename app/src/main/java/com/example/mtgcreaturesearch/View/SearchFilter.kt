@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.setValue
@@ -51,6 +52,7 @@ var plains: Boolean = false
 var island: Boolean = false
 var mountain: Boolean = false
 var forest: Boolean = false
+var textSearch: String = ""
 
 var tmp_mana: String = ""
 var tmp_toughness: String = ""
@@ -60,6 +62,7 @@ var tmp_plains: Boolean = false
 var tmp_island: Boolean = false
 var tmp_mountain: Boolean = false
 var tmp_forest: Boolean = false
+
 // Drop down menus
 @Composable
 fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: List<String>) {
@@ -143,7 +146,6 @@ fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: L
 @Composable
 fun CardList() {
     val data = listOf(
-        "Set" to listOf("","Option 1", "Option 2", "Option 3"),
         "Toughness" to listOf("","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
         "Power" to listOf("","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
         "Mana cost" to listOf("","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "X")
@@ -221,6 +223,42 @@ fun CardList() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun filterSearch(
+    modifier: Modifier = Modifier,
+) {
+    var searchQuery by remember { mutableStateOf(textSearch) }
+
+    androidx.compose.material3.TextField(
+        value = searchQuery,
+        onValueChange = { newValue ->
+            textSearch = newValue
+            searchQuery = newValue
+        },
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(
+        ),
+        trailingIcon = {
+            IconButton(onClick = {
+                searchQuery = ""
+                textSearch = ""
+            }) {
+                androidx.compose.material3.Icon(
+                    painter = painterResource(id = R.drawable.reset_text),
+                    contentDescription = "Clear text"
+                )
+            }
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.White),
+        placeholder = {
+            androidx.compose.material3.Text(text = "Search Keyword...")
+        }
+    )
+}
+
 //Actual composable
 @Composable
 fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
@@ -291,10 +329,14 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
                             island = false
                             mountain = false
                             forest = false
+                            textSearch = ""
                             navController.navigate("filterBar")
                         }
                 )
             }
+
+            filterSearch()
+
             CardList()
 
             Box(
@@ -327,7 +369,8 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController) {
                                 island,
                                 mountain,
                                 forest,
-                                queryString
+                                queryString,
+                                textSearch
                             )
                             navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
                         }

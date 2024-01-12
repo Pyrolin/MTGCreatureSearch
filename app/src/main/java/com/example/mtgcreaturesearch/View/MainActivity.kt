@@ -164,6 +164,7 @@ fun SearchBar(
     )
 }
 
+
 @Composable
 fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifier: Modifier, backgroundImage: Int) {
     // Bottom Tab Bar
