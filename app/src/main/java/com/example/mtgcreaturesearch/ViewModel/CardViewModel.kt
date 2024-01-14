@@ -30,7 +30,7 @@ var favorites: MutableList<ShownCards> =  mutableListOf()
 var devideID = ""
 
 sealed interface CardUiState {
-    data class Success(val photos: List<Data>) : CardUiState
+    data class Success(val data: List<Data>) : CardUiState
     object Error : CardUiState
     object Loading : CardUiState
 }
@@ -178,13 +178,18 @@ class CardViewModel : ViewModel() {
         return when (val currentState = cardUiState) {
             is CardUiState.Success -> {
                 val cards = mutableListOf<ShownCards>()
-                for (i in 0 until currentState.photos.size) {
-                    val photo = currentState.photos[i]
-                    if (photo.layout == "transform") {
-                        val card = photo.card_faces?.get(0)?.image_uris?.let {
+                for (i in 0 until currentState.data.size) {
+                    val data = currentState.data[i]
+                    if (data.layout == "transform") {
+                        val card = data.card_faces?.get(0)?.image_uris?.let {
                             ShownCards(
                                 it.large,
-                                photo.id
+                                data.id,
+                                data.toughness,
+                                data.power,
+                                data.mana_cost,
+                                data.layout,
+                                data.colors
                             )
                         }
                         if (card != null) {
@@ -193,7 +198,17 @@ class CardViewModel : ViewModel() {
                             cards
                         }
                     } else {
-                        val card = photo.image_uris?.let { ShownCards(it.large, photo.id) }
+                        val card = data.image_uris?.let {
+                                ShownCards(
+                                    it.small,
+                                    data.id,
+                                    data.toughness,
+                                    data.power,
+                                    data.mana_cost,
+                                    data.layout,
+                                    data.colors
+                                )
+                        }
                         if (card != null) {
                             cards.add(card)
 //                            println(card.url)
@@ -212,7 +227,7 @@ class CardViewModel : ViewModel() {
 //                println(cards[52].url)
 //                println(currentState.photos[52].image_uris?.small)
 //                println(currentState.photos[52].card_faces?.get(0)?.image_uris?.small)
-                println(currentState.photos.size)
+                println(currentState.data.size)
 //                println(currentState.photos[0])
 //                println(currentState.photos[174])
                 println(cards.size)
@@ -235,13 +250,33 @@ class CardViewModel : ViewModel() {
             //val cards: MutableList<ShownCards> = mutableListOf()
             return when (val currentState=cardUiState){
                 is CardUiState.Success ->{
-                    for (i in 0 until currentState.photos.size){
-                        if(currentState.photos[i].id == cardID) {
-                            if (currentState.photos[i].layout=="transform"){
-                                return currentState.photos[i].card_faces?.get(0)?.image_uris?.let { ShownCards(it.large, currentState.photos[i].id) }!!
+                    for (i in 0 until currentState.data.size){
+                        if(currentState.data[i].id == cardID) {
+                            val data = currentState.data[i]
+                            if (data.layout=="transform"){
+                                return data.card_faces?.get(0)?.image_uris?.let {
+                                    ShownCards(it.small,
+                                        data.id,
+                                        data.toughness,
+                                        data.power,
+                                        data.mana_cost,
+                                        data.layout,
+                                        data.colors
+                                    )
+                                }!!
 
                             } else {
-                                return currentState.photos[i].image_uris?.let { ShownCards(it.large, currentState.photos[i].id) }!!
+                                return data.image_uris?.let {
+                                    ShownCards(
+                                        it.small,
+                                        data.id,
+                                        data.toughness,
+                                        data.power,
+                                        data.mana_cost,
+                                        data.layout,
+                                        data.colors
+                                    )
+                                }!!
                             }
                         }
                     }
@@ -257,7 +292,7 @@ class CardViewModel : ViewModel() {
         favorites_collection.document(devideID).get().addOnSuccessListener { document ->
             if (document != null) {
                 if (document.data?.get("favorites") != null) {
-                    val fetchedFavorites = document.data?.get("favorites") as MutableList<HashMap<String, String>>
+                    val fetchedFavorites = document.data?.get("favorites") as MutableList<HashMap<String, Any>>
 
                     favorites = makeFavoritesList(fetchedFavorites)
                 }
@@ -265,32 +300,53 @@ class CardViewModel : ViewModel() {
         }
     }
 
-    fun makeFavoritesList(cardMapList: MutableList<HashMap<String, String>>): MutableList<ShownCards> {
+    fun makeFavoritesList(cardMapList: MutableList<HashMap<String, Any>>): MutableList<ShownCards> {
         val cardList: MutableList<ShownCards> = mutableListOf()
 
         cardMapList.forEach { it ->
             var id = ""
             var url = ""
+            var toughness = ""
+            var power = ""
+            var mana_cost = ""
+            var layout = ""
+            var colors = mutableListOf<String>()
+
             it.forEach { (key, value) ->
                 if (key == "id") {
-                    id = value
+                    id = value.toString()
                 } else if (key == "url") {
-                    url = value
+                    url = value.toString()
+                } else if (key == "toughness") {
+                    toughness = value.toString()
+                } else if (key == "power") {
+                    power = value.toString()
+                } else if (key == "mana_cost") {
+                    mana_cost = value.toString()
+                } else if (key == "layout") {
+                    layout = value.toString()
+                } else if (key == "colors") {
+                    colors = value as MutableList<String>
                 }
             }
-            cardList.add(ShownCards(url, id))
+            cardList.add(ShownCards(url, id, toughness, power, mana_cost, layout, colors))
         }
 
         return cardList
     }
 
-    fun makeFirebaseList(cardList: MutableList<ShownCards>): MutableList<HashMap<String, String>> {
-        val cardMapList: MutableList<HashMap<String, String>> = mutableListOf()
+    fun makeFirebaseList(cardList: MutableList<ShownCards>): MutableList<HashMap<String, Any?>> {
+        val cardMapList: MutableList<HashMap<String, Any?>> = mutableListOf()
 
         cardList.forEach { card ->
             val data = hashMapOf(
                 "id" to card.id,
-                "url" to card.url
+                "url" to card.url,
+                "toughness" to card.toughness,
+                "power" to card.power,
+                "mana_cost" to card.mana_cost,
+                "layout" to card.mana_cost,
+                "colors" to card.colors
             )
             cardMapList.add(data)
         }
@@ -335,7 +391,7 @@ class CardViewModel : ViewModel() {
                 return favoriteCard
             }
         }
-        return ShownCards("", "")
+        return ShownCards("", "", "", "", "", "", mutableListOf())
     }
 
     fun initDevice() {
