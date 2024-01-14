@@ -313,8 +313,8 @@ class CardViewModel : ViewModel() {
         return cardList
     }
 
-    fun makeFirebaseList(cardList: MutableList<ShownCards>): MutableList<HashMap<String, Any>> {
-        val cardMapList: MutableList<HashMap<String, Any>> = mutableListOf()
+    fun makeFirebaseList(cardList: MutableList<ShownCards>): MutableList<HashMap<String, Any?>> {
+        val cardMapList: MutableList<HashMap<String, Any?>> = mutableListOf()
 
         cardList.forEach { card ->
             val data = hashMapOf(
