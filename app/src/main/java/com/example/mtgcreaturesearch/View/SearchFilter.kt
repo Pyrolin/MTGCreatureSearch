@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mtgcreaturesearch.R
+import com.example.mtgcreaturesearch.View.BottomBar
 import com.example.mtgcreaturesearch.View.Title
 import com.example.mtgcreaturesearch.View.queryString
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
@@ -309,7 +310,24 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, sta
                         .size(50.dp)
                         .background(Color.Transparent)
                         .clickable {
-                            navController.navigate(startDestination)
+                            if (startDestination == "browseScreen") {
+                                val query = cardViewModel.getQuery(
+                                    mana,
+                                    toughness,
+                                    power,
+                                    swamp,
+                                    plains,
+                                    island,
+                                    mountain,
+                                    forest,
+                                    queryString,
+                                    textSearch
+                                )
+
+                                navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+                            } else {
+                                navController.navigate("favoritesScreen?cmc=${mana}&toughness=${toughness}&power=${power}&swamp=${swamp}&plains=${plains}&island=${island}&mountain=${mountain}&forest=${forest}&text=${textSearch}")
+                            }
                         }
                 )
                 
@@ -362,82 +380,36 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, sta
                             mountain = tmp_mountain
                             forest = tmp_forest
 
-                            val query = cardViewModel.getQuery(
-                                mana,
-                                toughness,
-                                power,
-                                swamp,
-                                plains,
-                                island,
-                                mountain,
-                                forest,
-                                queryString,
-                                textSearch
-                            )
-                            navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+                            if (startDestination == "browseScreen") {
+                                val query = cardViewModel.getQuery(
+                                    mana,
+                                    toughness,
+                                    power,
+                                    swamp,
+                                    plains,
+                                    island,
+                                    mountain,
+                                    forest,
+                                    queryString,
+                                    textSearch
+                                )
+
+                                navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+
+                            } else {
+                                navController.navigate("favoritesScreen?cmc=${mana}&toughness=${toughness}&power=${power}&swamp=${swamp}&plains=${plains}&island=${island}&mountain=${mountain}&forest=${forest}&text=${textSearch}")
+                            }
+
+
                         }
                 )
             }
 
             Spacer(modifier = Modifier.weight(1f))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.filter_bottom_background),
-                    contentDescription = "Background Image",
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-
-                // Bottom Tab Bar in a Row
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(70.dp) // Set the height of the Row
-                        .padding(top = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically //
-                ) {
-
-                    Image(
-                        painter = painterResource(id = R.drawable.burgermenu_hvid),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                navController.navigate("HomeScreen")
-                            }
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.search),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                navController.navigate("BrowseScreen")
-                            }
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.favorite_hvid),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(Color.Transparent)
-                            .clickable {
-                                navController.navigate("favoritesScreen")
-                            }
-                    )
-                }
-            }
-
+            BottomBar(navController = navController, cardViewModel = cardViewModel, modifier = Modifier
+                .fillMaxWidth()
+                .height(55.dp),
+                R.drawable.filter_bottom_background)
         }
     }
 }

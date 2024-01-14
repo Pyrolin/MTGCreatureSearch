@@ -94,7 +94,34 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
-                composable("favoritesScreen") { FavoritesScreen(cardViewModel,navController) }
+                composable(
+                    route = "favoritesScreen?cmc={cmc}&toughness={toughness}&power={power}&swamp={swamp}&plains={plains}&island={island}&mountain={mountain}&forest={forest}&text={text}",
+                    arguments = listOf(navArgument("cmc") {defaultValue = "0.0"},
+                        navArgument("toughness") {defaultValue = ""},
+                        navArgument("power") {defaultValue = ""},
+                        navArgument("swamp") {defaultValue = "false"},
+                        navArgument("plains") {defaultValue = "false"},
+                        navArgument("island") {defaultValue = "false"},
+                        navArgument("mountain") {defaultValue = "false"},
+                        navArgument("forest") {defaultValue = "false"},
+                        navArgument("text") {defaultValue = ""},
+
+                        )) {
+                        backStackEntry ->
+                    val cmc = backStackEntry.arguments?.getString("cmc")
+                    val toughness = backStackEntry.arguments?.getString("toughness")
+                    val power = backStackEntry.arguments?.getString("power")
+                    val swamp = backStackEntry.arguments?.getString("swamp")
+                    val plains = backStackEntry.arguments?.getString("plains")
+                    val island = backStackEntry.arguments?.getString("island")
+                    val mountain = backStackEntry.arguments?.getString("mountain")
+                    val forest = backStackEntry.arguments?.getString("forest")
+                    val text = backStackEntry.arguments?.getString("text")
+
+                    val filter = cardViewModel.getFavoriteQuery(cmc, toughness, power, swamp, plains, island, mountain, forest, text)
+
+                    FavoritesScreen(cardViewModel, navController, filter)
+                }
                 composable(
                     route  = "filterBar/{startDestination}",
                     arguments = listOf(navArgument("startDestination") { type = NavType.StringType })
@@ -236,7 +263,7 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
                     .size(30.dp)
                     .background(Color.Transparent)
                     .clickable {
-                        navController.navigate("favoritesScreen")
+                        navController.navigate("favoritesScreen?cmc=${mana}&toughness=${toughness}&power=${power}&swamp=${swamp}&plains=${plains}&island=${island}&mountain=${mountain}&forest=${forest}&text=${textSearch}")
                     }
             )
         }
@@ -354,7 +381,7 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
                                 .height(50.dp)
                                 .background(Color(0xFFFFA500))
                                 .clickable {
-                                    navController.navigate("favoritesScreen")
+                                    navController.navigate("favoritesScreen?cmc=${mana}&toughness=${toughness}&power=${power}&swamp=${swamp}&plains=${plains}&island=${island}&mountain=${mountain}&forest=${forest}&text=${textSearch}")
                                 },
                             contentAlignment = Alignment.Center
                         ) {

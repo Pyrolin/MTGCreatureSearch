@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mtgcreaturesearch.Model.Data
@@ -18,6 +19,7 @@ import com.google.firebase.installations.FirebaseInstallations
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import java.util.Locale
 
 //Filler
 
@@ -172,6 +174,55 @@ class CardViewModel : ViewModel() {
         return Query(order,q)
     }
 
+    fun getFavoriteQuery(
+        cmc: String? = "0.0",
+        toughness: String? = "",
+        power: String? = "",
+        swamp: String? = "false",
+        plains: String? = "false",
+        island: String? = "false",
+        mountain: String? = "false",
+        forest: String? = "false",
+        text: String? = ""
+    ): ShownCards {
+
+        var cmcDouble = 0.0
+        if (cmc != null) {
+            if (cmc.isNotEmpty()) {
+                cmcDouble = cmc?.toDouble()!!
+            }
+        }
+        val swampBoolean = swamp.toBoolean()
+        val plainsBoolean = plains.toBoolean()
+        val islandBoolean = island.toBoolean()
+        val mountainBoolean = mountain.toBoolean()
+        val forestBoolean = forest.toBoolean()
+
+        val colors = mutableListOf<String>()
+
+        if (swampBoolean) {
+            colors.add("B")
+        }
+
+        if (plainsBoolean) {
+            colors.add("W")
+        }
+
+        if (islandBoolean) {
+            colors.add("U")
+        }
+
+        if (mountainBoolean) {
+            colors.add("R")
+        }
+
+        if (forestBoolean) {
+            colors.add("G")
+        }
+
+        return ShownCards("","",toughness,power,cmcDouble,"",colors,text)
+    }
+
     fun browseCards(query: Query): List<ShownCards> {
         getCardPhotos(query)
         //val cards: MutableList<ShownCards> = mutableListOf()
@@ -187,9 +238,10 @@ class CardViewModel : ViewModel() {
                                 data.id,
                                 data.toughness,
                                 data.power,
-                                data.mana_cost,
+                                data.cmc,
                                 data.layout,
-                                data.colors
+                                data.colors,
+                                data.oracle_text
                             )
                         }
                         if (card != null) {
@@ -200,13 +252,14 @@ class CardViewModel : ViewModel() {
                     } else {
                         val card = data.image_uris?.let {
                                 ShownCards(
-                                    it.small,
+                                    it.large,
                                     data.id,
                                     data.toughness,
                                     data.power,
-                                    data.mana_cost,
+                                    data.cmc,
                                     data.layout,
-                                    data.colors
+                                    data.colors,
+                                    data.oracle_text
                                 )
                         }
                         if (card != null) {
@@ -242,8 +295,41 @@ class CardViewModel : ViewModel() {
     }
 
 
-    fun favoriteCards(): List<ShownCards> {
-        return favorites
+    fun favoriteCards(filter: ShownCards): List<ShownCards> {
+
+        val filteredCards: MutableList<ShownCards> = mutableListOf()
+
+        for (card in favorites) {
+            var hasColors = true
+
+            for (color in filter.colors!!) {
+                if (!card.colors?.contains(color)!!) {
+                    hasColors = false
+                    break
+                }
+            }
+
+            var hasText = true
+
+            val textList: List<String>? = filter.oracle_text?.split(" ")?.map { it.trim() }
+
+            Log.d("FILTER", "Card text: " + card.cmc)
+
+            if (filter.oracle_text!!.isNotEmpty()) {
+                for (word in textList!!) {
+                    if (!card.oracle_text?.lowercase(Locale.ROOT)?.contains(word)!!) {
+                        hasText = false
+                        break
+                    }
+                }
+            }
+
+            if ((filter.toughness?.isEmpty() == true || card.toughness == filter.toughness) && (filter.power?.isEmpty() == true || card.power == filter.power) && (filter.cmc == 0.0 || card.cmc == filter.cmc) && hasColors && hasText) {
+                filteredCards.add(card)
+            }
+        }
+
+        return filteredCards
     }
 
     fun getCardFromID(cardID: String): ShownCards {
@@ -255,26 +341,29 @@ class CardViewModel : ViewModel() {
                             val data = currentState.data[i]
                             if (data.layout=="transform"){
                                 return data.card_faces?.get(0)?.image_uris?.let {
-                                    ShownCards(it.small,
+                                    ShownCards(it.large,
                                         data.id,
                                         data.toughness,
                                         data.power,
-                                        data.mana_cost,
+                                        data.cmc,
                                         data.layout,
-                                        data.colors
+                                        data.colors,
+                                        data.oracle_text
+
                                     )
                                 }!!
 
                             } else {
                                 return data.image_uris?.let {
                                     ShownCards(
-                                        it.small,
+                                        it.large,
                                         data.id,
                                         data.toughness,
                                         data.power,
-                                        data.mana_cost,
+                                        data.cmc,
                                         data.layout,
-                                        data.colors
+                                        data.colors,
+                                        data.oracle_text
                                     )
                                 }!!
                             }
@@ -308,9 +397,10 @@ class CardViewModel : ViewModel() {
             var url = ""
             var toughness = ""
             var power = ""
-            var mana_cost = ""
+            var cmc = 0.0
             var layout = ""
             var colors = mutableListOf<String>()
+            var oracle_text = ""
 
             it.forEach { (key, value) ->
                 if (key == "id") {
@@ -321,15 +411,17 @@ class CardViewModel : ViewModel() {
                     toughness = value.toString()
                 } else if (key == "power") {
                     power = value.toString()
-                } else if (key == "mana_cost") {
-                    mana_cost = value.toString()
+                } else if (key == "cmc") {
+                    cmc = value as Double
                 } else if (key == "layout") {
                     layout = value.toString()
                 } else if (key == "colors") {
                     colors = value as MutableList<String>
+                } else if (key == "oracle_text") {
+                    oracle_text = value.toString()
                 }
             }
-            cardList.add(ShownCards(url, id, toughness, power, mana_cost, layout, colors))
+            cardList.add(ShownCards(url, id, toughness, power, cmc, layout, colors, oracle_text))
         }
 
         return cardList
@@ -344,9 +436,10 @@ class CardViewModel : ViewModel() {
                 "url" to card.url,
                 "toughness" to card.toughness,
                 "power" to card.power,
-                "mana_cost" to card.mana_cost,
-                "layout" to card.mana_cost,
-                "colors" to card.colors
+                "cmc" to card.cmc,
+                "layout" to card.cmc,
+                "colors" to card.colors,
+                "oracle_text" to card.oracle_text
             )
             cardMapList.add(data)
         }
@@ -391,7 +484,7 @@ class CardViewModel : ViewModel() {
                 return favoriteCard
             }
         }
-        return ShownCards("", "", "", "", "", "", mutableListOf())
+        return ShownCards("", "", "", "", 0.0, "", mutableListOf(), "")
     }
 
     fun initDevice() {
