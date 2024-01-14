@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.Query
 import com.example.mtgcreaturesearch.Model.ShownCards
+import com.example.mtgcreaturesearch.View.queryString
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.installations.FirebaseInstallations
@@ -80,16 +81,34 @@ class CardViewModel : ViewModel() {
         mountain: Boolean = false,
         forest: Boolean = false,
         search: String = "",
+        text: String = ""
     ): Query {
 
-        var order = "name"
+        val order = "name"
         var q = ""
         if (search.isNotEmpty()) {
             q += search
+            if (text.isNotEmpty()) {
+                q += if (text.contains(" ")) {
+                    "+%28oracle%3A${text.replace(" ", " oracle%3A")})"
+                } else {
+                    "+oracle%3A${text}"
+                }
+            }
             q += "+type%3Acreature+%28game%3Apaper%29"
         }
         else {
-            q += "type%3Acreature+%28game%3Apaper%29"
+            if (text.isNotEmpty()) {
+                q += if (text.contains(" ")) {
+                    "%28oracle%3A${text.replace(" ", " oracle%3A")})"
+                } else {
+                    "oracle%3A${text}"
+                }
+
+                q += "+type%3Acreature+%28game%3Apaper%29"
+            } else {
+                q += "type%3Acreature+%28game%3Apaper%29"
+            }
         }
 
 
@@ -147,6 +166,9 @@ class CardViewModel : ViewModel() {
         if (power.isNotEmpty()) {
             q += "+pow%3D$power"
         }
+
+        Log.d("QUERY", q)
+
         return Query(order,q)
     }
 
@@ -161,7 +183,7 @@ class CardViewModel : ViewModel() {
                     if (data.layout == "transform") {
                         val card = data.card_faces?.get(0)?.image_uris?.let {
                             ShownCards(
-                                it.small,
+                                it.large,
                                 data.id,
                                 data.toughness,
                                 data.power,
