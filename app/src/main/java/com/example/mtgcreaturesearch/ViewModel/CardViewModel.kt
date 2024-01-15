@@ -162,11 +162,19 @@ class CardViewModel : ViewModel() {
         }
 
         if (toughness.isNotEmpty()) {
-            q += "+tou%3D$toughness"
+            if (toughness == "16+") {
+                q += "+tou%3E%3D16"
+            } else {
+                q += "+tou%3D$toughness"
+            }
         }
 
         if (power.isNotEmpty()) {
-            q += "+pow%3D$power"
+            if (power == "16+") {
+                q += "+pow%3E%3D16"
+            } else {
+                q += "+pow%3D$power"
+            }
         }
 
         Log.d("QUERY", q)
@@ -345,7 +353,7 @@ class CardViewModel : ViewModel() {
 
                 if (filter.toughness?.isNotEmpty() == true) {
                     for (face in card.card_faces!!) {
-                        if ((face.toughness != null) && face.toughness == filter.toughness || (face.toughness?.toIntOrNull() == null && filter.toughness == "0") || (face.toughness?.toIntOrNull() != null && filter.toughness == "16+" && face.toughness.toInt() >= 16)) {
+                        if ((face.toughness != null) && face.toughness == filter.toughness || (face.toughness?.toIntOrNull() == null && filter.toughness == "0") || (face.toughness?.toIntOrNull() != null && filter.toughness == "16+" && face.toughness.toInt() >= 16) || (face.power == "∞" && filter.power == "16+")) {
                             hasToughness = true
                         }
                     }
@@ -355,7 +363,7 @@ class CardViewModel : ViewModel() {
 
                 if (filter.power?.isNotEmpty() == true) {
                     for (face in card.card_faces!!) {
-                        if ((face.power != null) && face.power == filter.power || (face.power?.toIntOrNull() == null && filter.power == "0") || (face.power?.toIntOrNull() != null && filter.power == "16+" && face.power.toInt() >= 16)) {
+                        if ((face.power != null) && face.power == filter.power || (face.power?.toIntOrNull() == null && filter.power == "0") || (face.power?.toIntOrNull() != null && filter.power == "16+" && face.power.toInt() >= 16) || (face.power == "∞" && filter.power == "16+")) {
                             hasPower = true
                         }
                     }
@@ -386,7 +394,7 @@ class CardViewModel : ViewModel() {
 
                 if (filter.toughness == "16+" && !hasToughness && card.toughness?.toIntOrNull() != null) {
                     hasToughness = (card.toughness?.toInt()!! >= 16)
-                } else if (card.toughness?.toIntOrNull() == null && filter.toughness == "0") {
+                } else if ((card.toughness?.toIntOrNull() == null && filter.toughness == "0") || (card.power == "∞" && filter.power == "16+")) {
                     hasToughness = true
                 }
 
@@ -395,7 +403,7 @@ class CardViewModel : ViewModel() {
 
                 if (filter.power == "16+" && !hasPower && card.power?.toIntOrNull() != null) {
                     hasPower = (card.power?.toInt()!! >= 16)
-                } else if (card.power?.toIntOrNull() == null && filter.power == "0") {
+                } else if ((card.power?.toIntOrNull() == null && filter.power == "0") || (card.power == "∞" && filter.power == "16+")) {
                     hasPower = true
                 }
             }
