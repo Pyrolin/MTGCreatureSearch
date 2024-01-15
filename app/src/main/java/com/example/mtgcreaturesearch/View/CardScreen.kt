@@ -62,7 +62,7 @@ fun CardScreen(cardViewModel: CardViewModel = viewModel(), navController: NavCon
             .align(Alignment.BottomCenter)
             .fillMaxWidth()
             .height(55.dp),
-            backgroundImage = R.drawable.black_bar)
+            backgroundImage = R.drawable.card_blurred)
     }
 
 }
