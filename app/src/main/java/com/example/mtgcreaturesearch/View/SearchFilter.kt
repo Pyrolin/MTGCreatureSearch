@@ -256,7 +256,7 @@ fun filterSearch(
             .fillMaxWidth()
             .background(Color.White),
         placeholder = {
-            androidx.compose.material3.Text(text = "Search Keyword...")
+            androidx.compose.material3.Text(text = "Search Textbox...")
         }
     )
 }
