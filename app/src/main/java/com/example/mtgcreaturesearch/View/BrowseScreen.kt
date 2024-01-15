@@ -106,6 +106,8 @@ fun CardGrid(cardViewModel: CardViewModel = viewModel(), navController: NavContr
         columns = GridCells.Fixed(3),
 //        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
         modifier = Modifier.fillMaxSize()
+            .fillMaxSize()
+            .padding(bottom = 55.dp)
     ) {
         items(cards) { card ->
             Card(cardViewModel, navController, card)
