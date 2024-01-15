@@ -326,8 +326,6 @@ class CardViewModel : ViewModel() {
                     }
                 }
 
-                Log.d("COLOR", hasColors.toString())
-
                 val textList: List<String>? = filter.oracle_text?.split(" ")?.map { it.trim() }
 
                 if (filter.oracle_text!!.isNotEmpty()) {
@@ -345,12 +343,8 @@ class CardViewModel : ViewModel() {
                     }
                 }
 
-                Log.d("TEXT", hasText.toString())
-
-
                 if (filter.toughness?.isNotEmpty() == true) {
                     for (face in card.card_faces!!) {
-                        if ((face.toughness != null) && face.toughness == filter.toughness || (filter.toughness == "16+" && face.toughness?.toInt()!! >= 16)) {
                             hasToughness = true
                         }
                     }
@@ -358,19 +352,15 @@ class CardViewModel : ViewModel() {
                     hasToughness = true
                 }
 
-                Log.d("TOUGHNESS", hasToughness.toString())
-
                 if (filter.power?.isNotEmpty() == true) {
                     for (face in card.card_faces!!) {
-                        if ((face.power != null) && face.power == filter.power || (filter.power == "16+" && face.power?.toInt()!! >= 16)) {
+                        if ((face.power != null) && face.power == filter.power || (face.power?.toIntOrNull() == null && filter.power == "0") || (face.power?.toIntOrNull() != null && filter.power == "16+" && face.power.toInt() >= 16)) {
                             hasPower = true
                         }
                     }
                 } else {
                     hasPower = true
                 }
-
-                Log.d("POWER", hasPower.toString())
 
             } else {
                 for (color in filter.colors!!) {
@@ -395,6 +385,8 @@ class CardViewModel : ViewModel() {
 
                 if (filter.toughness == "16+" && !hasToughness && card.toughness?.toIntOrNull() != null) {
                     hasToughness = (card.toughness?.toInt()!! >= 16)
+                } else if (card.toughness?.toIntOrNull() == null && filter.toughness == "0") {
+                    hasToughness = true
                 }
 
                 hasPower = (filter.power?.isEmpty() == true || card.power == filter.power)
@@ -402,6 +394,8 @@ class CardViewModel : ViewModel() {
 
                 if (filter.power == "16+" && !hasPower && card.power?.toIntOrNull() != null) {
                     hasPower = (card.power?.toInt()!! >= 16)
+                } else if (card.power?.toIntOrNull() == null && filter.power == "0") {
+                    hasPower = true
                 }
             }
 
