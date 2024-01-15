@@ -7,7 +7,7 @@ data class CardFace(
 //    val artist: String,
 //    val artist_id: String,
 //    val color_indicator: List<String>,
-//    val colors: List<String>,
+    val colors: List<String>? =null,
 //    val defense: String,
 //    val flavor_name: String,
 //    val flavor_text: String,
@@ -16,8 +16,8 @@ data class CardFace(
 //    val mana_cost: String,
 //    val name: String,
 //    val `object`: String,
-//    val oracle_text: String,
-//    val power: String,
-//    val toughness: String,
+    val oracle_text: String?=null,
+    val power: String?=null,
+    val toughness: String?=null,
 //    val type_line: String
 )

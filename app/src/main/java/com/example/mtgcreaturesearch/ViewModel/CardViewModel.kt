@@ -6,19 +6,19 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mtgcreaturesearch.Model.CardFace
 import com.example.mtgcreaturesearch.Model.Data
+import com.example.mtgcreaturesearch.Model.ImageUrisX
 import com.example.mtgcreaturesearch.Model.Query
 import com.example.mtgcreaturesearch.Model.ShownCards
-import com.example.mtgcreaturesearch.View.queryString
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.installations.FirebaseInstallations
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import java.io.IOException
+import java.io.Serializable
 import java.util.Locale
 
 //Filler
@@ -224,7 +224,7 @@ class CardViewModel : ViewModel() {
             colors.add("G")
         }
 
-        return ShownCards("","",toughness,power,cmcDouble,"",colors,text)
+        return ShownCards("","",toughness,power,cmcDouble,"",colors,text, mutableListOf())
     }
 
     fun browseCards(query: Query): List<ShownCards> {
@@ -245,7 +245,8 @@ class CardViewModel : ViewModel() {
                                 data.cmc,
                                 data.layout,
                                 data.colors,
-                                data.oracle_text
+                                data.oracle_text,
+                                data.card_faces
                             )
                         }
                         if (card != null) {
@@ -263,7 +264,8 @@ class CardViewModel : ViewModel() {
                                     data.cmc,
                                     data.layout,
                                     data.colors,
-                                    data.oracle_text
+                                    data.oracle_text,
+                                    data.card_faces
                                 )
                         }
                         if (card != null) {
@@ -305,38 +307,102 @@ class CardViewModel : ViewModel() {
 
         for (card in favorites) {
             var hasColors = true
-
-            for (color in filter.colors!!) {
-                if (!card.colors?.contains(color)!!) {
-                    hasColors = false
-                    break
-                }
-            }
-
             var hasText = true
+            var hasToughness = false
+            var hasPower = false
 
-            val textList: List<String>? = filter.oracle_text?.split(" ")?.map { it.trim() }
+            if (card.card_faces?.size == 2) {
 
-            if (filter.oracle_text!!.isNotEmpty()) {
-                for (word in textList!!) {
-                    if (!card.oracle_text?.lowercase(Locale.ROOT)?.contains(word)!!) {
-                        hasText = false
+                for (color in filter.colors!!) {
+                    var foundColor = true
+                    for (face in card.card_faces!!) {
+                        if ((face.colors != null) && !face.colors.contains(color) && !foundColor) {
+                            hasColors = false
+                        } else if ((face.colors == null) || !face.colors.contains(color)) {
+                            foundColor = false
+                        } else if ((face.colors == null) && !foundColor) {
+                            hasColors = false
+                        }
+                    }
+                }
+
+                Log.d("COLOR", hasColors.toString())
+
+                val textList: List<String>? = filter.oracle_text?.split(" ")?.map { it.trim() }
+
+                if (filter.oracle_text!!.isNotEmpty()) {
+                    for (word in textList!!) {
+                        var foundText = true
+                        for (face in card.card_faces!!) {
+                            if ((face.oracle_text != null) && !face.oracle_text.lowercase(Locale.ROOT).contains(word) && !foundText) {
+                                hasText = false
+                            } else if ((face.oracle_text == null) || !card.oracle_text?.lowercase(Locale.ROOT)?.contains(word)!!) {
+                                foundText = false
+                            } else if ((face.oracle_text == null) && !foundText) {
+                                hasText = false
+                            }
+                        }
+                    }
+                }
+
+                Log.d("TEXT", hasText.toString())
+
+
+                if (filter.toughness?.isNotEmpty() == true) {
+                    for (face in card.card_faces!!) {
+                        if ((face.toughness != null) && face.toughness == filter.toughness || (filter.toughness == "16+" && face.toughness?.toInt()!! >= 16)) {
+                            hasToughness = true
+                        }
+                    }
+                } else {
+                    hasToughness = true
+                }
+
+                Log.d("TOUGHNESS", hasToughness.toString())
+
+                if (filter.power?.isNotEmpty() == true) {
+                    for (face in card.card_faces!!) {
+                        if ((face.power != null) && face.power == filter.power || (filter.power == "16+" && face.power?.toInt()!! >= 16)) {
+                            hasPower = true
+                        }
+                    }
+                } else {
+                    hasPower = true
+                }
+
+                Log.d("POWER", hasPower.toString())
+
+            } else {
+                for (color in filter.colors!!) {
+                    if (!card.colors?.contains(color)!!) {
+                        hasColors = false
                         break
                     }
                 }
-            }
 
-            var hasToughness = (filter.toughness?.isEmpty() == true || card.toughness == filter.toughness)
+                val textList: List<String>? = filter.oracle_text?.split(" ")?.map { it.trim() }
 
-            if (filter.toughness == "16+" && !hasToughness && card.toughness?.toIntOrNull() != null) {
-                hasToughness = (card.toughness?.toInt()!! >= 16)
-            }
+                if (filter.oracle_text!!.isNotEmpty()) {
+                    for (word in textList!!) {
+                        if (!card.oracle_text?.lowercase(Locale.ROOT)?.contains(word)!!) {
+                            hasText = false
+                            break
+                        }
+                    }
+                }
 
-            var hasPower = (filter.power?.isEmpty() == true || card.power == filter.power)
+                hasToughness = (filter.toughness?.isEmpty() == true || card.toughness == filter.toughness)
+
+                if (filter.toughness == "16+" && !hasToughness && card.toughness?.toIntOrNull() != null) {
+                    hasToughness = (card.toughness?.toInt()!! >= 16)
+                }
+
+                hasPower = (filter.power?.isEmpty() == true || card.power == filter.power)
 
 
-            if (filter.power == "16+" && !hasPower && card.power?.toIntOrNull() != null) {
-                hasPower = (card.power?.toInt()!! >= 16)
+                if (filter.power == "16+" && !hasPower && card.power?.toIntOrNull() != null) {
+                    hasPower = (card.power?.toInt()!! >= 16)
+                }
             }
 
             if (hasToughness && hasPower && (filter.cmc == -1.0 || card.cmc == filter.cmc) && hasColors && hasText) {
@@ -363,8 +429,8 @@ class CardViewModel : ViewModel() {
                                         data.cmc,
                                         data.layout,
                                         data.colors,
-                                        data.oracle_text
-
+                                        data.oracle_text,
+                                        data.card_faces
                                     )
                                 }!!
 
@@ -378,7 +444,8 @@ class CardViewModel : ViewModel() {
                                         data.cmc,
                                         data.layout,
                                         data.colors,
-                                        data.oracle_text
+                                        data.oracle_text,
+                                        data.card_faces
                                     )
                                 }!!
                             }
@@ -416,6 +483,7 @@ class CardViewModel : ViewModel() {
             var layout = ""
             var colors = mutableListOf<String>()
             var oracle_text = ""
+            var card_faces = mutableListOf<CardFace>()
 
             it.forEach { (key, value) ->
                 if (key == "id") {
@@ -434,9 +502,27 @@ class CardViewModel : ViewModel() {
                     colors = value as MutableList<String>
                 } else if (key == "oracle_text") {
                     oracle_text = value.toString()
+                } else if (key == "card_faces") {
+                    val value_faces = value as MutableList<HashMap<String, Any?>>
+
+                    value_faces.forEach { face ->
+                        card_faces.add(CardFace(
+                            image_uris = face["large"]
+                            ?.let { it1 -> face["png"]
+                                ?.let { it2 -> face["small"]
+                                    ?.let { it3 -> ImageUrisX(it1 as String, it2 as String, it3 as String) } } },
+                            colors = face["colors"] as MutableList<String>,
+                            oracle_text = face["oracle_text"] as String,
+                            power =  face["power"] as String,
+                            toughness = face["toughness"] as String
+                        ))
+                    }
                 }
             }
-            cardList.add(ShownCards(url, id, toughness, power, cmc, layout, colors, oracle_text))
+
+
+
+            cardList.add(ShownCards(url, id, toughness, power, cmc, layout, colors, oracle_text, card_faces))
         }
 
         return cardList
@@ -446,16 +532,54 @@ class CardViewModel : ViewModel() {
         val cardMapList: MutableList<HashMap<String, Any?>> = mutableListOf()
 
         cardList.forEach { card ->
-            val data = hashMapOf(
-                "id" to card.id,
-                "url" to card.url,
-                "toughness" to card.toughness,
-                "power" to card.power,
-                "cmc" to card.cmc,
-                "layout" to card.cmc,
-                "colors" to card.colors,
-                "oracle_text" to card.oracle_text
-            )
+            val card_faces: MutableList<HashMap<String, Any?>> = mutableListOf()
+
+            card.card_faces?.forEach { card_face ->
+                val images = hashMapOf(
+                    "large" to card_face.image_uris?.large,
+                    "png" to card_face.image_uris?.png,
+                    "small" to card_face.image_uris?.small
+                )
+
+                val card_face_map = hashMapOf(
+                    "colors" to card_face.colors,
+                    "image_uris" to images,
+                    "oracle_text" to (card_face.oracle_text ?: ""),
+                    "power" to (card_face.power ?: ""),
+                    "toughness" to (card_face.toughness ?: "")
+                )
+
+                card_faces.add(card_face_map)
+            }
+
+            val data: HashMap<String, Any?>
+
+            if (card.card_faces?.size == 2) {
+                data = hashMapOf(
+                    "id" to card.id,
+                    "url" to card.url,
+                    "toughness" to "",
+                    "power" to "",
+                    "cmc" to card.cmc,
+                    "layout" to card.cmc,
+                    "colors" to mutableListOf<String>(),
+                    "oracle_text" to "",
+                    "card_faces" to card_faces
+                )
+            } else {
+                data = hashMapOf(
+                    "id" to card.id,
+                    "url" to card.url,
+                    "toughness" to card.toughness,
+                    "power" to card.power,
+                    "cmc" to card.cmc,
+                    "layout" to card.cmc,
+                    "colors" to card.colors,
+                    "oracle_text" to card.oracle_text,
+                    "card_faces" to card_faces
+                )
+            }
+
             cardMapList.add(data)
         }
 
@@ -499,7 +623,7 @@ class CardViewModel : ViewModel() {
                 return favoriteCard
             }
         }
-        return ShownCards("", "", "", "", 0.0, "", mutableListOf(), "")
+        return ShownCards("", "", "", "", 0.0, "", mutableListOf(), "", mutableListOf())
     }
 
     fun initDevice() {

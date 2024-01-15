@@ -50,14 +50,12 @@ import androidx.compose.runtime.setValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavController, card: ShownCards, setonClick: Boolean = true) {
+fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavController, card: ShownCards, setonClick: Boolean = true, flipped: Boolean = false) {
     Box(contentAlignment = Alignment.TopEnd) {
         ElevatedCard(
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 6.dp
             ),
-            modifier = Modifier.fillMaxSize(),
-//            .size(width = 110.dp, height = 153.dp),
             onClick = {
                 if (setonClick) {
                     navController.navigate("cardScreen/${card.id}")
@@ -66,8 +64,8 @@ fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavControlle
         ) {
             AsyncImage(
                 modifier = Modifier.fillMaxWidth(),
-                model = card.url,
-                contentDescription = "Translated description of what the image contains",
+                model = if (flipped) card.card_faces?.get(1)?.image_uris?.large else card.url,
+                contentDescription = "Image of the creature card",
                 alignment = Alignment.Center,
                 contentScale = ContentScale.FillWidth,
             )
@@ -96,7 +94,6 @@ fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavControlle
         }
     }
 }
-//val lazyPagingItems = pager.collectAsLazyPagingItems()
 
 
 @Composable

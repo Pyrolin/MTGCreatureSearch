@@ -26,9 +26,14 @@ import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 @Composable
-fun CardScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController, card: ShownCards) {
+fun CardScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController, card: ShownCards, flipped: Boolean = false) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Card(cardViewModel, navController, card, setonClick = false)
+        Image(
+            painter = painterResource(id = R.drawable.card_background),
+            contentDescription = "Background Image",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
         Column {
             Box(
                 modifier = Modifier
@@ -36,27 +41,33 @@ fun CardScreen(cardViewModel: CardViewModel = viewModel(), navController: NavCon
                     .padding(16.dp),
                 contentAlignment = Alignment.TopStart
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.backspace),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(30.dp)
-                        .background(Color.Transparent)
-                        .clickable {
-                            navController.popBackStack()
-                        }
-                )
-                //turn_card not implemented yet
-                Image(painter = painterResource(id = R.drawable.turn_card),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(30.dp)
-                        .background(Color.Transparent)
-                        .clickable {
-                            navController.popBackStack()
-                        }
+                Row {
+                    Image(
+                        painter = painterResource(id = R.drawable.backspace),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .background(Color.Transparent)
+                            .clickable {
+                                navController.popBackStack()
+                            }
                     )
+                    if (card.card_faces?.size == 2) {
+                        //turn_card not implemented yet
+                        Image(painter = painterResource(id = if (flipped) R.drawable.turn_card_active else R.drawable.turn_card),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(30.dp)
+                                .background(Color.Transparent)
+                                .clickable {
+                                    navController.popBackStack()
+                                    navController.navigate("cardScreen/${card.id}?flipped=${!flipped}")
+                                }
+                        )
+                    }
+                }
             }
+            Card(cardViewModel, navController, card, setonClick = false, flipped = flipped)
         }
         BottomBar(navController = navController, cardViewModel = cardViewModel, modifier = Modifier
             .align(Alignment.BottomCenter)

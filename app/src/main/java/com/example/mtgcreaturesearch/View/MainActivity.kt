@@ -131,11 +131,14 @@ class MainActivity : ComponentActivity() {
                         ?.let { SearchFilter(cardViewModel, navController, it) }
                 }
                 composable(
-                    route = "cardScreen/{cardID}",
-                    arguments = listOf(navArgument("cardID") { type = NavType.StringType })
+                    route = "cardScreen/{cardID}?flipped={flipped}",
+                    arguments = listOf(navArgument("cardID") { type = NavType.StringType },
+                        navArgument("flipped") {defaultValue = "false"})
                 ) {backStackEntry ->
+                    val flipped = backStackEntry.arguments?.getString("flipped")
+
                     backStackEntry.arguments?.getString("cardID")
-                        ?.let { CardScreen(cardViewModel, navController, cardViewModel.getCardFromID(it)) }
+                        ?.let { CardScreen(cardViewModel, navController, cardViewModel.getCardFromID(it), flipped = flipped.toBoolean()) }
                 }
             }
         }
