@@ -22,12 +22,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 @Composable
 
-fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: NavController) {
+fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: NavController, filter: ShownCards) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
@@ -89,7 +90,7 @@ fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: Na
             }
 
             Box(modifier = Modifier.padding(5.dp)) {
-                CardGrid(navController = navController, cards = cardViewModel.favoriteCards())
+                CardGrid(navController = navController, cards = cardViewModel.favoriteCards(filter))
             }
         }
 
