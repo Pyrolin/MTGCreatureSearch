@@ -175,7 +175,7 @@ class CardViewModel : ViewModel() {
     }
 
     fun getFavoriteQuery(
-        cmc: String? = "0.0",
+        cmc: String? = "-1.0",
         toughness: String? = "",
         power: String? = "",
         swamp: String? = "false",
@@ -186,10 +186,14 @@ class CardViewModel : ViewModel() {
         text: String? = ""
     ): ShownCards {
 
-        var cmcDouble = 0.0
+        var cmcDouble = -1.0
         if (cmc != null) {
             if (cmc.isNotEmpty()) {
-                cmcDouble = cmc?.toDouble()!!
+                if (cmc == "X") {
+                    cmcDouble = 0.0
+                } else {
+                    cmcDouble = cmc?.toDouble()!!
+                }
             }
         }
         val swampBoolean = swamp.toBoolean()
@@ -313,8 +317,6 @@ class CardViewModel : ViewModel() {
 
             val textList: List<String>? = filter.oracle_text?.split(" ")?.map { it.trim() }
 
-            Log.d("FILTER", "Card text: " + card.cmc)
-
             if (filter.oracle_text!!.isNotEmpty()) {
                 for (word in textList!!) {
                     if (!card.oracle_text?.lowercase(Locale.ROOT)?.contains(word)!!) {
@@ -324,7 +326,20 @@ class CardViewModel : ViewModel() {
                 }
             }
 
-            if ((filter.toughness?.isEmpty() == true || card.toughness == filter.toughness) && (filter.power?.isEmpty() == true || card.power == filter.power) && (filter.cmc == 0.0 || card.cmc == filter.cmc) && hasColors && hasText) {
+            var hasToughness = (filter.toughness?.isEmpty() == true || card.toughness == filter.toughness)
+
+            if (filter.toughness == "16+" && !hasToughness && card.toughness?.toIntOrNull() != null) {
+                hasToughness = (card.toughness?.toInt()!! >= 16)
+            }
+
+            var hasPower = (filter.power?.isEmpty() == true || card.power == filter.power)
+
+
+            if (filter.power == "16+" && !hasPower && card.power?.toIntOrNull() != null) {
+                hasPower = (card.power?.toInt()!! >= 16)
+            }
+
+            if (hasToughness && hasPower && (filter.cmc == -1.0 || card.cmc == filter.cmc) && hasColors && hasText) {
                 filteredCards.add(card)
             }
         }

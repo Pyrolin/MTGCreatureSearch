@@ -2,6 +2,7 @@ package com.example.mtgcreaturesearch.View
 
 import SearchFilter
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -96,7 +97,7 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(
                     route = "favoritesScreen?cmc={cmc}&toughness={toughness}&power={power}&swamp={swamp}&plains={plains}&island={island}&mountain={mountain}&forest={forest}&text={text}",
-                    arguments = listOf(navArgument("cmc") {defaultValue = "0.0"},
+                    arguments = listOf(navArgument("cmc") {defaultValue = "-1.0"},
                         navArgument("toughness") {defaultValue = ""},
                         navArgument("power") {defaultValue = ""},
                         navArgument("swamp") {defaultValue = "false"},
