@@ -345,6 +345,7 @@ class CardViewModel : ViewModel() {
 
                 if (filter.toughness?.isNotEmpty() == true) {
                     for (face in card.card_faces!!) {
+                        if ((face.toughness != null) && face.toughness == filter.toughness || (face.toughness?.toIntOrNull() == null && filter.toughness == "0") || (face.toughness?.toIntOrNull() != null && filter.toughness == "16+" && face.toughness.toInt() >= 16)) {
                             hasToughness = true
                         }
                     }
