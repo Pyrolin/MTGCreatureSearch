@@ -254,6 +254,7 @@ fun filterSearch(
         },
         modifier = modifier
             .fillMaxWidth()
+            .padding(16.dp)
             .background(Color.White),
         placeholder = {
             androidx.compose.material3.Text(text = "Search Textbox...")
