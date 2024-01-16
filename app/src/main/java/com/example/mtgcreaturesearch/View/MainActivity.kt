@@ -353,7 +353,7 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
                         navController,
                     )
 
-                    CardRow(cards = randomCards, navController = navController)
+                    CardRow(cards = cardViewModel.browseCards(Query("", "")), navController = navController)
 
                     Row(
                         modifier = Modifier
