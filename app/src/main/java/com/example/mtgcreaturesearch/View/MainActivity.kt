@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -57,6 +58,7 @@ import androidx.navigation.navArgument
 import com.example.mtgcreaturesearch.Model.Query
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
+import com.example.mtgcreaturesearch.ViewModel.CardRepository
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 import forest
 import island
@@ -70,12 +72,15 @@ import toughness
 
 var queryString = ""
 
+var randomCards: List<ShownCards> = mutableListOf()
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             val navController = rememberNavController()
-            val cardViewModel: CardViewModel = viewModel()
+            val cardViewModel: CardViewModel = CardViewModel()
 
             cardViewModel.initDevice()
 
@@ -344,7 +349,7 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
                         navController,
                     )
 
-                    CardRow(cards = cardViewModel.browseCards(Query("", "")), navController = navController)
+                    CardRow(cards = randomCards, navController = navController)
 
                     Row(
                         modifier = Modifier

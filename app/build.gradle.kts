@@ -92,4 +92,9 @@ dependencies {
     //Animations
     implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.16.0")
+
+    //Pagination
+    implementation("androidx.paging:paging-runtime:3.2.0-alpha06")
+    implementation("androidx.paging:paging-compose:1.0.0-alpha20")
+    implementation("androidx.hilt:hilt-navigation-fragment:1.1.0")
 }

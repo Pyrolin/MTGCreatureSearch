@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import com.example.mtgcreaturesearch.Model.CardFace
 import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ImageUrisX
@@ -16,6 +17,7 @@ import com.example.mtgcreaturesearch.Model.ShownCards
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.installations.FirebaseInstallations
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.Serializable
@@ -31,23 +33,19 @@ var favorites: MutableList<ShownCards> =  mutableListOf()
 
 var devideID = ""
 
+var testQuery = Query("name", "type%3Acreature+%28game%3Apaper%29")
+
 sealed interface CardUiState {
     data class Success(val data: List<Data>) : CardUiState
     object Error : CardUiState
     object Loading : CardUiState
 }
-class CardViewModel : ViewModel() {
+open class CardViewModel : ViewModel() {
 
     /** The mutable State that stores the status of the most recent request */
     var cardUiState: CardUiState by mutableStateOf(CardUiState.Loading)
         private set
 
-    /**
-     * Call getCardPhotos() on init so we can display status immediately.
-     */
-    init {
-        getCardPhotos(Query("", ""))
-    }
 
     /**
      * Gets Card data from the ScryfallAPI Retrofit service.
@@ -57,8 +55,8 @@ class CardViewModel : ViewModel() {
             cardUiState = try {
                 val order = if (query.order.isNotEmpty()) query.order else "name"
                 val q = if (query.q.isNotEmpty()) query.q else "type%3Acreature+%28game%3Apaper%29"
-
-                val listResult = CardApi.retrofitService.getPhotos(order, q).data
+                Log.d("API CALL", query.page.toString())
+                val listResult = CardApi.retrofitService.getPhotos(order, q, query.page.toString()).data
                 CardUiState.Success(listResult)
             } catch (e: HttpException) {
                 e.response()?.errorBody()?.string().let {
@@ -233,8 +231,13 @@ class CardViewModel : ViewModel() {
         return ShownCards("","",toughness,power,cmcDouble,"",colors,text, mutableListOf())
     }
 
-    fun browseCards(query: Query): List<ShownCards> {
-        getCardPhotos(query)
+    fun getCards(page: Int): List<ShownCards> {
+        return browseCards(testQuery, page)
+    }
+
+    fun browseCards(query: Query, page: Int = 1): List<ShownCards> {
+        Log.d("TEST", "test")
+        getCardPhotos(Query(query.order, query.q, page))
         //val cards: MutableList<ShownCards> = mutableListOf()
         return when (val currentState = cardUiState) {
             is CardUiState.Success -> {

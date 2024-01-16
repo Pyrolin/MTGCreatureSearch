@@ -42,13 +42,21 @@ import com.example.mtgcreaturesearch.Model.Query
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.rotate
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import com.example.mtgcreaturesearch.ViewModel.CardRepository
+import com.example.mtgcreaturesearch.ViewModel.TestViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +73,9 @@ fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavControlle
             }
         ) {
             AsyncImage(
-                modifier = Modifier.fillMaxWidth().rotate((if (flipped && card.layout == "flip") 180 else 0).toFloat()),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .rotate((if (flipped && card.layout == "flip") 180 else 0).toFloat()),
                 model = if (flipped && card.layout != "flip") card.card_faces?.get(1)?.image_uris?.large else card.url,
                 contentDescription = "Image of the creature card",
                 alignment = Alignment.Center,
@@ -104,7 +114,8 @@ fun CardGrid(cardViewModel: CardViewModel = viewModel(), navController: NavContr
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
 //        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .fillMaxSize()
             .padding(bottom = 55.dp)
     ) {
@@ -114,9 +125,116 @@ fun CardGrid(cardViewModel: CardViewModel = viewModel(), navController: NavContr
     }
 }
 
+@Composable
+fun PagingListScreen(cardViewModel: CardViewModel) {
+    val viewModel = TestViewModel(CardRepository(cardViewModel))
+    val cards = viewModel.getPaginationCards().collectAsLazyPagingItems()
+
+    LazyVerticalGrid(columns = GridCells.Fixed(3)) {
+        items(
+            count = cards.itemCount,
+            contentType = cards.itemContentType { "MyPagingItems" }
+        ) { index ->
+            val item = cards[index]
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                model = item!!.url,
+                contentDescription = "Image of the creature card",
+                alignment = Alignment.Center,
+                contentScale = ContentScale.FillWidth,
+            )
+        }
+        cards.apply {
+            when {
+                loadState.refresh is LoadState.Loading -> {
+                    item { CircularProgressIndicator(color = Color.Black) }
+                }
+
+                loadState.refresh is LoadState.Error -> {
+                    val error = cards.loadState.refresh as LoadState.Error
+                    item {
+                        Log.e("REFRESH ERROR", error.toString())
+
+                    }
+                }
+
+                loadState.append is LoadState.Loading -> {
+                    item { Column(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Text(text = "Pagination Loading")
+
+                        CircularProgressIndicator(color = Color.Black)
+                    } }
+                }
+
+                loadState.append is LoadState.Error -> {
+                    val error = cards.loadState.append as LoadState.Error
+                    item {
+                        Log.e("APPEND ERROR", error.toString())
+                    }
+                }
+            }
+        }
+    }
+/*
+    LazyColumn() {
+        items(cards.itemCount) { index ->
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                model = cards[index]!!.url,
+                contentDescription = "Image of the creature card",
+                alignment = Alignment.Center,
+                contentScale = ContentScale.FillWidth,
+            )
+        }
+        cards.apply {
+            when {
+                loadState.refresh is LoadState.Loading -> {
+                    item { CircularProgressIndicator(color = Color.Black) }
+                }
+
+                loadState.refresh is LoadState.Error -> {
+                    val error = cards.loadState.refresh as LoadState.Error
+                    item {
+                        Log.e("REFRESH ERROR", error.toString())
+
+                    }
+                }
+
+                loadState.append is LoadState.Loading -> {
+                    item { Column(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Text(text = "Pagination Loading")
+
+                        CircularProgressIndicator(color = Color.Black)
+                    } }
+                }
+
+                loadState.append is LoadState.Error -> {
+                    val error = cards.loadState.append as LoadState.Error
+                    item {
+                        Log.e("APPEND ERROR", error.toString())
+                    }
+                }
+            }
+        }
+    }
+    */
+}
+
 
 @Composable
-fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController, order: String = "", q: String = "") {
+fun BrowseScreen(cardViewModel: CardViewModel, navController: NavController, order: String = "", q: String = "") {
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
@@ -180,7 +298,9 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
             }
 
             val query = Query(order,q)
-            val browseCards = cardViewModel.browseCards(query)
+            //val browseCards = cardViewModel.browseCards(query)
+            PagingListScreen(cardViewModel)
+            /*
             when (browseCards.isNotEmpty()) {
                 true -> {
                     CardGrid(navController = navController, cards = browseCards)
@@ -189,7 +309,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                 else -> {
                     CardGrid(navController = navController, cards = cardViewModel.browseCards(query))
                 }
-            }
+            }*/
 
             Spacer(modifier = Modifier.weight(1f))
         }
