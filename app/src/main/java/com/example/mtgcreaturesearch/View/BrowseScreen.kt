@@ -146,7 +146,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
 
            SearchBar(cardViewModel ,modifier = Modifier
                .fillMaxWidth()
-               .padding(8.dp),
+               .padding(4.dp),
                navController,
                reloadPage = true
            )
@@ -154,14 +154,14 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 8.dp),
+                    .padding(vertical = 0.dp, horizontal = 0.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.backspace),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(50.dp)
                         .background(Color.Transparent)
                         .clickable {
                             navController.navigate("HomeScreen")
@@ -171,7 +171,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     painter = painterResource(id = R.drawable.burgermenu),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(50.dp)
                         .background(Color.Transparent)
                         .clickable {
                             navController.navigate("filterBar/browseScreen")
