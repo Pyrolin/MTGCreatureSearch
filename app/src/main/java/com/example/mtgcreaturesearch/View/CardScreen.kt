@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -53,6 +54,7 @@ fun CardScreen(cardViewModel: CardViewModel = viewModel(), navController: NavCon
                             }
                     )
                     if (card.card_faces?.size == 2) {
+                        Spacer(modifier = Modifier.weight(1f))
                         //turn_card not implemented yet
                         Image(painter = painterResource(id = if (flipped) R.drawable.turn_card_active else R.drawable.turn_card),
                             contentDescription = null,

@@ -1,5 +1,6 @@
 // BrowseScreen.kt
 package com.example.mtgcreaturesearch.View
+import android.util.Log
 import androidx.compose.foundation.Image
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 import androidx.compose.foundation.background
@@ -47,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.rotate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,8 +65,8 @@ fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavControlle
             }
         ) {
             AsyncImage(
-                modifier = Modifier.fillMaxWidth(),
-                model = if (flipped) card.card_faces?.get(1)?.image_uris?.large else card.url,
+                modifier = Modifier.fillMaxWidth().rotate((if (flipped && card.layout == "flip") 180 else 0).toFloat()),
+                model = if (flipped && card.layout != "flip") card.card_faces?.get(1)?.image_uris?.large else card.url,
                 contentDescription = "Image of the creature card",
                 alignment = Alignment.Center,
                 contentScale = ContentScale.FillWidth,

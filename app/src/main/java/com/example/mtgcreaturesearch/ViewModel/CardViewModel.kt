@@ -177,8 +177,6 @@ class CardViewModel : ViewModel() {
             }
         }
 
-        Log.d("QUERY", q)
-
         return Query(order,q)
     }
 
@@ -508,13 +506,15 @@ class CardViewModel : ViewModel() {
                 } else if (key == "card_faces") {
                     val value_faces = value as MutableList<HashMap<String, Any?>>
 
+                    Log.d("TEST", layout)
+
                     value_faces.forEach { face ->
                         card_faces.add(CardFace(
                             image_uris = face["large"]
                             ?.let { it1 -> face["png"]
                                 ?.let { it2 -> face["small"]
                                     ?.let { it3 -> ImageUrisX(it1 as String, it2 as String, it3 as String) } } },
-                            colors = face["colors"] as MutableList<String>,
+                            colors = if (face["colors"] == null) mutableListOf() else face["colors"] as MutableList<String>,
                             oracle_text = face["oracle_text"] as String,
                             power =  face["power"] as String,
                             toughness = face["toughness"] as String
@@ -539,7 +539,7 @@ class CardViewModel : ViewModel() {
 
             card.card_faces?.forEach { card_face ->
                 val images = hashMapOf(
-                    "large" to card_face.image_uris?.large,
+                    "large" to if (card.layout == "flip") card.url else card_face.image_uris?.large,
                     "png" to card_face.image_uris?.png,
                     "small" to card_face.image_uris?.small
                 )
@@ -564,7 +564,7 @@ class CardViewModel : ViewModel() {
                     "toughness" to "",
                     "power" to "",
                     "cmc" to card.cmc,
-                    "layout" to card.cmc,
+                    "layout" to card.layout,
                     "colors" to mutableListOf<String>(),
                     "oracle_text" to "",
                     "card_faces" to card_faces
