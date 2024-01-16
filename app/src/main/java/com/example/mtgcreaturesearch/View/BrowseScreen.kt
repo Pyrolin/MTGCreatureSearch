@@ -1,5 +1,7 @@
 // BrowseScreen.kt
 package com.example.mtgcreaturesearch.View
+import CardApi
+import CardApiService
 import android.util.Log
 import androidx.compose.foundation.Image
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
@@ -127,19 +129,21 @@ fun CardGrid(cardViewModel: CardViewModel = viewModel(), navController: NavContr
 
 @Composable
 fun PagingListScreen(cardViewModel: CardViewModel) {
-    val viewModel = TestViewModel(CardRepository(cardViewModel))
+    val viewModel = TestViewModel(CardRepository(CardApi))
     val cards = viewModel.getPaginationCards().collectAsLazyPagingItems()
 
     LazyVerticalGrid(columns = GridCells.Fixed(3)) {
         items(
-            count = cards.itemCount,
-            contentType = cards.itemContentType { "MyPagingItems" }
+            count = cards.itemCount
         ) { index ->
             val item = cards[index]
+            if (item == null) {
+                Log.d("LIST", "no item")
+            }
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth(),
-                model = item!!.url,
+                model = if (item!!.image_uris != null) item.image_uris?.large else item.card_faces?.get(0)?.image_uris?.large,
                 contentDescription = "Image of the creature card",
                 alignment = Alignment.Center,
                 contentScale = ContentScale.FillWidth,

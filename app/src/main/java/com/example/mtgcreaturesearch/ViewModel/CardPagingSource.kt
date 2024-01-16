@@ -12,22 +12,22 @@ import com.example.mtgcreaturesearch.Model.ShownCards
 import java.io.IOException
 
 class CardPagingSource(
-    private val remoteDataSource: CardViewModel,
-) : PagingSource<Int, ShownCards>() {
+    private val remoteDataSource: CardApi,
+) : PagingSource<Int, Data>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ShownCards> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Data> {
         Log.d("TEST", params.key.toString())
 
         return try {
             val currentPage = params.key ?: 1
-            val cards = remoteDataSource.getCards(
-                page = currentPage
+            val cards = CardApi.retrofitService.getPhotos(
+                page = currentPage.toString()
             )
 
             LoadResult.Page(
-                data = cards,
+                data = cards.data,
                 prevKey = if (currentPage == 1) null else currentPage - 1,
-                nextKey = if (cards.isEmpty()) null else currentPage + 1
+                nextKey = if (cards.data.isEmpty()) null else currentPage + 1
             )
         } catch (exception: IOException) {
             return LoadResult.Error(exception)
@@ -36,7 +36,7 @@ class CardPagingSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, ShownCards>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, Data>): Int? {
         TODO("Not yet implemented")
     }
 }
