@@ -9,6 +9,7 @@ import coil.network.HttpException
 import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.Query
 import com.example.mtgcreaturesearch.Model.ShownCards
+import com.example.mtgcreaturesearch.View.test_query
 import java.io.IOException
 
 class CardPagingSource(
@@ -21,6 +22,7 @@ class CardPagingSource(
         return try {
             val currentPage = params.key ?: 1
             val cards = CardApi.retrofitService.getPhotos(
+                q = test_query.q,
                 page = currentPage.toString()
             )
 
@@ -31,7 +33,7 @@ class CardPagingSource(
             )
         } catch (exception: IOException) {
             return LoadResult.Error(exception)
-        } catch (exception: HttpException) {
+        } catch (exception: retrofit2.HttpException) {
             return LoadResult.Error(exception)
         }
     }

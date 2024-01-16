@@ -74,6 +74,10 @@ var queryString = ""
 
 var randomCards: List<ShownCards> = mutableListOf()
 
+var test_card: ShownCards = ShownCards("", "", "", "", 0.0, "", mutableListOf(), "", mutableListOf())
+
+var test_query: Query = Query("", "")
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

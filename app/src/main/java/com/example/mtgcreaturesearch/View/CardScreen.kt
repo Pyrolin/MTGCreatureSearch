@@ -53,7 +53,7 @@ fun CardScreen(cardViewModel: CardViewModel = viewModel(), navController: NavCon
                                 navController.popBackStack()
                             }
                     )
-                    if (card.card_faces?.size == 2) {
+                    if (test_card.card_faces?.size == 2) {
                         Spacer(modifier = Modifier.weight(1f))
                         //turn_card not implemented yet
                         Image(painter = painterResource(id = if (flipped) R.drawable.turn_card_active else R.drawable.turn_card),
@@ -63,13 +63,13 @@ fun CardScreen(cardViewModel: CardViewModel = viewModel(), navController: NavCon
                                 .background(Color.Transparent)
                                 .clickable {
                                     navController.popBackStack()
-                                    navController.navigate("cardScreen/${card.id}?flipped=${!flipped}")
+                                    navController.navigate("cardScreen/${test_card.id}?flipped=${!flipped}")
                                 }
                         )
                     }
                 }
             }
-            Card(cardViewModel, navController, card, setonClick = false, flipped = flipped)
+            Card(cardViewModel, navController, test_card, setonClick = false, flipped = flipped)
         }
         BottomBar(navController = navController, cardViewModel = cardViewModel, modifier = Modifier
             .align(Alignment.BottomCenter)

@@ -14,6 +14,7 @@ import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ImageUrisX
 import com.example.mtgcreaturesearch.Model.Query
 import com.example.mtgcreaturesearch.Model.ShownCards
+import com.example.mtgcreaturesearch.View.test_query
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.installations.FirebaseInstallations
@@ -174,7 +175,7 @@ open class CardViewModel : ViewModel() {
                 q += "+pow%3D$power"
             }
         }
-
+        test_query = Query(order,q)
         return Query(order,q)
     }
 

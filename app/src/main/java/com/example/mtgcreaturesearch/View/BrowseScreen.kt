@@ -70,6 +70,7 @@ fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavControlle
             ),
             onClick = {
                 if (setonClick) {
+                    test_card = ShownCards(card.url, card.id, card.toughness, card.power, card.cmc, card.layout, card.colors, card.oracle_text, card.card_faces)
                     navController.navigate("cardScreen/${card.id}")
                 }
             }
@@ -128,7 +129,7 @@ fun CardGrid(cardViewModel: CardViewModel = viewModel(), navController: NavContr
 }
 
 @Composable
-fun PagingListScreen(cardViewModel: CardViewModel) {
+fun PagingListScreen(navController: NavController, cardViewModel: CardViewModel) {
     val viewModel = TestViewModel(CardRepository(CardApi))
     val cards = viewModel.getPaginationCards().collectAsLazyPagingItems()
 
@@ -139,15 +140,18 @@ fun PagingListScreen(cardViewModel: CardViewModel) {
             val item = cards[index]
             if (item == null) {
                 Log.d("LIST", "no item")
+            } else {
+                var image = item.image_uris?.large
+                if (image == null) {
+                    image = item.card_faces?.get(0)?.image_uris?.large
+                }
+                image?.let { ShownCards(it, item.id, item.toughness, item.power, item.cmc, item.layout, item.colors, item.oracle_text, item.card_faces) }
+                    ?.let {
+                        Card(cardViewModel, navController,
+                            it
+                        )
+                    }
             }
-            AsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                model = if (item!!.image_uris != null) item.image_uris?.large else item.card_faces?.get(0)?.image_uris?.large,
-                contentDescription = "Image of the creature card",
-                alignment = Alignment.Center,
-                contentScale = ContentScale.FillWidth,
-            )
         }
         cards.apply {
             when {
@@ -303,7 +307,7 @@ fun BrowseScreen(cardViewModel: CardViewModel, navController: NavController, ord
 
             val query = Query(order,q)
             //val browseCards = cardViewModel.browseCards(query)
-            PagingListScreen(cardViewModel)
+            PagingListScreen(navController, cardViewModel)
             /*
             when (browseCards.isNotEmpty()) {
                 true -> {
