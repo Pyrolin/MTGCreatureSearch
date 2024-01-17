@@ -50,7 +50,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+<<<<<<< Updated upstream
 import androidx.compose.ui.draw.rotate
+=======
+import forest
+import island
+import mana
+import mountain
+import plains
+import power
+import swamp
+import textSearch
+import toughness
+>>>>>>> Stashed changes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -176,6 +188,12 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                 )
                 Image(
                     painter = painterResource(id = R.drawable.burgermenu),
+                var iconID: Int = 0
+                if(mana == "" && toughness == "" && power == "" && !swamp && !plains && !island && !mountain && !forest && textSearch == "")
+                {iconID = R.drawable.filter_svgrepo_com
+                } else {iconID = R.drawable.filter_svgrepo_com_farvet}
+                    Image(
+                    painter = painterResource(id = iconID),
                     contentDescription = null,
                     modifier = Modifier
                         .size(50.dp)
@@ -184,6 +202,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                             navController.navigate("filterBar/browseScreen")
                         }
                 )
+
             }
 
             val query = Query(order,q)

@@ -66,7 +66,6 @@ var tmp_plains: Boolean = false
 var tmp_island: Boolean = false
 var tmp_mountain: Boolean = false
 var tmp_forest: Boolean = false
-
 // Drop down menus
 @Composable
 fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: List<String>) {
@@ -80,7 +79,6 @@ fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: L
     } else if (name == "Mana cost") {
         selectedOption = mana
     }
-
     Card(modifier = Modifier.padding(16.dp)) {
         Column {
             Row(
