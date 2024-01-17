@@ -26,12 +26,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -192,9 +194,7 @@ fun CardList() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 imageIds.forEach { imageId ->
-                    Image(
-                        painter = painterResource(id = imageId),
-                        contentDescription = null,
+                    Box(
                         modifier = Modifier
                             .width(54.dp)
                             .height(54.dp)
@@ -216,9 +216,29 @@ fun CardList() {
                                     tmp_forest = (clickStates[imageId] == true)
                                 }
                             }
-                            .background(if (clickStates[imageId] == true) Color(0xFFFFA500) else Color.Transparent),
-                        contentScale = ContentScale.Crop
-                    )
+                    ) {
+                        if (clickStates[imageId] == true) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .shadow(
+                                        elevation = 4.dp,
+                                        shape = CircleShape
+                                    )
+                                    .background(Color(0xFFFFA500), CircleShape)
+                            )
+                        }
+
+                        Image(
+                            painter = painterResource(id = imageId),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(4.dp)
+                                .background(Color.Transparent, CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
             }
         }
@@ -370,7 +390,6 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, sta
                     contentDescription = null,
                     modifier = Modifier
                         .size(80.dp)
-                        .background(Color(0xFFFFA500))
                         .clickable {
                             mana = tmp_mana
                             toughness = tmp_toughness
