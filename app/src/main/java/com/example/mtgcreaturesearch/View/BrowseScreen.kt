@@ -186,8 +186,6 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                             navController.navigate("HomeScreen")
                         }
                 )
-                Image(
-                    painter = painterResource(id = R.drawable.burgermenu),
                 var iconID: Int = 0
                 if(mana == "" && toughness == "" && power == "" && !swamp && !plains && !island && !mountain && !forest && textSearch == "")
                 {iconID = R.drawable.filter_svgrepo_com
