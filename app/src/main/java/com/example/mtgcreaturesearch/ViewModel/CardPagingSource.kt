@@ -1,28 +1,18 @@
 package com.example.mtgcreaturesearch.ViewModel
 
 import CardApi
-import CardApiService
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import coil.network.HttpException
 import com.example.mtgcreaturesearch.Model.Data
-import com.example.mtgcreaturesearch.Model.Query
-import com.example.mtgcreaturesearch.Model.ShownCards
-import com.example.mtgcreaturesearch.View.test_query
 import java.io.IOException
 
-class CardPagingSource(
-    private val remoteDataSource: CardApi,
-) : PagingSource<Int, Data>() {
+class CardPagingSource() : PagingSource<Int, Data>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Data> {
-        Log.d("TEST", params.key.toString())
-
         return try {
             val currentPage = params.key ?: 1
             val cards = CardApi.retrofitService.getPhotos(
-                q = test_query.q,
+                q = currentQuery.q,
                 page = currentPage.toString()
             )
 

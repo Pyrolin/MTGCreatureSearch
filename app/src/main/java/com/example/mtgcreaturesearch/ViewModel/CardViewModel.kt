@@ -9,22 +9,19 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.mtgcreaturesearch.Model.CardFace
 import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ImageUrisX
 import com.example.mtgcreaturesearch.Model.Query
 import com.example.mtgcreaturesearch.Model.ShownCards
-import com.example.mtgcreaturesearch.View.test_query
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.installations.FirebaseInstallations
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import java.io.Serializable
 import java.util.Locale
-
-//Filler
 
 @SuppressLint("StaticFieldLeak")
 val db = Firebase.firestore
@@ -34,7 +31,7 @@ var favorites: MutableList<ShownCards> =  mutableListOf()
 
 var devideID = ""
 
-var testQuery = Query("name", "type%3Acreature+%28game%3Apaper%29")
+var currentQuery: Query = Query("", "")
 
 sealed interface CardUiState {
     data class Success(val data: List<Data>) : CardUiState
@@ -43,21 +40,24 @@ sealed interface CardUiState {
 }
 open class CardViewModel : ViewModel() {
 
+    private val repository: CardRepository = CardRepository()
+
     /** The mutable State that stores the status of the most recent request */
     var cardUiState: CardUiState by mutableStateOf(CardUiState.Loading)
         private set
+
+    init {
+        getCardPhotos()
+    }
 
 
     /**
      * Gets Card data from the ScryfallAPI Retrofit service.
      */
-    fun getCardPhotos(query: Query) {
+    fun getCardPhotos() {
         viewModelScope.launch {
             cardUiState = try {
-                val order = if (query.order.isNotEmpty()) query.order else "name"
-                val q = if (query.q.isNotEmpty()) query.q else "type%3Acreature+%28game%3Apaper%29"
-                Log.d("API CALL", query.page.toString())
-                val listResult = CardApi.retrofitService.getPhotos(order, q, query.page.toString()).data
+                val listResult = CardApi.retrofitService.getPhotos().data
                 CardUiState.Success(listResult)
             } catch (e: HttpException) {
                 e.response()?.errorBody()?.string().let {
@@ -72,6 +72,8 @@ open class CardViewModel : ViewModel() {
         }
     }
 
+    fun getPaginationCards(): Flow<PagingData<Data>> = repository.getCards().cachedIn(viewModelScope)
+
     fun getQuery(
         mana: String = "",
         toughness: String = "",
@@ -83,7 +85,7 @@ open class CardViewModel : ViewModel() {
         forest: Boolean = false,
         search: String = "",
         text: String = ""
-    ): Query {
+    ) {
 
         val order = "name"
         var q = ""
@@ -175,8 +177,7 @@ open class CardViewModel : ViewModel() {
                 q += "+pow%3D$power"
             }
         }
-        test_query = Query(order,q)
-        return Query(order,q)
+        currentQuery = Query(order,q)
     }
 
     fun getFavoriteQuery(
@@ -232,14 +233,7 @@ open class CardViewModel : ViewModel() {
         return ShownCards("","",toughness,power,cmcDouble,"",colors,text, mutableListOf())
     }
 
-    fun getCards(page: Int): List<ShownCards> {
-        return browseCards(testQuery, page)
-    }
-
-    fun browseCards(query: Query, page: Int = 1): List<ShownCards> {
-        Log.d("TEST", "test")
-        getCardPhotos(Query(query.order, query.q, page))
-        //val cards: MutableList<ShownCards> = mutableListOf()
+    fun browseCards(): List<ShownCards> {
         return when (val currentState = cardUiState) {
             is CardUiState.Success -> {
                 val cards = mutableListOf<ShownCards>()
@@ -261,7 +255,6 @@ open class CardViewModel : ViewModel() {
                         }
                         if (card != null) {
                             cards.add(card)
-//                            println(card.url)
                             cards
                         }
                     } else {
@@ -280,27 +273,10 @@ open class CardViewModel : ViewModel() {
                         }
                         if (card != null) {
                             cards.add(card)
-//                            println(card.url)
                             cards
                         }
                     }
-//                    println(cards[60].url)
-//                    println(currentState.photos[60].image_uris?.small)
-//                    println(currentState.photos[60].card_faces?.get(0)?.image_uris?.small)
-//                    if(cards[i].url != currentState.photos[i].image_uris?.small && cards[i].url !=currentState.photos[i].card_faces?.get(0)?.image_uris?.small ){
-//                        println(cards[i].url)
-//                        println(currentState.photos[i].image_uris?.small)
-//                        println(currentState.photos[i].card_faces?.get(0)?.image_uris?.small)
-//                    }
                 }
-//                println(cards[52].url)
-//                println(currentState.photos[52].image_uris?.small)
-//                println(currentState.photos[52].card_faces?.get(0)?.image_uris?.small)
-                println(currentState.data.size)
-//                println(currentState.photos[0])
-//                println(currentState.photos[174])
-                println(cards.size)
-//                println(cards[173].url)
                 cards
             }
 
@@ -419,7 +395,7 @@ open class CardViewModel : ViewModel() {
     }
 
     fun getCardFromID(cardID: String): ShownCards {
-            //val cards: MutableList<ShownCards> = mutableListOf()
+
             return when (val currentState=cardUiState){
                 is CardUiState.Success ->{
                     for (i in 0 until currentState.data.size){
@@ -634,7 +610,6 @@ open class CardViewModel : ViewModel() {
     }
 
     fun initDevice() {
-        // [START get_installation_id]
         FirebaseInstallations.getInstance().id.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Log.d("Installations", "Installation ID: " + task.result)
@@ -644,6 +619,5 @@ open class CardViewModel : ViewModel() {
                 Log.e("Installations", "Unable to get Installation ID")
             }
         }
-        // [END get_installation_id]
     }
 }

@@ -1,4 +1,3 @@
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,13 +9,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -261,7 +258,6 @@ fun filterSearch(
     )
 }
 
-//Actual composable
 @Composable
 fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, startDestination: String) {
     tmp_mana = mana
@@ -311,7 +307,7 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, sta
                         .background(Color.Transparent)
                         .clickable {
                             if (startDestination == "browseScreen") {
-                                val query = cardViewModel.getQuery(
+                                cardViewModel.getQuery(
                                     mana,
                                     toughness,
                                     power,
@@ -324,7 +320,7 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, sta
                                     textSearch
                                 )
 
-                                navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+                                navController.navigate("browseScreen")
                             } else {
                                 navController.navigate("favoritesScreen?cmc=${mana}&toughness=${toughness}&power=${power}&swamp=${swamp}&plains=${plains}&island=${island}&mountain=${mountain}&forest=${forest}&text=${textSearch}")
                             }
@@ -381,7 +377,7 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, sta
                             forest = tmp_forest
 
                             if (startDestination == "browseScreen") {
-                                val query = cardViewModel.getQuery(
+                                cardViewModel.getQuery(
                                     mana,
                                     toughness,
                                     power,
@@ -394,7 +390,7 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, sta
                                     textSearch
                                 )
 
-                                navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+                                navController.navigate("browseScreen")
 
                             } else {
                                 navController.navigate("favoritesScreen?cmc=${mana}&toughness=${toughness}&power=${power}&swamp=${swamp}&plains=${plains}&island=${island}&mountain=${mountain}&forest=${forest}&text=${textSearch}")
@@ -412,9 +408,4 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, sta
                 R.drawable.filter_bottom_background)
         }
     }
-}
-
-@Preview(backgroundColor = 0xFFFFFFFF)
-@Composable
-fun MagicCardsPreview() {
 }
