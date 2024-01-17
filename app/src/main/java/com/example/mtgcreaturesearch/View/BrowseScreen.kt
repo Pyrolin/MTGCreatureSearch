@@ -38,6 +38,8 @@ import com.example.mtgcreaturesearch.Model.Data
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import com.example.mtgcreaturesearch.Model.Query
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -101,15 +103,18 @@ fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavControlle
 @Composable
 fun CardGrid(cardViewModel: CardViewModel = viewModel(), navController: NavController,  cards: List<ShownCards>) {
     // [START android_compose_layouts_lazy_grid_adaptive]
+    val state = rememberScrollState()
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
 //        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
         modifier = Modifier.fillMaxSize()
             .fillMaxSize()
             .padding(bottom = 55.dp)
+
     ) {
         items(cards) { card ->
             Card(cardViewModel, navController, card)
+
         }
     }
 }
@@ -117,6 +122,7 @@ fun CardGrid(cardViewModel: CardViewModel = viewModel(), navController: NavContr
 
 @Composable
 fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController, order: String = "", q: String = "") {
+    val state = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
@@ -131,6 +137,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .verticalScroll(state)
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
