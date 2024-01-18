@@ -31,10 +31,14 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -149,7 +153,18 @@ fun CardList() {
         "Power" to listOf("","0","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
         "Mana cost" to listOf("","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "X")
     )
-
+    var disabled = floatArrayOf(
+        0.5f, 0f, 0f, 0f, -50f,
+        0f, 0.5f, 0f, 0f, -50f,
+        0f, 0f, 0.5f, 0f, -50f,
+        0f, 0f, 0f, 1f, 0f
+    )
+    val enabled = floatArrayOf(
+        1f, 0f, 0f, 0f, 0f,
+        0f, 1f, 0f, 0f, 0f,
+        0f, 0f, 1f, 0f, 0f,
+        0f, 0f, 0f, 1f, 0f
+    )
     val imageIds = listOf(R.drawable.swamp, R.drawable.plains, R.drawable.island, R.drawable.mountain, R.drawable.forest)
 
     val clickStates = remember {
@@ -204,7 +219,7 @@ fun CardList() {
                                 if (imageId == R.drawable.island) {
                                     tmp_island = (clickStates[imageId] == true)
                                 }
-                                if (imageId == R.drawable.mountain) {
+                                if (imageId == R.drawable.swamp) {
                                     tmp_mountain = (clickStates[imageId] == true)
                                 }
                                 if (imageId == R.drawable.forest) {
@@ -212,18 +227,6 @@ fun CardList() {
                                 }
                             }
                     ) {
-                        if (clickStates[imageId] == true) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .shadow(
-                                        elevation = 4.dp,
-                                        shape = CircleShape
-                                    )
-                                    .background(Color(0xFFFFA500), CircleShape)
-                            )
-                        }
-
                         Image(
                             painter = painterResource(id = imageId),
                             contentDescription = null,
@@ -231,7 +234,14 @@ fun CardList() {
                                 .fillMaxSize()
                                 .padding(4.dp)
                                 .background(Color.Transparent, CircleShape),
-                            contentScale = ContentScale.Crop
+                            contentScale = ContentScale.Crop,
+                            colorFilter = ColorFilter.colorMatrix(
+                                (if (clickStates[imageId] == true) {
+                                    ColorMatrix(enabled)
+                                } else {
+                                    ColorMatrix(disabled)
+                                })
+                            )
                         )
                     }
                 }
