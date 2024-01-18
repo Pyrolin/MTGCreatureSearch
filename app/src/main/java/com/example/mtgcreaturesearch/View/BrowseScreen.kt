@@ -256,7 +256,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     painter = painterResource(id = R.drawable.backspace),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(50.dp)
                         .background(Color.Transparent)
                         .clickable {
                             navController.navigate("HomeScreen")
@@ -273,7 +273,7 @@ fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavC
                     painter = painterResource(id = iconID),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(50.dp)
                         .background(Color.Transparent)
                         .clickable {
                             navController.navigate("filterBar/browseScreen")
