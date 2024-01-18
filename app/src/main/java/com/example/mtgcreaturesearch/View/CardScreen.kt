@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,7 +48,7 @@ fun CardScreen(cardViewModel: CardViewModel = viewModel(), navController: NavCon
                         painter = painterResource(id = R.drawable.backspace),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(30.dp)
+                            .size(40.dp)
                             .background(Color.Transparent)
                             .clickable {
                                 navController.popBackStack()
@@ -59,7 +60,8 @@ fun CardScreen(cardViewModel: CardViewModel = viewModel(), navController: NavCon
                         Image(painter = painterResource(id = if (flipped) R.drawable.turn_card_active else R.drawable.turn_card),
                             contentDescription = null,
                             modifier = Modifier
-                                .size(30.dp)
+                                .size(40.dp)
+                                .absoluteOffset(x = (-50).dp)
                                 .background(Color.Transparent)
                                 .clickable {
                                     navController.popBackStack()

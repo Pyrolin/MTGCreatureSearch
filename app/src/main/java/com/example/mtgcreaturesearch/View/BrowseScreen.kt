@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -87,22 +88,35 @@ fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavControlle
         var isFavorite by remember { mutableStateOf(false) }
         isFavorite = cardViewModel.isFavorited(card)
 
+        val favoriteSize = if (setonClick) 25.dp else 50.dp
+
+        val favoriteXOffset = if (setonClick) 0.dp else (-10).dp
+        val favoriteYOffset = if (setonClick) 0.dp else (-60).dp
+
         IconToggleButton(
             checked = isFavorite,
             onCheckedChange = {
                 isFavorite = !isFavorite
                 cardViewModel.updateFavorites(card)
-            }
+            },
+            modifier = Modifier.size(favoriteSize)
+                .absoluteOffset(x=favoriteXOffset, y=favoriteYOffset)
         ) {
             Icon(
-                tint = Color.Red,
-
-                imageVector = if (isFavorite) {
-                    Icons.Filled.Favorite
+                tint = if (isFavorite || setonClick) {
+                    Color.Red
                 } else {
-                    Icons.Default.FavoriteBorder
+                    Color.White
                 },
-                contentDescription = null
+                imageVector = if (isFavorite || !setonClick) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+                contentDescription = null,
+                modifier = Modifier.size(favoriteSize)
+            )
+            Icon(
+                tint = Color.Red,
+                imageVector = Icons.Default.FavoriteBorder,
+                contentDescription = null,
+                modifier = Modifier.size(favoriteSize)
             )
         }
     }
