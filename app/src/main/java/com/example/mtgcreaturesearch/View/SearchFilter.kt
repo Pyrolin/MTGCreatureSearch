@@ -219,7 +219,7 @@ fun CardList() {
                                 if (imageId == R.drawable.island) {
                                     tmp_island = (clickStates[imageId] == true)
                                 }
-                                if (imageId == R.drawable.swamp) {
+                                if (imageId == R.drawable.mountain) {
                                     tmp_mountain = (clickStates[imageId] == true)
                                 }
                                 if (imageId == R.drawable.forest) {
