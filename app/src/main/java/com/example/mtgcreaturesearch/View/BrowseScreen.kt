@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,6 +35,9 @@ import coil.compose.AsyncImage
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import com.example.mtgcreaturesearch.Model.Query
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -47,6 +51,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.rotate
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import forest
+import island
+import mana
+import mountain
+import plains
+import power
+import swamp
+import textSearch
+import toughness
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,22 +90,35 @@ fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavControlle
         var isFavorite by remember { mutableStateOf(false) }
         isFavorite = cardViewModel.isFavorited(card)
 
+        val favoriteSize = if (setonClick) 25.dp else 50.dp
+
+        val favoriteXOffset = if (setonClick) 0.dp else (-10).dp
+        val favoriteYOffset = if (setonClick) 0.dp else (-60).dp
+
         IconToggleButton(
             checked = isFavorite,
             onCheckedChange = {
                 isFavorite = !isFavorite
                 cardViewModel.updateFavorites(card)
-            }
+            },
+            modifier = Modifier.size(favoriteSize)
+                .absoluteOffset(x=favoriteXOffset, y=favoriteYOffset)
         ) {
             Icon(
-                tint = Color.Red,
-
-                imageVector = if (isFavorite) {
-                    Icons.Filled.Favorite
+                tint = if (isFavorite || setonClick) {
+                    Color.Red
                 } else {
-                    Icons.Default.FavoriteBorder
+                    Color.White
                 },
-                contentDescription = null
+                imageVector = if (isFavorite || !setonClick) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+                contentDescription = null,
+                modifier = Modifier.size(favoriteSize)
+            )
+            Icon(
+                tint = Color.Red,
+                imageVector = Icons.Default.FavoriteBorder,
+                contentDescription = null,
+                modifier = Modifier.size(favoriteSize)
             )
         }
     }
@@ -101,15 +127,19 @@ fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavControlle
 
 @Composable
 fun CardGrid(cardViewModel: CardViewModel = viewModel(), navController: NavController,  cards: List<ShownCards>) {
+    // [START android_compose_layouts_lazy_grid_adaptive]
+    val state = rememberScrollState()
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         modifier = Modifier
             .fillMaxSize()
             .fillMaxSize()
             .padding(bottom = 55.dp)
+
     ) {
         items(cards) { card ->
             Card(cardViewModel, navController, card)
+
         }
     }
 }
@@ -179,7 +209,8 @@ fun PagingCardGrid(navController: NavController, cardViewModel: CardViewModel) {
 
 
 @Composable
-fun BrowseScreen(cardViewModel: CardViewModel, navController: NavController) {
+fun BrowseScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController, order: String = "", q: String = "") {
+    val state = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
@@ -194,6 +225,7 @@ fun BrowseScreen(cardViewModel: CardViewModel, navController: NavController) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .verticalScroll(state)
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -209,7 +241,7 @@ fun BrowseScreen(cardViewModel: CardViewModel, navController: NavController) {
 
            SearchBar(cardViewModel ,modifier = Modifier
                .fillMaxWidth()
-               .padding(8.dp),
+               .padding(4.dp),
                navController,
                reloadPage = true
            )
@@ -217,7 +249,7 @@ fun BrowseScreen(cardViewModel: CardViewModel, navController: NavController) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 8.dp),
+                    .padding(vertical = 0.dp, horizontal = 0.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Image(
@@ -230,8 +262,15 @@ fun BrowseScreen(cardViewModel: CardViewModel, navController: NavController) {
                             navController.navigate("HomeScreen")
                         }
                 )
-                Image(
-                    painter = painterResource(id = R.drawable.burgermenu),
+
+                val iconID: Int = if(mana == "" && toughness == "" && power == "" && !swamp && !plains && !island && !mountain && !forest && textSearch == "") {
+                    R.drawable.filter_lines_off
+                } else {
+                    R.drawable.filter_lines_on
+                }
+
+                    Image(
+                    painter = painterResource(id = iconID),
                     contentDescription = null,
                     modifier = Modifier
                         .size(30.dp)
@@ -240,6 +279,7 @@ fun BrowseScreen(cardViewModel: CardViewModel, navController: NavController) {
                             navController.navigate("filterBar/browseScreen")
                         }
                 )
+
             }
 
             PagingCardGrid(navController, cardViewModel)

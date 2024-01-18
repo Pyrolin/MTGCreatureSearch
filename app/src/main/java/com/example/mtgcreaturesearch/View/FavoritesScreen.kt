@@ -25,6 +25,15 @@ import androidx.navigation.NavController
 import com.example.mtgcreaturesearch.Model.ShownCards
 import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
+import forest
+import island
+import mana
+import mountain
+import plains
+import power
+import swamp
+import textSearch
+import toughness
 
 @Composable
 
@@ -76,9 +85,13 @@ fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: Na
                             navController.navigate("HomeScreen")
                         }
                 )
-
+                val iconID: Int = if(mana == "" && toughness == "" && power == "" && !swamp && !plains && !island && !mountain && !forest && textSearch == "") {
+                        R.drawable.filter_lines_off
+                } else {
+                        R.drawable.filter_lines_on
+                    }
                 Image(
-                    painter = painterResource(id = R.drawable.burgermenu),
+                    painter = painterResource(id = iconID),
                     contentDescription = null,
                     modifier = Modifier
                         .size(30.dp)
