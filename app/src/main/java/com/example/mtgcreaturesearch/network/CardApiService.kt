@@ -43,7 +43,7 @@ interface CardApiService {
     //@GET("search?q=Tormented+Pariah&unique=cards&as=grid&order=name")
 
     // All
-    suspend fun getPhotos(@Query("order", encoded = true) order: String = "name", @Query("q", encoded = true) q: String = "type%3Acreature+%28game%3Apaper%29"): Card
+    suspend fun getPhotos(@Query("order", encoded = true) order: String = "name", @Query("q", encoded = true) q: String = "type%3Acreature+%28game%3Apaper%29", @Query("page", encoded = false) page: String = "1"): Card
 
 
 }

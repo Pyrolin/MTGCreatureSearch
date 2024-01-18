@@ -114,11 +114,3 @@ fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: Na
             R.drawable.favorites_tabbar_background)
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun FavoriteScreenPreview() {
-//    MTGCreatureSearchTheme {
-//        BrowseScreen()
-//    }
-//}

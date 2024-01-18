@@ -2,12 +2,8 @@ package com.example.mtgcreaturesearch.View
 
 import SearchFilter
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,7 +47,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
 import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import androidx.navigation.navArgument
 import com.example.mtgcreaturesearch.Model.Query
 import com.example.mtgcreaturesearch.Model.ShownCards
@@ -70,31 +64,20 @@ import toughness
 
 var queryString = ""
 
+var test_card: ShownCards = ShownCards("", "", "", "", 0.0, "", mutableListOf(), "", mutableListOf())
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             val navController = rememberNavController()
-            val cardViewModel: CardViewModel = viewModel()
+            val cardViewModel: CardViewModel = CardViewModel()
 
             cardViewModel.initDevice()
 
             NavHost(navController, startDestination = "homeScreen") {
                 composable("homeScreen") { HomeScreen(cardViewModel ,navController) }
-                composable(
-                    route = "browseScreen?order={order}&q={q}",
-                    arguments = listOf(navArgument("order") {defaultValue = "name"},
-                        navArgument("q") {defaultValue = "type%3Acreature+%28game%3Apaper%29"}
-                    )) {
-                        backStackEntry ->
-                    val order = backStackEntry.arguments?.getString("order")
-                    val q = backStackEntry.arguments?.getString("q")
-                    if (order != null) {
-                        if (q != null) {
-                            BrowseScreen(cardViewModel, navController, order, q)
-                        }
-                    }
-                }
+                composable(route = "browseScreen",) { BrowseScreen(cardViewModel, navController) }
                 composable(
                     route = "favoritesScreen?cmc={cmc}&toughness={toughness}&power={power}&swamp={swamp}&plains={plains}&island={island}&mountain={mountain}&forest={forest}&text={text}",
                     arguments = listOf(navArgument("cmc") {defaultValue = "-1.0"},
@@ -174,7 +157,7 @@ fun SearchBar(
         keyboardActions = KeyboardActions(
             onDone ={
                 val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString, textSearch)
-                navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+                navController.navigate("browseScreen")
             }
         ),
         trailingIcon = {
@@ -183,7 +166,7 @@ fun SearchBar(
                 queryString = ""
                 if (reloadPage) {
                     val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString, textSearch)
-                    navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+                    navController.navigate("browseScreen")
                 }
             }) {
                 Icon(
@@ -245,7 +228,7 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
                     .size(30.dp)
                     .background(Color.Transparent)
                     .clickable {
-                        val query = cardViewModel.getQuery(
+                        cardViewModel.getQuery(
                             mana,
                             toughness,
                             power,
@@ -256,7 +239,7 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
                             forest,
                             queryString
                         )
-                        navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+                        navController.navigate("browseScreen")
                     }
             )
 
@@ -344,7 +327,7 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
                         navController,
                     )
 
-                    CardRow(cards = cardViewModel.browseCards(Query("", "")), navController = navController)
+                    CardRow(cards = cardViewModel.browseCards(), navController = navController)
 
                     Row(
                         modifier = Modifier
@@ -360,8 +343,8 @@ fun BottomBar(navController: NavController, cardViewModel: CardViewModel, modifi
                                 .height(50.dp)
                                 .background(Color(0xFFFFA500))  // Orange color
                                 .clickable {
-                                    val query = cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
-                                    navController.navigate("browseScreen?order=${query.order}&q=${query.q}")
+                                    cardViewModel.getQuery(mana, toughness, power, swamp, plains, island, mountain, forest, queryString)
+                                    navController.navigate("browseScreen")
                                 },
                             contentAlignment = Alignment.Center
                         ) {
