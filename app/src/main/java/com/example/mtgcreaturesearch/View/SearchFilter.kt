@@ -78,6 +78,8 @@ fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: L
     } else if (name == "Mana cost") {
         selectedOption = mana
     }
+
+    // Card class
     Card(modifier = Modifier.padding(16.dp)) {
         Column {
             Row(
@@ -147,66 +149,9 @@ fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: L
 @Composable
 fun CardList() {
     val data = listOf(
-        "Toughness" to listOf(
-            "",
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16+"
-        ),
-        "Power" to listOf(
-            "",
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16+"
-        ),
-        "Mana cost" to listOf(
-            "",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "X"
-        )
+        "Toughness" to listOf("","0","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
+        "Power" to listOf("","0","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
+        "Mana cost" to listOf("","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "X")
     )
     var disabled = floatArrayOf(
         0.5f, 0f, 0f, 0f, -50f,
@@ -327,6 +272,7 @@ fun filterSearch(
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(
         ),
+        // Reset textbox button
         trailingIcon = {
             IconButton(onClick = {
                 searchQuery = ""
@@ -348,6 +294,7 @@ fun filterSearch(
     )
 }
 
+// Screen
 @Composable
 fun SearchFilter(
     cardViewModel: CardViewModel,
@@ -393,6 +340,7 @@ fun SearchFilter(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 14.dp)
             ) {
+                // Back button
                 Image(
                     painter = painterResource(id = R.drawable.backspace),
                     contentDescription = null,
@@ -423,6 +371,7 @@ fun SearchFilter(
 
                 Spacer(modifier = Modifier.weight(1f))
 
+                // Refresh page button
                 Image(
                     painter = painterResource(id = R.drawable.reset),
                     contentDescription = null,
@@ -454,6 +403,8 @@ fun SearchFilter(
                     .height(80.dp),
                 contentAlignment = Alignment.Center
             ) {
+
+                // Search button
                 Image(
                     painter = painterResource(id = R.drawable.search),
                     contentDescription = null,
