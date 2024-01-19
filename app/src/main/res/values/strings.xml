@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MTGCreatureSearch</string>
+    <string name="app_name">05_MTGCreatureSearch</string>
     <string name="loading_failed">Failed to load</string>
     <string name="placeholder_result">Placeholder result text</string>
     <string name="retry">Retry</string>
