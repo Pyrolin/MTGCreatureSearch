@@ -1,6 +1,6 @@
 package com.example.mtgcreaturesearch.Model
+
 import kotlinx.serialization.Serializable
-import java.lang.NullPointerException
 
 
 @Serializable
@@ -12,13 +12,13 @@ data class Data(
 //    val booster: Boolean,
 //    val border_color: String,
 //    val card_back_id: String,
-    val card_faces: List<CardFace>?=null,
+    val card_faces: List<CardFace>? = null,
 //    val cardmarket_id: Int,
-    val cmc: Double?=null,
+    val cmc: Double? = null,
 //    val collector_number: String,
 //    val color_identity: List<String>,
 //    val color_indicator: List<String>,
-    val colors: List<String>?=null,
+    val colors: List<String>? = null,
 //    val digital: Boolean,
 //    val edhrec_rank: Int,
 //    val finishes: List<String>,
@@ -32,10 +32,10 @@ data class Data(
     val id: String,
 //    val illustration_id: String,
 //    val image_status: String,
-    val image_uris: ImageUrisX?=null,
+    val image_uris: ImageUrisX? = null,
 //    val keywords: List<String>,
 //    val lang: String,
-    val layout: String?=null,
+    val layout: String? = null,
 //    val legalities: Legalities,
 //    val mana_cost: String,
 //    val mtgo_foil_id: Int,
@@ -45,10 +45,10 @@ data class Data(
 //    val nonfoil: Boolean,
 //    val `object`: String,
 //    val oracle_id: String,
-    val oracle_text: String?=null,
+    val oracle_text: String? = null,
 //    val oversized: Boolean,
 //    val penny_rank: Int,
-    val power: String?=null,
+    val power: String? = null,
 //    val preview: Preview,
 //    val prices: Prices,
 //    val prints_search_uri: String,
@@ -74,7 +74,7 @@ data class Data(
 //    val story_spotlight: Boolean,
 //    val tcgplayer_id: Int,
 //    val textless: Boolean,
-    val toughness: String?=null,
+    val toughness: String? = null,
 //    val type_line: String,
 //    val uri: String,
 //    val variation: Boolean,

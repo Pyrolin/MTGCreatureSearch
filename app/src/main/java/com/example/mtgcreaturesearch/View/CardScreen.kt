@@ -27,7 +27,12 @@ import com.example.mtgcreaturesearch.R
 import com.example.mtgcreaturesearch.ViewModel.CardViewModel
 
 @Composable
-fun CardScreen(cardViewModel: CardViewModel = viewModel(), navController: NavController, card: ShownCards, flipped: Boolean = false) {
+fun CardScreen(
+    cardViewModel: CardViewModel = viewModel(),
+    navController: NavController,
+    card: ShownCards,
+    flipped: Boolean = false
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.card_background),
@@ -72,11 +77,13 @@ fun CardScreen(cardViewModel: CardViewModel = viewModel(), navController: NavCon
             }
             Card(cardViewModel, navController, test_card, setonClick = false, flipped = flipped)
         }
-        BottomBar(navController = navController, cardViewModel = cardViewModel, modifier = Modifier
-            .align(Alignment.BottomCenter)
-            .fillMaxWidth()
-            .height(55.dp),
-            backgroundImage = R.drawable.card_blurred)
+        BottomBar(
+            navController = navController, cardViewModel = cardViewModel, modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(55.dp),
+            backgroundImage = R.drawable.card_blurred
+        )
     }
 
 }

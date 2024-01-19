@@ -37,7 +37,11 @@ import toughness
 
 @Composable
 
-fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: NavController, filter: ShownCards) {
+fun FavoritesScreen(
+    cardViewModel: CardViewModel = viewModel(),
+    navController: NavController,
+    filter: ShownCards
+) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
@@ -85,9 +89,10 @@ fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: Na
                             navController.navigate("HomeScreen")
                         }
                 )
-                val iconID: Int = if(mana == "" && toughness == "" && power == "" && !swamp && !plains && !island && !mountain && !forest && textSearch == "") {
+                val iconID: Int =
+                    if (mana == "" && toughness == "" && power == "" && !swamp && !plains && !island && !mountain && !forest && textSearch == "") {
                         R.drawable.filter_lines_off
-                } else {
+                    } else {
                         R.drawable.filter_lines_on
                     }
                 Image(
@@ -107,10 +112,12 @@ fun FavoritesScreen(cardViewModel: CardViewModel = viewModel(),navController: Na
             }
         }
 
-        BottomBar(navController = navController, cardViewModel = cardViewModel, modifier = Modifier
-            .align(Alignment.BottomCenter)
-            .fillMaxWidth()
-            .height(55.dp),
-            R.drawable.favorites_tabbar_background)
+        BottomBar(
+            navController = navController, cardViewModel = cardViewModel, modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(55.dp),
+            R.drawable.favorites_tabbar_background
+        )
     }
 }

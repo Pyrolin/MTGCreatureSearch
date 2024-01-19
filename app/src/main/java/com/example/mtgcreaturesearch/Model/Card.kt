@@ -1,4 +1,5 @@
 package com.example.mtgcreaturesearch.Model
+
 import kotlinx.serialization.Serializable
 
 

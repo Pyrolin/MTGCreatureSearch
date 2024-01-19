@@ -6,7 +6,7 @@ import androidx.paging.PagingState
 import com.example.mtgcreaturesearch.Model.Data
 import java.io.IOException
 
-class CardPagingSource() : PagingSource<Int, Data>() {
+class CardPagingSource : PagingSource<Int, Data>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Data> {
         return try {

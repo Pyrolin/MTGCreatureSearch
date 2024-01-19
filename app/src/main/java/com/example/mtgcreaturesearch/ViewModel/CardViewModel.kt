@@ -27,7 +27,7 @@ import java.util.Locale
 val db = Firebase.firestore
 val favorites_collection = db.collection("favorites")
 
-var favorites: MutableList<ShownCards> =  mutableListOf()
+var favorites: MutableList<ShownCards> = mutableListOf()
 
 var devideID = ""
 
@@ -38,6 +38,7 @@ sealed interface CardUiState {
     object Error : CardUiState
     object Loading : CardUiState
 }
+
 open class CardViewModel : ViewModel() {
 
     private val repository: CardRepository = CardRepository()
@@ -72,7 +73,8 @@ open class CardViewModel : ViewModel() {
         }
     }
 
-    fun getPaginationCards(): Flow<PagingData<Data>> = repository.getCards().cachedIn(viewModelScope)
+    fun getPaginationCards(): Flow<PagingData<Data>> =
+        repository.getCards().cachedIn(viewModelScope)
 
     fun getQuery(
         mana: String = "",
@@ -99,8 +101,7 @@ open class CardViewModel : ViewModel() {
                 }
             }
             q += "+type%3Acreature+%28game%3Apaper%29"
-        }
-        else {
+        } else {
             if (text.isNotEmpty()) {
                 q += if (text.contains(" ")) {
                     "%28oracle%3A${text.replace(" ", " oracle%3A")})"
@@ -115,7 +116,7 @@ open class CardViewModel : ViewModel() {
         }
 
 
-        var hasColor = false;
+        var hasColor = false
 
         if (swamp) {
             q += "+color%3DB"
@@ -177,7 +178,7 @@ open class CardViewModel : ViewModel() {
                 q += "+pow%3D$power"
             }
         }
-        currentQuery = Query(order,q)
+        currentQuery = Query(order, q)
     }
 
     fun getFavoriteQuery(
@@ -198,7 +199,7 @@ open class CardViewModel : ViewModel() {
                 if (cmc == "X") {
                     cmcDouble = 0.0
                 } else {
-                    cmcDouble = cmc?.toDouble()!!
+                    cmcDouble = cmc.toDouble()!!
                 }
             }
         }
@@ -230,7 +231,7 @@ open class CardViewModel : ViewModel() {
             colors.add("G")
         }
 
-        return ShownCards("","",toughness,power,cmcDouble,"",colors,text, mutableListOf())
+        return ShownCards("", "", toughness, power, cmcDouble, "", colors, text, mutableListOf())
     }
 
     fun browseCards(): List<ShownCards> {
@@ -255,25 +256,25 @@ open class CardViewModel : ViewModel() {
                         }
                         if (card != null) {
                             cards.add(card)
-                            cards
+
                         }
                     } else {
                         val card = data.image_uris?.let {
-                                ShownCards(
-                                    it.large,
-                                    data.id,
-                                    data.toughness,
-                                    data.power,
-                                    data.cmc,
-                                    data.layout,
-                                    data.colors,
-                                    data.oracle_text,
-                                    data.card_faces
-                                )
+                            ShownCards(
+                                it.large,
+                                data.id,
+                                data.toughness,
+                                data.power,
+                                data.cmc,
+                                data.layout,
+                                data.colors,
+                                data.oracle_text,
+                                data.card_faces
+                            )
                         }
                         if (card != null) {
                             cards.add(card)
-                            cards
+
                         }
                     }
                 }
@@ -318,9 +319,14 @@ open class CardViewModel : ViewModel() {
                     for (word in textList!!) {
                         var foundText = true
                         for (face in card.card_faces!!) {
-                            if ((face.oracle_text != null) && !face.oracle_text.lowercase(Locale.ROOT).contains(word) && !foundText) {
+                            if ((face.oracle_text != null) && !face.oracle_text.lowercase(Locale.ROOT)
+                                    .contains(word) && !foundText
+                            ) {
                                 hasText = false
-                            } else if ((face.oracle_text == null) || !card.oracle_text?.lowercase(Locale.ROOT)?.contains(word)!!) {
+                            } else if ((face.oracle_text == null) || !card.oracle_text?.lowercase(
+                                    Locale.ROOT
+                                )?.contains(word)!!
+                            ) {
                                 foundText = false
                             } else if ((face.oracle_text == null) && !foundText) {
                                 hasText = false
@@ -368,7 +374,8 @@ open class CardViewModel : ViewModel() {
                     }
                 }
 
-                hasToughness = (filter.toughness?.isEmpty() == true || card.toughness == filter.toughness)
+                hasToughness =
+                    (filter.toughness?.isEmpty() == true || card.toughness == filter.toughness)
 
                 if (filter.toughness == "16+" && !hasToughness && card.toughness?.toIntOrNull() != null) {
                     hasToughness = (card.toughness?.toInt()!! >= 16)
@@ -396,55 +403,58 @@ open class CardViewModel : ViewModel() {
 
     fun getCardFromID(cardID: String): ShownCards {
 
-            return when (val currentState=cardUiState){
-                is CardUiState.Success ->{
-                    for (i in 0 until currentState.data.size){
-                        if(currentState.data[i].id == cardID) {
-                            val data = currentState.data[i]
-                            if (data.layout=="transform"){
-                                return data.card_faces?.get(0)?.image_uris?.let {
-                                    ShownCards(it.large,
-                                        data.id,
-                                        data.toughness,
-                                        data.power,
-                                        data.cmc,
-                                        data.layout,
-                                        data.colors,
-                                        data.oracle_text,
-                                        data.card_faces
-                                    )
-                                }!!
+        return when (val currentState = cardUiState) {
+            is CardUiState.Success -> {
+                for (i in 0 until currentState.data.size) {
+                    if (currentState.data[i].id == cardID) {
+                        val data = currentState.data[i]
+                        if (data.layout == "transform") {
+                            return data.card_faces?.get(0)?.image_uris?.let {
+                                ShownCards(
+                                    it.large,
+                                    data.id,
+                                    data.toughness,
+                                    data.power,
+                                    data.cmc,
+                                    data.layout,
+                                    data.colors,
+                                    data.oracle_text,
+                                    data.card_faces
+                                )
+                            }!!
 
-                            } else {
-                                return data.image_uris?.let {
-                                    ShownCards(
-                                        it.large,
-                                        data.id,
-                                        data.toughness,
-                                        data.power,
-                                        data.cmc,
-                                        data.layout,
-                                        data.colors,
-                                        data.oracle_text,
-                                        data.card_faces
-                                    )
-                                }!!
-                            }
+                        } else {
+                            return data.image_uris?.let {
+                                ShownCards(
+                                    it.large,
+                                    data.id,
+                                    data.toughness,
+                                    data.power,
+                                    data.cmc,
+                                    data.layout,
+                                    data.colors,
+                                    data.oracle_text,
+                                    data.card_faces
+                                )
+                            }!!
                         }
                     }
-                    return getFavoritedFromID(cardID)
                 }
-                else -> {
-                    return getFavoritedFromID(cardID)
-                }
+                return getFavoritedFromID(cardID)
+            }
+
+            else -> {
+                return getFavoritedFromID(cardID)
             }
         }
+    }
 
     fun initFavorites() {
         favorites_collection.document(devideID).get().addOnSuccessListener { document ->
             if (document != null) {
                 if (document.data?.get("favorites") != null) {
-                    val fetchedFavorites = document.data?.get("favorites") as MutableList<HashMap<String, Any>>
+                    val fetchedFavorites =
+                        document.data?.get("favorites") as MutableList<HashMap<String, Any>>
 
                     favorites = makeFavoritesList(fetchedFavorites)
                 }
@@ -489,23 +499,47 @@ open class CardViewModel : ViewModel() {
                     Log.d("TEST", layout)
 
                     value_faces.forEach { face ->
-                        card_faces.add(CardFace(
-                            image_uris = face["large"]
-                            ?.let { it1 -> face["png"]
-                                ?.let { it2 -> face["small"]
-                                    ?.let { it3 -> ImageUrisX(it1 as String, it2 as String, it3 as String) } } },
-                            colors = if (face["colors"] == null) mutableListOf() else face["colors"] as MutableList<String>,
-                            oracle_text = face["oracle_text"] as String,
-                            power =  face["power"] as String,
-                            toughness = face["toughness"] as String
-                        ))
+                        card_faces.add(
+                            CardFace(
+                                image_uris = face["large"]
+                                    ?.let { it1 ->
+                                        face["png"]
+                                            ?.let { it2 ->
+                                                face["small"]
+                                                    ?.let { it3 ->
+                                                        ImageUrisX(
+                                                            it1 as String,
+                                                            it2 as String,
+                                                            it3 as String
+                                                        )
+                                                    }
+                                            }
+                                    },
+                                colors = if (face["colors"] == null) mutableListOf() else face["colors"] as MutableList<String>,
+                                oracle_text = face["oracle_text"] as String,
+                                power = face["power"] as String,
+                                toughness = face["toughness"] as String
+                            )
+                        )
                     }
                 }
             }
 
 
 
-            cardList.add(ShownCards(url, id, toughness, power, cmc, layout, colors, oracle_text, card_faces))
+            cardList.add(
+                ShownCards(
+                    url,
+                    id,
+                    toughness,
+                    power,
+                    cmc,
+                    layout,
+                    colors,
+                    oracle_text,
+                    card_faces
+                )
+            )
         }
 
         return cardList
@@ -596,6 +630,7 @@ open class CardViewModel : ViewModel() {
             }
         }
     }
+
     fun addFavorited(card: ShownCards) {
         favorites.add(card)
     }

@@ -3,42 +3,39 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -67,6 +64,7 @@ var tmp_plains: Boolean = false
 var tmp_island: Boolean = false
 var tmp_mountain: Boolean = false
 var tmp_forest: Boolean = false
+
 // Drop down menus
 @Composable
 fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: List<String>) {
@@ -131,7 +129,7 @@ fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: L
                                     tmp_power = option
                                 }
 
-                                if(name == "Mana cost") {
+                                if (name == "Mana cost") {
                                     tmp_mana = option
                                 }
                             }
@@ -149,9 +147,66 @@ fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: L
 @Composable
 fun CardList() {
     val data = listOf(
-        "Toughness" to listOf("","0","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
-        "Power" to listOf("","0","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16+"),
-        "Mana cost" to listOf("","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "X")
+        "Toughness" to listOf(
+            "",
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16+"
+        ),
+        "Power" to listOf(
+            "",
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16+"
+        ),
+        "Mana cost" to listOf(
+            "",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "X"
+        )
     )
     var disabled = floatArrayOf(
         0.5f, 0f, 0f, 0f, -50f,
@@ -165,7 +220,13 @@ fun CardList() {
         0f, 0f, 1f, 0f, 0f,
         0f, 0f, 0f, 1f, 0f
     )
-    val imageIds = listOf(R.drawable.swamp, R.drawable.plains, R.drawable.island, R.drawable.mountain, R.drawable.forest)
+    val imageIds = listOf(
+        R.drawable.swamp,
+        R.drawable.plains,
+        R.drawable.island,
+        R.drawable.mountain,
+        R.drawable.forest
+    )
 
     val clickStates = remember {
         mutableStateMapOf<Int, Boolean>().apply {
@@ -288,7 +349,11 @@ fun filterSearch(
 }
 
 @Composable
-fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, startDestination: String) {
+fun SearchFilter(
+    cardViewModel: CardViewModel,
+    navController: NavController,
+    startDestination: String
+) {
     tmp_mana = mana
     tmp_toughness = toughness
     tmp_power = power
@@ -355,9 +420,9 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, sta
                             }
                         }
                 )
-                
+
                 Spacer(modifier = Modifier.weight(1f))
-                
+
                 Image(
                     painter = painterResource(id = R.drawable.reset),
                     contentDescription = null,
@@ -430,10 +495,12 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, sta
             }
 
             Spacer(modifier = Modifier.weight(1f))
-            BottomBar(navController = navController, cardViewModel = cardViewModel, modifier = Modifier
-                .fillMaxWidth()
-                .height(55.dp),
-                R.drawable.filter_bottom_background)
+            BottomBar(
+                navController = navController, cardViewModel = cardViewModel, modifier = Modifier
+                    .fillMaxWidth()
+                    .height(55.dp),
+                R.drawable.filter_bottom_background
+            )
         }
     }
 }
