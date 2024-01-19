@@ -108,15 +108,9 @@ fun Card(cardViewModel: CardViewModel = viewModel(), navController: NavControlle
                 tint = if (isFavorite || setonClick) {
                     Color.Red
                 } else {
-                    Color.White
+                    Color.hsv(0F, 0.8F, 0.6F)
                 },
                 imageVector = if (isFavorite || !setonClick) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
-                contentDescription = null,
-                modifier = Modifier.size(favoriteSize)
-            )
-            Icon(
-                tint = Color.Red,
-                imageVector = Icons.Default.FavoriteBorder,
                 contentDescription = null,
                 modifier = Modifier.size(favoriteSize)
             )
