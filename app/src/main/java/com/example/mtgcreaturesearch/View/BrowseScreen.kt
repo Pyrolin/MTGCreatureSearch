@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -117,6 +118,7 @@ fun Card(
                 cardViewModel.updateFavorites(card)
             },
             modifier = Modifier.size(favoriteSize)
+                .absoluteOffset(x=favoriteXOffset, y=favoriteYOffset)
         ) {
             Icon(
                 tint = if (isFavorite || setonClick) {
@@ -126,6 +128,7 @@ fun Card(
                 },
                 imageVector = if (isFavorite || !setonClick) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
                 contentDescription = null,
+                modifier = Modifier.size(favoriteSize)
             )
         }
     }
