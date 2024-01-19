@@ -76,6 +76,10 @@ open class CardViewModel : ViewModel() {
     fun getPaginationCards(): Flow<PagingData<Data>> =
         repository.getCards().cachedIn(viewModelScope)
 
+    /**
+     * Get query method
+     */
+
     fun getQuery(
         mana: String = "",
         toughness: String = "",
@@ -181,6 +185,10 @@ open class CardViewModel : ViewModel() {
         currentQuery = Query(order, q)
     }
 
+    /**
+     * Get favorite query
+     */
+
     fun getFavoriteQuery(
         cmc: String? = "-1.0",
         toughness: String? = "",
@@ -233,6 +241,10 @@ open class CardViewModel : ViewModel() {
 
         return ShownCards("", "", toughness, power, cmcDouble, "", colors, text, mutableListOf())
     }
+
+    /**
+     * Browse cards function
+     */
 
     fun browseCards(): List<ShownCards> {
         return when (val currentState = cardUiState) {
@@ -287,6 +299,9 @@ open class CardViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Favorite cards function
+     */
 
     fun favoriteCards(filter: ShownCards): List<ShownCards> {
 
@@ -401,6 +416,9 @@ open class CardViewModel : ViewModel() {
         return filteredCards
     }
 
+    /**
+     * Gets Card from its ID
+     */
     fun getCardFromID(cardID: String): ShownCards {
 
         return when (val currentState = cardUiState) {
@@ -449,6 +467,10 @@ open class CardViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Initializes favorites
+     */
+
     fun initFavorites() {
         favorites_collection.document(devideID).get().addOnSuccessListener { document ->
             if (document != null) {
@@ -461,6 +483,10 @@ open class CardViewModel : ViewModel() {
             }
         }
     }
+
+    /**
+     * Makes favorite lists
+     */
 
     fun makeFavoritesList(cardMapList: MutableList<HashMap<String, Any>>): MutableList<ShownCards> {
         val cardList: MutableList<ShownCards> = mutableListOf()
@@ -545,6 +571,10 @@ open class CardViewModel : ViewModel() {
         return cardList
     }
 
+    /**
+     * Makes firebase list
+     */
+
     fun makeFirebaseList(cardList: MutableList<ShownCards>): MutableList<HashMap<String, Any?>> {
         val cardMapList: MutableList<HashMap<String, Any?>> = mutableListOf()
 
@@ -603,6 +633,9 @@ open class CardViewModel : ViewModel() {
         return cardMapList
     }
 
+    /**
+     * Updates favorites
+     */
     fun updateFavorites(card: ShownCards) {
         if (isFavorited(card)) removeFavorited(card) else addFavorited(card)
 
@@ -613,6 +646,10 @@ open class CardViewModel : ViewModel() {
         favorites_collection.document(devideID).set(data)
     }
 
+    /**
+     * Checks if card is favorited
+     */
+
     fun isFavorited(card: ShownCards): Boolean {
         for (favoriteCard in favorites) {
             if (favoriteCard.id == card.id) {
@@ -622,6 +659,9 @@ open class CardViewModel : ViewModel() {
         return false
     }
 
+    /**
+     * Function to remove favorited card
+     */
     fun removeFavorited(card: ShownCards) {
         for (favoriteCard in favorites) {
             if (favoriteCard.id == card.id) {
@@ -631,10 +671,16 @@ open class CardViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Function to add favorited card
+     */
     fun addFavorited(card: ShownCards) {
         favorites.add(card)
     }
 
+    /**
+     * Gets favorited from its ID
+     */
     fun getFavoritedFromID(cardID: String): ShownCards {
         for (favoriteCard in favorites) {
             if (favoriteCard.id == cardID) {
