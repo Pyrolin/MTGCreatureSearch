@@ -124,7 +124,7 @@ fun Card(
                 tint = if (isFavorite || setonClick) {
                     Color.Red
                 } else {
-                    Color.hsv(0F, 0.8F, 0.6F)
+                    Color.hsv(0F, 0.8F, 0.4F)
                 },
                 imageVector = if (isFavorite || !setonClick) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
                 contentDescription = null,
