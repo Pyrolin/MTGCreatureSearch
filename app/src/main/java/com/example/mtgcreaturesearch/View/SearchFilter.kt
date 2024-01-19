@@ -80,6 +80,8 @@ fun CardSet(cardViewModel: CardViewModel = viewModel(), name: String, options: L
     } else if (name == "Mana cost") {
         selectedOption = mana
     }
+
+    // Card class
     Card(modifier = Modifier.padding(16.dp)) {
         Column {
             Row(
@@ -266,6 +268,7 @@ fun filterSearch(
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(
         ),
+        // Reset textbox button
         trailingIcon = {
             IconButton(onClick = {
                 searchQuery = ""
@@ -287,6 +290,7 @@ fun filterSearch(
     )
 }
 
+// Screen
 @Composable
 fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, startDestination: String) {
     tmp_mana = mana
@@ -328,6 +332,7 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, sta
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 14.dp)
             ) {
+                // Back button
                 Image(
                     painter = painterResource(id = R.drawable.backspace),
                     contentDescription = null,
@@ -357,7 +362,8 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, sta
                 )
                 
                 Spacer(modifier = Modifier.weight(1f))
-                
+
+                // Refresh page button
                 Image(
                     painter = painterResource(id = R.drawable.reset),
                     contentDescription = null,
@@ -389,6 +395,8 @@ fun SearchFilter(cardViewModel: CardViewModel, navController: NavController, sta
                     .height(80.dp),
                 contentAlignment = Alignment.Center
             ) {
+
+                // Search button
                 Image(
                     painter = painterResource(id = R.drawable.search),
                     contentDescription = null,
